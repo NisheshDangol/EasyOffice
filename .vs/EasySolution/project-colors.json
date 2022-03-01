@@ -1,0 +1,26 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "cfee0b36-1adb-47c4-9011-d6a1786a4bb6": {
+      "ProjectGuid": "cfee0b36-1adb-47c4-9011-d6a1786a4bb6",
+      "DisplayName": "Easy.API",
+      "ColorIndex": 0
+    },
+    "caa1f7c1-fb55-48dc-9f54-ac0f3df2a179": {
+      "ProjectGuid": "caa1f7c1-fb55-48dc-9f54-ac0f3df2a179",
+      "DisplayName": "Easy.Models",
+      "ColorIndex": 1
+    },
+    "7af407cf-cd85-4dc2-b9c9-2ec02d1dd728": {
+      "ProjectGuid": "7af407cf-cd85-4dc2-b9c9-2ec02d1dd728",
+      "DisplayName": "Easy.Services",
+      "ColorIndex": 2
+    },
+    "9cbec25e-d61d-4993-aab8-f64f8d640244": {
+      "ProjectGuid": "9cbec25e-d61d-4993-aab8-f64f8d640244",
+      "DisplayName": "Easy.Connection",
+      "ColorIndex": 3
+    }
+  },
+  "NextColorIndex": 4
+}

@@ -1,0 +1,15 @@
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.deps.json
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.dll
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\ref\Easy.Models.dll
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.pdb
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Connection.dll
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Connection.pdb
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.csproj.AssemblyReference.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.AssemblyInfoInputs.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.AssemblyInfo.cs
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.csproj.CoreCompileInputs.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.csproj.CopyComplete
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.dll
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\ref\Easy.Models.dll
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.pdb
