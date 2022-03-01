@@ -5,6 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ReadMe.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="ReadMe.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Easy.Connection\Easy.Connection.csproj" />
   </ItemGroup>
 

@@ -15,6 +15,12 @@ namespace Easy.Services.Services
 {
     public class LoginService : ILoginInterface
     {
+        private readonly ITokenInterface _tokenInterface;
+
+        public LoginService(ITokenInterface tokenInterface)
+        {
+            _tokenInterface = tokenInterface;
+        }
         public async Task<ListOutPut> CheckSession(CheckSession login)
         {
             string sqluser = "sp_user";
@@ -29,6 +35,7 @@ namespace Easy.Services.Services
             {
                 return new ListOutPut
                 {
+                    token = _tokenInterface.TokenGenerateString(login.username),
                     logins = common.ToList(),
                     Message = "Success",
                     Status_Code = 200
@@ -61,6 +68,7 @@ namespace Easy.Services.Services
                     {
                         return new ListOutPut
                         {
+                            token = _tokenInterface.TokenGenerateString(login.UserName),
                             logins = common.ToList(),
                             Message = "Success",
                             Status_Code = 200

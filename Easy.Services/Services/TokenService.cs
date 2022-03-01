@@ -14,20 +14,18 @@ namespace Easy.Services.Services
 {
     public class TokenService : ITokenInterface
     {
-        private readonly IConfiguration _configuration;
-
-
+        //private readonly IConfiguration _configuration;
         private readonly SymmetricSecurityKey _key;
         public TokenService(IConfiguration configuration)
         {
             _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["jwt:tokenkey"]));
 
         }
-        public string TokenGenerateString(Login login)
+        public string TokenGenerateString(string username)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId,login.UserName)
+                new Claim(JwtRegisteredClaimNames.NameId,username)
             };
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256Signature);
             var tokenDescripter = new SecurityTokenDescriptor

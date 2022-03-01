@@ -9,6 +9,6 @@ namespace Easy.Services.Interface
 {
     public interface ITokenInterface
     {
-        string TokenGenerateString(Login login);
+        string TokenGenerateString(string username);
     }
 }

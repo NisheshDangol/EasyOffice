@@ -63,6 +63,7 @@ namespace Easy.Models.Models
     }
     public class ListOutPut : CommonResponse
     {
+        public string token { get; set; }
         public List<LoginViewModel> logins { get; set; }
     }
 }
