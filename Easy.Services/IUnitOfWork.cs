@@ -10,5 +10,7 @@ namespace Easy.Services
     public interface IUnitOfWork
     {
         LoginService service { get; }
+        BankInfoServices bankInfoServices { get; }
+        JobInfoServices jobInfoServices { get; }
     }
 }

@@ -19,5 +19,9 @@ namespace Easy.Services
             _tokenInterface = tokenInterface;
         }
         public LoginService service => new LoginService(_tokenInterface);
+
+        public BankInfoServices bankInfoServices => new BankInfoServices();
+
+        public JobInfoServices jobInfoServices => new JobInfoServices();
     }
 }
