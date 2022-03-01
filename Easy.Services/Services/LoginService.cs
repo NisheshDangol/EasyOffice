@@ -25,7 +25,7 @@ namespace Easy.Services.Services
             parameters.Add("@notification_token", login.notificationToken);
             parameters.Add("@flag", 2);
             var common = await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
-            if (common.FirstOrDefault().firstName==null && common.Count() != 0)
+            if (common.FirstOrDefault().firstName!=null && common.Count() != 0)
             {
                 return new ListOutPut
                 {
@@ -57,7 +57,7 @@ namespace Easy.Services.Services
                     parameters.Add("@device_id", login.DeviceId);
                     parameters.Add("@flag",1);
                     var common= await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
-                    if(common.Count()!=0)
+                    if(common.FirstOrDefault().firstName != null && common.Count() != 0)
                     {
                         return new ListOutPut
                         {
