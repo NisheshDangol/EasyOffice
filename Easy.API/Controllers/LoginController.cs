@@ -16,14 +16,14 @@ namespace Easy.API.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        [Route("~/api/check-session")]
+        [Route("~/api/login")]
         [HttpPost]
         public async Task<IActionResult> Login(Login login)
         {
             var data = await _unitOfWork.service.Login(login);
             return Ok(data);
         }
-        [Route("~/api/login")]
+        [Route("~/api/check-session")]
         [HttpPost]
         public async Task<IActionResult> CheckSession(CheckSession login)
         {

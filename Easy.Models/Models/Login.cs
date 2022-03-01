@@ -54,8 +54,8 @@ namespace Easy.Models.Models
         public string desigID { get; set; }
         public string departID { get; set; }
         public string departmentName { get; set; }
-        //public string subDepartmentID { get; set; }
-        //public string subDepartmentName { get; set; }
+        public string subDepartmentID { get; set; }
+        public string subDepartmentName { get; set; }
         public string jobType { get; set; }
         public string LeavedDate { get; set; }
         public string workingStatus { get; set; }
