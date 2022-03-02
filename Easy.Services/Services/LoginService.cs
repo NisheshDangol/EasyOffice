@@ -46,7 +46,7 @@ namespace Easy.Services.Services
                 return new ListOutPut
                 {
                     logins = null,
-                    Message = "No Data Found.",
+                    Message = "No User Found.",
                     Status_Code = 400
                 };
             }
@@ -79,7 +79,7 @@ namespace Easy.Services.Services
                         return new ListOutPut
                         {
                             logins = null,
-                            Message = "No Data Found.",
+                            Message = "No User Found.",
                             Status_Code = 400
                         };
                     }

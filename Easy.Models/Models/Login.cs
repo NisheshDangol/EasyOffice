@@ -30,7 +30,7 @@ namespace Easy.Models.Models
         public string email { get; set; }
         public string citizenshipNo { get; set; }
         public string gender { get; set; }
-        public string bloodgroup { get; set; }
+        public int bloodgroup { get; set; }
         public string religion { get; set; }
         public string address { get; set; }
         public string district { get; set; }
@@ -51,10 +51,10 @@ namespace Easy.Models.Models
         public string gradeID { get; set; }
         public string enrollDate { get; set; }
         public string designationname { get; set; }
-        public string designationID { get; set; }
-        public string departmentID { get; set; }
+        public int designationID { get; set; }
+        public int departmentID { get; set; }
         public string departmentname { get; set; }
-        public string subDepartmentID { get; set; }
+        public int subDepartmentID { get; set; }
         public string subDepartmentName { get; set; }
         public string jobType { get; set; }
         public string LeavedDate { get; set; }
