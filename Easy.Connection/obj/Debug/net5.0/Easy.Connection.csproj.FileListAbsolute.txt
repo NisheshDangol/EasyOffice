@@ -2,7 +2,6 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\bin\Debug\n
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\bin\Debug\net5.0\Easy.Connection.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\bin\Debug\net5.0\ref\Easy.Connection.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\bin\Debug\net5.0\Easy.Connection.pdb
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\obj\Debug\net5.0\Easy.Connection.csproj.AssemblyReference.cache
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\obj\Debug\net5.0\Easy.Connection.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\obj\Debug\net5.0\Easy.Connection.AssemblyInfoInputs.cache
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Connection\obj\Debug\net5.0\Easy.Connection.AssemblyInfo.cs

@@ -11,7 +11,7 @@ namespace Easy.Services.Services
 {
     public class JobInfoServices : IJobInfoInterface
     {
-        public async Task<JobReturn> jobinfo(string ComId, string EmpId)
+        public async Task<JobReturn> Jobinfo(string ComId, string EmpId)
         {
             var job = new JobReturn();
             if (ComId == "")

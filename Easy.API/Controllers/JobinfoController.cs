@@ -22,7 +22,7 @@ namespace Easy.API.Controllers
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetJobInfo(string ComId, string EmpId)
         {
-            var data= await _unitOfWork.jobInfoServices.jobinfo(ComId, EmpId);
+            var data= await _unitOfWork.jobInfoServices.Jobinfo(ComId, EmpId);
             return Ok(data);
         }
     }
