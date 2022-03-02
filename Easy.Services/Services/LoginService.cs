@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Easy.Connection;
 using Easy.Connection.Dapper;
-using Easy.Models.DTO;
 using Easy.Models.Models;
 using Easy.Services.Interface;
 using System;
@@ -21,69 +20,66 @@ namespace Easy.Services.Services
         {
             _tokenInterface = tokenInterface;
         }
-        public async Task<ListOutPut> CheckSession(CheckSession login)
+        public async Task<ListOutPut> CheckSession(CheckSession Login)
         {
             string sqluser = "sp_user";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@com_id", login.companyid);
-            parameters.Add("@username", login.username);
-            parameters.Add("@device_id", login.deviceID);
-            parameters.Add("@notification_token", login.notificationToken);
+            parameters.Add("@com_id", Login.CompanyId);
+            parameters.Add("@username", Login.Username);
+            parameters.Add("@device_id", Login.DeviceID);
+            parameters.Add("@notification_token", Login.NotificationToken);
             parameters.Add("@flag", 2);
             var common = await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
             if (common.Count() != 0 && common.FirstOrDefault().UID !=0)
             {
                 return new ListOutPut
                 {
-                    token = _tokenInterface.TokenGenerateString(login.username),
-                    logins = common.ToList(),
+                    Token = _tokenInterface.TokenGenerateString(Login.Username),
+                    Logins = common.ToList(),
                     Message = "Success",
-                    Status_Code = 200
+                    StatusCode = 200
                 };
             }
             else
             {
                 return new ListOutPut
                 {
-                    logins = null,
+                    Logins = null,
                     Message = "No User Found.",
-                    Status_Code = 400
+                    StatusCode = 400
                 };
             }
         }
 
-        public async Task<ListOutPut> Login(Login login)
+        public async Task<ListOutPut> Login(Login Login)
         {
+            var logout = new ListOutPut();
 
                     string sqluser = "sp_user";
                     DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@com_id", login.CompanyId);
-                    parameters.Add("@username", login.UserName);
-                    parameters.Add("@password", login.Password);
-                    parameters.Add("@notification_token", login.NotificationToken);
-                    parameters.Add("@device_id", login.DeviceId);
+                    parameters.Add("@com_id", Login.CompanyId);
+                    parameters.Add("@username", Login.UserName);
+                    parameters.Add("@password", Login.Password);
+                    parameters.Add("@notification_token", Login.NotificationToken);
+                    parameters.Add("@device_id", Login.DeviceId);
                     parameters.Add("@flag",1);
                     var common= await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
-                    if(common.Count() != 0 && common.FirstOrDefault().UID != 0)
+                    
+                    if (common.Count() != 0 && common.FirstOrDefault().UID != 0)
                     {
-                        return new ListOutPut
-                        {
-                            token = _tokenInterface.TokenGenerateString(login.UserName),
-                            logins = common.ToList(),
-                            Message = "Success",
-                            Status_Code = 200
-                        };
+                logout.Token = _tokenInterface.TokenGenerateString(Login.UserName);
+                logout.Logins = common.ToList();
+                logout.StatusCode = 200;
+                logout.Message = "Success";
                     }
                     else
                     {
-                        return new ListOutPut
-                        {
-                            logins = null,
-                            Message = "No User Found.",
-                            Status_Code = 400
-                        };
-                    }
-                
+                logout.Token = null;
+                logout.Logins = null;
+                logout.Message = common.FirstOrDefault().Message;
+                logout.StatusCode = common.FirstOrDefault().StatusCode;
+            }
+            return logout;
                 
             
         }

@@ -8,7 +8,7 @@ namespace Easy.Connection
 {
     public class CommonResponse
     {
-        public int Status_Code { get; set; }
+        public int StatusCode { get; set; }
         public string Message { get; set; }
     }
 }

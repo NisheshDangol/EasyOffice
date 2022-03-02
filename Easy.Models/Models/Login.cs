@@ -15,55 +15,55 @@ namespace Easy.Models.Models
         public string NotificationToken { get; set; }
         public string DeviceId { get; set; }
     }
-    public class LoginViewModel
+    public class LoginViewModel:CommonResponse
     {
         public int UID { get; set; }
-        public string deviceCode { get; set; }
-        public string firstName { get; set; }
-        public string middleName { get; set; }
-        public string lastName { get; set; }
-        public string contact { get; set; }
-        public string pan { get; set; }
-        public string phone { get; set; }
-        public string maritalStatus { get; set; }
-        public string dateOfBirth { get; set; }
-        public string email { get; set; }
-        public string citizenshipNo { get; set; }
-        public string gender { get; set; }
-        public int bloodgroup { get; set; }
-        public string religion { get; set; }
-        public string address { get; set; }
-        public string district { get; set; }
-        public string image { get; set; }
-        public string isManager { get; set; }
-        public string fiscalid { get; set; }
-        public string shiftname { get; set; }
-        public string shiftStart { get; set; }
-        public string shiftEnd { get; set; }
-        public string allowedLateIn { get; set; }
-        public string allowedEarlyOut { get; set; }
-        public string launchStart { get; set; }
-        public string launchEnd { get; set; }
-        public string shiftTypeId { get; set; }
-        public string shiftID { get; set; }
-        public string branch { get; set; }
+        public string DeviceCode { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
+        public string Contact { get; set; }
+        public string Pan { get; set; }
+        public string Phone { get; set; }
+        public string MaritalStatus { get; set; }
+        public string DateOfBirth { get; set; }
+        public string Email { get; set; }
+        public string CitizenshipNo { get; set; }
+        public string Gender { get; set; }
+        public int GloodGroup { get; set; }
+        public string Religion { get; set; }
+        public string Address { get; set; }
+        public string District { get; set; }
+        public string Image { get; set; }
+        public string IsManager { get; set; }
+        public string FiscalId { get; set; }
+        public string ShiftName { get; set; }
+        public string ShiftStart { get; set; }
+        public string ShiftEnd { get; set; }
+        public string AllowedLateIn { get; set; }
+        public string AllowedEarlyOut { get; set; }
+        public string LaunchStart { get; set; }
+        public string LaunchEnd { get; set; }
+        public string ShiftTypeId { get; set; }
+        public string ShiftID { get; set; }
+        public string Branch { get; set; }
 
-        public string gradeID { get; set; }
-        public string enrollDate { get; set; }
-        public string designationname { get; set; }
-        public int designationID { get; set; }
-        public int departmentID { get; set; }
-        public string departmentname { get; set; }
-        public int subDepartmentID { get; set; }
-        public string subDepartmentName { get; set; }
-        public string jobType { get; set; }
+        public string GradeID { get; set; }
+        public string EnrollDate { get; set; }
+        public string DesignationName { get; set; }
+        public int DesignationId { get; set; }
+        public int DepartmentId { get; set; }
+        public string DepartmentName { get; set; }
+        public int SubDepartmentId { get; set; }
+        public string SubDepartmentName { get; set; }
+        public string JobType { get; set; }
         public string LeavedDate { get; set; }
-        public string workingStatus { get; set; }
-        public string workingDays { get; set; }
+        public string WorkingStatus { get; set; }
+        public string WorkingDays { get; set; }
     }
     public class ListOutPut : CommonResponse
     {
-        public string token { get; set; }
-        public List<LoginViewModel> logins { get; set; }
+        public string Token { get; set; }
+        public List<LoginViewModel> Logins { get; set; }
     }
 }

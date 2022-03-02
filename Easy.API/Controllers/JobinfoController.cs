@@ -1,4 +1,6 @@
 ﻿using Easy.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
@@ -15,11 +17,12 @@ namespace Easy.API.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        [Route("~/api/getjobinfo")]
+        [Route("~/api/jobinfo")]
         [HttpGet]
-        public async Task<IActionResult> GetJobInfo(string Comid, string EmpId)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetJobInfo(string ComId, string EmpId)
         {
-            var data= await _unitOfWork.jobInfoServices.jobinfo(Comid, EmpId);
+            var data= await _unitOfWork.jobInfoServices.jobinfo(ComId, EmpId);
             return Ok(data);
         }
     }

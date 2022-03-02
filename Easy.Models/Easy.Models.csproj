@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Easy.Connection\Easy.Connection.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
 </Project>

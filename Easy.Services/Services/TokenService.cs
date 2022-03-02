@@ -31,7 +31,7 @@ namespace Easy.Services.Services
             var tokenDescripter = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(700),
                 SigningCredentials = creds
 
             };

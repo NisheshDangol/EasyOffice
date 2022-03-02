@@ -11,37 +11,37 @@ namespace Easy.Services.Services
 {
     public class BankInfoServices : IBankInfoInterface
     {
-        public async Task<Bank> BankInfo(string comID, string empID)
+        public async Task<Bank> BankInfo(string ComID, string EmpID)
         {
             var bank = new Bank();
-            if (comID =="")
+            if (ComID =="")
             {
                 bank.BankInfo = null;
-                bank.Status_Code = 201;
+                bank.StatusCode = 201;
                 bank.Message = "comId is null";
             }
-            else if(empID=="")
+            else if(EmpID=="")
                 {
                 bank.BankInfo = null;
-                bank.Status_Code = 202;
+                bank.StatusCode = 202;
                 bank.Message = "EmpId is null";
             }
             else
             {
-                string sql = "select bank_name, ac_name, ac_no, branch from tbl_bank_information where com_id ='" + comID + "' and employee_id = '" + empID + "' and status=1";
+                string sql = "select bank_name as BankName, ac_name as AcNumber, ac_no as AcName, branch as Branch from tbl_bank_information where com_id ='" + ComID + "' and employee_id = '" + EmpID + "' and status=1";
                 var data = await DBHelper.RunQuery<BankInfo>(sql);
                 if (data.Count() != 0)
                 {
 
                     bank.BankInfo = data.ToList();
-                    bank.Status_Code = 200;
+                    bank.StatusCode = 200;
                     bank.Message = "Success";
 
                 }
                 else
                 {
                     bank.BankInfo = null;
-                    bank.Status_Code = 400;
+                    bank.StatusCode = 400;
                     bank.Message = "No Data";
                 }
             }

@@ -11,28 +11,28 @@ namespace Easy.Services.Services
 {
     public class JobInfoServices : IJobInfoInterface
     {
-        public async Task<JobReturn> jobinfo(string Comid, string EmpId)
+        public async Task<JobReturn> jobinfo(string ComId, string EmpId)
         {
             var job = new JobReturn();
-            if (Comid == "")
+            if (ComId == "")
             {
-                job.jobinfo = null;
-                job.Status_Code = 201;
+                job.Jobinfo = null;
+                job.StatusCode = 201;
                 job.Message = "comId is null";
             }
             else if (EmpId == "")
             {
-                job.jobinfo = null;
-                job.Status_Code = 201;
+                job.Jobinfo = null;
+                job.StatusCode = 201;
                 job.Message = "EmpId is null";
             }
             else
             {
-                string sql = "sp_jobinfo @comId='" + Comid + "'";
+                string sql = "sp_jobinfo @comId='" + ComId + "'";
                 sql += ",@empId = '" + EmpId + "'";
                 var data = await DBHelper.RunQuery<Jobinfo>(sql);
-                job.jobinfo = data.ToList();
-                job.Status_Code = 200;
+                job.Jobinfo = data.ToList();
+                job.StatusCode = 200;
                 job.Message = "Success";
             }
             return job;

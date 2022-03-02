@@ -1,3 +1,8 @@
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.csproj.AssemblyReference.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.AssemblyInfoInputs.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.AssemblyInfo.cs
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.csproj.CoreCompileInputs.cache
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Services.deps.json
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Services.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\ref\Easy.Services.dll
@@ -6,11 +11,6 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Models.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Connection.pdb
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Models.pdb
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.csproj.AssemblyReference.cache
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.AssemblyInfoInputs.cache
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.AssemblyInfo.cs
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.csproj.CoreCompileInputs.cache
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.csproj.CopyComplete
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\ref\Easy.Services.dll

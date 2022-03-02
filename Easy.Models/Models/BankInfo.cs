@@ -9,10 +9,10 @@ namespace Easy.Models.Models
 {
     public class BankInfo
     {
-        public string bankName { get; set; }
-        public string acNumber { get; set; }
-        public string acName { get; set; }
-        public string branch { get; set; }
+        public string BankName { get; set; }
+        public string AcNumber { get; set; }
+        public string AcName { get; set; }
+        public string Branch { get; set; }
     }
     public class Bank:CommonResponse
     {

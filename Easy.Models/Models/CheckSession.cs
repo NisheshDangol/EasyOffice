@@ -8,9 +8,9 @@ namespace Easy.Models.Models
 {
     public class CheckSession
     {
-        public string companyid { get; set; }
-        public string username { get; set; }
-        public string notificationToken { get; set; }
-        public string deviceID { get; set; }
+        public string CompanyId { get; set; }
+        public string Username { get; set; }
+        public string NotificationToken { get; set; }
+        public string DeviceID { get; set; }
     }
 }

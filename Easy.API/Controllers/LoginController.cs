@@ -23,7 +23,7 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.service.Login(login);
             return Ok(data);
         }
-        [Route("~/api/check-session")]
+        [Route("~/api/checksession")]
         [HttpPost]
         public async Task<IActionResult> CheckSession(CheckSession login)
         {

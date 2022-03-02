@@ -9,17 +9,17 @@ namespace Easy.Models.Models
 {
     public class Jobinfo
     {
-        public string designationname { get; set; }
-        public string departmentname { get; set; }
-        public string subdepartmentname { get; set; }
-        public string grade { get; set; }
-        public string manager { get; set; }
-        public string workingstatus { get; set; }
-        public string start_date { get; set; }
-        public string end_date { get; set; }
+        public string DesignationName { get; set; }
+        public string DepartmentName { get; set; }
+        public string SubDepartmentName { get; set; }
+        public string Grade { get; set; }
+        public string Manager { get; set; }
+        public string WorkingStatus { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
     }
     public class JobReturn : CommonResponse
     {
-        public List<Jobinfo> jobinfo { get; set; }
+        public List<Jobinfo> Jobinfo { get; set; }
     }
 }
