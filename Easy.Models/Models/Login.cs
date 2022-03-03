@@ -18,6 +18,7 @@ namespace Easy.Models.Models
     public class LoginViewModel:CommonResponse
     {
         public int UID { get; set; }
+        public string UserId { get; set; }
         public string DeviceCode { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
@@ -37,6 +38,7 @@ namespace Easy.Models.Models
         public string Image { get; set; }
         public string IsManager { get; set; }
         public string FiscalYear { get; set; }
+        public string FiscalId { get; set; }
         public string ShiftName { get; set; }
         public string ShiftStart { get; set; }
         public string ShiftEnd { get; set; }
@@ -47,7 +49,8 @@ namespace Easy.Models.Models
         public string ShiftTypeId { get; set; }
         public string ShiftID { get; set; }
         public string Branch { get; set; }
-        public string GradeID { get; set; }
+        public string GradeId { get; set; }
+        public string GradeName { get; set; }
         public string EnrollDate { get; set; }
         public string DesignationName { get; set; }
         public int DesignationId { get; set; }
