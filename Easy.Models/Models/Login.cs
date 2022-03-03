@@ -36,7 +36,7 @@ namespace Easy.Models.Models
         public string District { get; set; }
         public string Image { get; set; }
         public string IsManager { get; set; }
-        public string FiscalId { get; set; }
+        public string FiscalYear { get; set; }
         public string ShiftName { get; set; }
         public string ShiftStart { get; set; }
         public string ShiftEnd { get; set; }
