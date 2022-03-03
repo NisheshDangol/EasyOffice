@@ -1,7 +1,10 @@
 ﻿using Easy.Models.Models;
 using Easy.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Easy.API.Controllers
@@ -24,6 +27,7 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
         [Route("~/api/checksession")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
         public async Task<IActionResult> CheckSession(CheckSession login)
         {

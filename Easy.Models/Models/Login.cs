@@ -47,7 +47,6 @@ namespace Easy.Models.Models
         public string ShiftTypeId { get; set; }
         public string ShiftID { get; set; }
         public string Branch { get; set; }
-
         public string GradeID { get; set; }
         public string EnrollDate { get; set; }
         public string DesignationName { get; set; }
@@ -60,10 +59,15 @@ namespace Easy.Models.Models
         public string LeavedDate { get; set; }
         public string WorkingStatus { get; set; }
         public string WorkingDays { get; set; }
+        public int BranchId { get; set; }
     }
     public class ListOutPut : CommonResponse
     {
         public string Token { get; set; }
+        public List<LoginViewModel> Logins { get; set; }
+    }
+    public class CheckSessionOutput : CommonResponse
+    {
         public List<LoginViewModel> Logins { get; set; }
     }
 }

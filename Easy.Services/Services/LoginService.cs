@@ -20,21 +20,20 @@ namespace Easy.Services.Services
         {
             _tokenInterface = tokenInterface;
         }
-        public async Task<ListOutPut> CheckSession(CheckSession Login)
+        public async Task<CheckSessionOutput> CheckSession(CheckSession Login)
         {
             string sqluser = "sp_user";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@com_id", Login.CompanyId);
-            parameters.Add("@username", Login.Username);
+            parameters.Add("@username", Login.UserName);
             parameters.Add("@device_id", Login.DeviceID);
             parameters.Add("@notification_token", Login.NotificationToken);
             parameters.Add("@flag", 2);
             var common = await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
             if (common.Count() != 0 && common.FirstOrDefault().UID !=0)
             {
-                return new ListOutPut
+                return new CheckSessionOutput
                 {
-                    Token = _tokenInterface.TokenGenerateString(Login.Username),
                     Logins = common.ToList(),
                     Message = "Success",
                     StatusCode = 200
@@ -42,7 +41,7 @@ namespace Easy.Services.Services
             }
             else
             {
-                return new ListOutPut
+                return new CheckSessionOutput
                 {
                     Logins = null,
                     Message = "No User Found.",
@@ -54,34 +53,30 @@ namespace Easy.Services.Services
         public async Task<ListOutPut> Login(Login Login)
         {
             var logout = new ListOutPut();
-
-                    string sqluser = "sp_user";
-                    DynamicParameters parameters = new DynamicParameters();
-                    parameters.Add("@com_id", Login.CompanyId);
-                    parameters.Add("@username", Login.UserName);
-                    parameters.Add("@password", Login.Password);
-                    parameters.Add("@notification_token", Login.NotificationToken);
-                    parameters.Add("@device_id", Login.DeviceId);
-                    parameters.Add("@flag",1);
-                    var common= await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
-                    
-                    if (common.Count() != 0 && common.FirstOrDefault().UID != 0)
-                    {
-                logout.Token = _tokenInterface.TokenGenerateString(Login.UserName);
-                logout.Logins = common.ToList();
-                logout.StatusCode = 200;
-                logout.Message = "Success";
-                    }
-                    else
-                    {
+            string sqluser = "sp_user";
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@com_id", Login.CompanyId);
+            parameters.Add("@username", Login.UserName);
+            parameters.Add("@password", Login.Password);
+            parameters.Add("@notification_token", Login.NotificationToken);
+            parameters.Add("@device_id", Login.DeviceId);
+            parameters.Add("@flag",1);
+            var common= await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
+            if (common.Count() == 0 || common.FirstOrDefault().UID == 0)
+            {
                 logout.Token = null;
                 logout.Logins = null;
                 logout.Message = common.FirstOrDefault().Message;
                 logout.StatusCode = common.FirstOrDefault().StatusCode;
             }
-            return logout;
-                
-            
+            else
+            {
+                logout.Token = _tokenInterface.TokenGenerateString(Login.UserName);
+                logout.Logins = common.ToList();
+                logout.StatusCode = 200;
+                logout.Message = "Success";
+            }
+            return logout;  
         }
             
     }
