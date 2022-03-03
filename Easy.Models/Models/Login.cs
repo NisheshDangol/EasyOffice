@@ -30,7 +30,7 @@ namespace Easy.Models.Models
         public string Email { get; set; }
         public string CitizenshipNo { get; set; }
         public string Gender { get; set; }
-        public int GloodGroup { get; set; }
+        public string BloodGroup { get; set; }
         public string Religion { get; set; }
         public string Address { get; set; }
         public string District { get; set; }
