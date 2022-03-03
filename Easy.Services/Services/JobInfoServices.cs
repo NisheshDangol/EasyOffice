@@ -31,6 +31,7 @@ namespace Easy.Services.Services
                 string sql = "sp_jobinfo @comId='" + ComId + "'";
                 sql += ",@empId = '" + EmpId + "'";
                 var data = await DBHelper.RunQuery<Jobinfo>(sql);
+                if(data.Count() !=0 && data.FirstOrDefault())
                 job.Jobinfo = data.ToList();
                 job.StatusCode = 200;
                 job.Message = "Success";
