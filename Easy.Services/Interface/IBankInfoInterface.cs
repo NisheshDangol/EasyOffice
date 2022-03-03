@@ -9,6 +9,6 @@ namespace Easy.Services.Interface
 {
     public interface IBankInfoInterface
     {
-        Task<Bank> BankInfo(string comID,string empID);
+        Task<Bank> BankInfo(string ComID,int EmpID);
     }
 }

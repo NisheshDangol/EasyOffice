@@ -11,7 +11,7 @@ namespace Easy.Services.Services
 {
     public class GetServices : IGetInterface
     {
-        public async Task<DocInfo> listdoc(string ComId, string EmpId)
+        public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
             string sql = "sp_doc @ComId '" + ComId + "'";
             sql += ",@EmpId '" + EmpId + "'";

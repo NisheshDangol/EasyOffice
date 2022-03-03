@@ -20,10 +20,10 @@ namespace Easy.API.Controllers
         }
         [HttpGet]
         [Route("~/api/bankinfo")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> BankList(string comID, string empID)
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> BankList(string ComID, int EmpID)
         {
-            var data = await _unitOfWork.bankInfoServices.BankInfo(comID,empID);
+            var data = await _unitOfWork.bankInfoServices.BankInfo(ComID,EmpID);
             return Ok(data);
         }
     }

@@ -1,6 +1,9 @@
 ﻿using Easy.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Easy.API.Controllers
@@ -17,7 +20,8 @@ namespace Easy.API.Controllers
         }
         [HttpGet]
         [Route("~/api/GetDoc")]
-        public async Task<IActionResult> GetDoc(string ComId, string EmpId)
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetDoc(string ComId, int EmpId)
         {
             var data= await _unitOfWork.GetServices.listdoc(ComId, EmpId);
             return Ok(data);

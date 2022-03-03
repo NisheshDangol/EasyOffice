@@ -9,6 +9,6 @@ namespace Easy.Services.Interface
 {
     public interface IGetInterface
     {
-        Task<DocInfo> listdoc(string ComId,String EmpId);
+        Task<DocInfo> listdoc(string ComId,int EmpId);
     }
 }

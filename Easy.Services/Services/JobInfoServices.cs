@@ -11,7 +11,7 @@ namespace Easy.Services.Services
 {
     public class JobInfoServices : IJobInfoInterface
     {
-        public async Task<JobReturn> Jobinfo(string ComId, string EmpId)
+        public async Task<JobReturn> Jobinfo(string ComId, int EmpId)
         {
             var job = new JobReturn();
             if (ComId == "")
@@ -20,7 +20,7 @@ namespace Easy.Services.Services
                 job.StatusCode = 201;
                 job.Message = "comId is null";
             }
-            else if (EmpId == "")
+            else if (EmpId == 0)
             {
                 job.Jobinfo = null;
                 job.StatusCode = 201;
@@ -31,7 +31,7 @@ namespace Easy.Services.Services
                 string sql = "sp_jobinfo @comId='" + ComId + "'";
                 sql += ",@empId = '" + EmpId + "'";
                 var data = await DBHelper.RunQuery<Jobinfo>(sql);
-                if(data.Count() !=0)
+                if(data.Count() !=0 && data.FirstOrDefault().StartDate !="" && data.FirstOrDefault().StartDate!=null  )
                 {
                     job.Jobinfo = null;
                     job.StatusCode = 201;

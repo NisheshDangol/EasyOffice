@@ -9,6 +9,6 @@ namespace Easy.Services.Interface
 {
     public interface IJobInfoInterface
     {
-        Task<JobReturn> Jobinfo(string ComId, string EmpId);
+        Task<JobReturn> Jobinfo(string ComId, int EmpId);
     }
 }

@@ -11,7 +11,7 @@ namespace Easy.Services.Services
 {
     public class BankInfoServices : IBankInfoInterface
     {
-        public async Task<Bank> BankInfo(string ComID, string EmpID)
+        public async Task<Bank> BankInfo(string ComID, int EmpID)
         {
             var bank = new Bank();
             if (ComID =="")
@@ -20,7 +20,7 @@ namespace Easy.Services.Services
                 bank.StatusCode = 201;
                 bank.Message = "comId is null";
             }
-            else if(EmpID=="")
+            else if(EmpID==0)
                 {
                 bank.BankInfo = null;
                 bank.StatusCode = 202;
