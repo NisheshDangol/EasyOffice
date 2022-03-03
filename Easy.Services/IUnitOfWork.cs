@@ -12,5 +12,7 @@ namespace Easy.Services
         LoginService service { get; }
         BankInfoServices bankInfoServices { get; }
         JobInfoServices jobInfoServices { get; }
+        GetServices GetServices { get; }
+        PostServices PostServices { get; }  
     }
 }

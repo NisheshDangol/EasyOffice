@@ -23,5 +23,9 @@ namespace Easy.Services
         public BankInfoServices bankInfoServices => new BankInfoServices();
 
         public JobInfoServices jobInfoServices => new JobInfoServices();
+
+        public GetServices GetServices => new GetServices();
+
+        public PostServices PostServices => new PostServices();
     }
 }
