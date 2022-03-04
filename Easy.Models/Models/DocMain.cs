@@ -11,6 +11,7 @@ namespace Easy.Models.Models
     {
         public string FileName { get; set; }
         public string FileType { get; set; }
+        public string FilePath { get; set; }
     }
     public class DocInfo:CommonResponse
     {
