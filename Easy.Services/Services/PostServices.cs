@@ -47,5 +47,35 @@ namespace Easy.Services.Services
                 Message = data.FirstOrDefault().Message
             };
         }
+
+        public async Task<CommonResponse> CreateLeads(Lead lead)
+        {
+            CommonResponse response=new CommonResponse();
+            response.StatusCode = 400;
+            if (string.IsNullOrEmpty(lead.CompanyId)) response.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_leads";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@CompanyId", lead.CompanyId);
+                parameters.Add("@EmpId", lead.EmpId);
+                parameters.Add("@OrganizationId", lead.OrganizationId);
+                parameters.Add("@ProductId", lead.ProductId);
+                parameters.Add("@EnquiryDate", lead.EnquiryDate);
+                parameters.Add("@EnquiryTime", lead.EnquiryTime);
+                parameters.Add("@Assignedto", lead.Assignedto);
+                parameters.Add("@Remarks", lead.Remarks);
+                parameters.Add("@LeadStatus", lead.LeadStatus);
+                parameters.Add("@BranchId", lead.BranchId);
+                parameters.Add("@FiscalId", lead.FiscalId);
+                parameters.Add("@flag",1);
+                await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                response.StatusCode = 200;
+                response.Message = "Success";
+            }
+            return response;
+            
+            
+        }
     }
 }

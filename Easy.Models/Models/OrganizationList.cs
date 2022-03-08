@@ -48,6 +48,7 @@ namespace Easy.Models.Models
     {
         public string OrgTypeID { get; set;}
         public string OrgTypeName { get; set;}
+        public string OrgCount { get; set;}
     }
     public class OrganizationTypeDto:CommonResponse
     {

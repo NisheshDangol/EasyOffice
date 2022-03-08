@@ -23,5 +23,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CreateCompany(orgnization);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/create-lead")]
+        public async Task<IActionResult> CreateLead(Lead lead)
+        {
+            var data = await _unitOfWork.PostServices.CreateLeads(lead);
+            return Ok(data);
+        }
     }
 }

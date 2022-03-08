@@ -11,5 +11,6 @@ namespace Easy.Services.Interface
     public interface IPostInterface
     {
         Task<CommonResponse> CreateCompany(OrgnizationGet orgnization);
+        Task<CommonResponse> CreateLeads(Lead lead);
     }
 }
