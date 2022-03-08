@@ -47,6 +47,13 @@ namespace Easy.API
                     };
 
                 });
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
             services.AddScoped<ITokenInterface, TokenService>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllers()
@@ -67,7 +74,7 @@ namespace Easy.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Easy.API v1"));
             }
-
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
 
             app.UseRouting();
