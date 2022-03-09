@@ -40,9 +40,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/all-org-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AllOrgList(string CompanyId, string EmployeeId, DateTime fromDate, DateTime toDate)
+        public async Task<IActionResult> AllOrgList(string CompanyId, int EmployeeId, string FromDate, string ToDate)
         {
-            var data= await _unitOfWork.GetServices.allorglist(CompanyId, EmployeeId,fromDate,toDate);
+            var data= await _unitOfWork.GetServices.allorglist(CompanyId, EmployeeId,FromDate,ToDate);
             return Ok(data);
 
         }

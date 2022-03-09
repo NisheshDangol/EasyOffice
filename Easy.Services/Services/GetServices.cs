@@ -13,22 +13,22 @@ namespace Easy.Services.Services
 {
     public class GetServices : IGetInterface
     {
-        public async Task<AllOrganizationDto> allorglist(string CompanyId, string EmployeeId, DateTime fromDate, DateTime toDate)
+        public async Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate)
         {
             var orglist = new AllOrganizationDto();
             orglist.StatusCode = 400;
             orglist.OrgList = null;
 
             if (string.IsNullOrEmpty(CompanyId)) orglist.Message = "Input CompanyId";
-            else if (string.IsNullOrEmpty(EmployeeId)) orglist.Message = "Input EmployeeId";
+            
             else
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters=new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@createdby", EmployeeId);
-                parameters.Add("@FromDate", fromDate);
-                parameters.Add("@ToDate", toDate);
+                parameters.Add("@FromDate", FromDate);
+                parameters.Add("@ToDate", ToDate);
                 parameters.Add("@flag", 3);
                 var data = await DBHelper.RunProc<AllOrganizationList>(sql,parameters);
                if(data.Count()!=0)

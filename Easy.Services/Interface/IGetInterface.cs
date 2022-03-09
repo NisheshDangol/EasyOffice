@@ -11,8 +11,7 @@ namespace Easy.Services.Interface
     {
         Task<DocInfo> listdoc(string ComId,int EmpId);
         Task<OrganizationDto> orglist(string CompanyId, int IsOurClient, int UserId);
-        Task<AllOrganizationDto> allorglist(string CompanyId, string EmployeeId, DateTime fromDate, DateTime toDate);
+        Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate);
         Task<OrganizationTypeDto> orgtype(string CompanyId,string BranchId);
-
     }
 }
