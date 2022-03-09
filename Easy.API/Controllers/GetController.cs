@@ -55,5 +55,25 @@ namespace Easy.API.Controllers
             return Ok(data);
 
         }
+
+        [HttpGet]
+        [Route("~/api/org-product")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> OrgProduct(string CompanyId, int BranchId)
+        {
+            var data = await _unitOfWork.GetServices.orgproduct(CompanyId, BranchId);
+            return Ok(data);
+
+        }
+
+        [HttpGet]
+        [Route("~/api/org-staff")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> OrgStaff(string CompanyId, string BranchId, int DepartmentId, int SubDepartmentId)
+        {
+            var data = await _unitOfWork.GetServices.orgstaff(CompanyId, BranchId,DepartmentId,SubDepartmentId);
+            return Ok(data);
+
+        }
     }
 }

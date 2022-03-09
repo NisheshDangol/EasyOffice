@@ -46,7 +46,7 @@ namespace Easy.Models.Models
     }
     public class OrganizationType
     {
-        public string OrgTypeID { get; set;}
+        public int OrgTypeID { get; set;}
         public string OrgTypeName { get; set;}
         public string OrgCount { get; set;}
     }
@@ -54,4 +54,29 @@ namespace Easy.Models.Models
     {
         public List<OrganizationType> organizationTypes { get; set; }
     }
+
+
+    public class OrganizationProduct
+    {
+        public int ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string LeadCount { get; set; }
+        public string FollowCount { get; set; }
+        public string SupportCount { get; set; }
+    }
+    public class OrganizationProductDto:CommonResponse
+    {
+        public List<OrganizationProduct> OrganizationProducts { get; set; }
+    }
+    public class OrganizationStaff
+    {
+        public int StaffId { get; set;}
+        public string StaffName { get; set;}
+        public string DesignationName { get; set;}
+    }
+    public class OrgnizationStaffDto:CommonResponse
+    {
+        public List<OrganizationStaff> OrganizationStaffs { get; set; }
+    }
+
 }

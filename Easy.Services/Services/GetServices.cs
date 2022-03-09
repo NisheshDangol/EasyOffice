@@ -107,6 +107,70 @@ namespace Easy.Services.Services
             
         }
 
+        public async Task<OrganizationProductDto> orgproduct(string CompanyId, int BranchId)
+        {
+            var org = new OrganizationProductDto();
+            org.StatusCode = 400;
+            org.OrganizationProducts = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) org.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_organization";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@branchid", BranchId);
+                parameters.Add("@flag", 4);
+                var data = await DBHelper.RunProc<OrganizationProduct>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().ProductId !=0)
+                {
+                    org.Message = "Success";
+                    org.StatusCode = 200;
+                    org.OrganizationProducts = data.ToList();
+                }
+                else
+                {
+                    org.Message = "No Data Found.";
+                    org.StatusCode = 400;
+                    org.OrganizationProducts = null;
+                }
+            }
+            return org;
+        }
+
+        public async Task<OrgnizationStaffDto> orgstaff(string CompanyId, string BranchId, int DepartmentId, int SubDepartmentId)
+        {
+            var org = new OrgnizationStaffDto();
+            org.StatusCode = 400;
+            org.OrganizationStaffs = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) org.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_organization";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@branchid", BranchId);
+                parameters.Add("@DepartmentId", DepartmentId);
+                parameters.Add("@SubDepartmentId", SubDepartmentId);
+                parameters.Add("@flag", 5);
+                var data = await DBHelper.RunProc<OrganizationStaff>(sql, parameters);
+                if (data.Count() != 0)
+                {
+                    org.Message = "Success";
+                    org.StatusCode = 200;
+                    org.OrganizationStaffs = data.ToList();
+                }
+                else
+                {
+                    org.Message = "No Data Found.";
+                    org.StatusCode = 400;
+                    org.OrganizationStaffs = null;
+                }
+            }
+            return org;
+        }
+
         public async Task<OrganizationTypeDto> orgtype(string CompanyId, string BranchId)
         {
             var org = new OrganizationTypeDto();
