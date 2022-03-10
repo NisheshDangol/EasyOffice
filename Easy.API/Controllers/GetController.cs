@@ -47,6 +47,15 @@ namespace Easy.API.Controllers
 
         }
         [HttpGet]
+        [Route("~/api/follow-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate)
+        {
+            var data= await _unitOfWork.GetServices.followuplist(CompanyId, EmployeeId,FromDate,ToDate);
+            return Ok(data);
+
+        }
+        [HttpGet]
         [Route("~/api/org-type")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> OrgType(string CompanyId, string BranchId)

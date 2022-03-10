@@ -48,6 +48,38 @@ namespace Easy.Services.Services
             };
         }
 
+        public async Task<CommonResponse> CreateFollowUp(Followup followup)
+        {
+            var common = new CommonResponse();
+            common.StatusCode = 400;
+            if (string.IsNullOrEmpty(followup.CompanyId)) common.Message = "Input Companyid";
+            else
+            {
+                string sql = "sp_followup";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", followup.CompanyId);
+                parameters.Add("@createdby", followup.CreatedBy);
+                parameters.Add("@organizationid", followup.OrganizationId);
+                parameters.Add("@productid", followup.ProductId);
+                parameters.Add("@followdate", followup.FollowDate);
+                parameters.Add("@followtime", followup.FollowTime);
+                parameters.Add("@assignedto", followup.AssignedTo);
+                parameters.Add("@remarks", followup.Remarks);
+                parameters.Add("@followstatus", followup.FollowStatus);
+                parameters.Add("@followtype", followup.FollowType);
+                parameters.Add("@branchid", followup.BranchId);
+                parameters.Add("@fiscal_id", followup.FiscalId);
+                parameters.Add("@flag", 1);
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+
+                common.StatusCode = 200;
+                common.Message = "Success";
+            }
+            
+            return common;
+            
+        }
+
         public async Task<CommonResponse> CreateLeads(Lead lead)
         {
             CommonResponse response=new CommonResponse();

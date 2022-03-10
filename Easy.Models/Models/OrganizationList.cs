@@ -9,7 +9,7 @@ namespace Easy.Models.Models
 {
     public class OrganizationList
     {
-        public string OrgId { get; set; }
+        public int OrgId { get; set; }
         public string OrgName { get; set; }
         public string OrgType { get; set; }
         public string Address { get; set; }
@@ -44,6 +44,7 @@ namespace Easy.Models.Models
     {
         public List<AllOrganizationList> OrgList { get; set; }
     }
+
     public class OrganizationType
     {
         public int OrgTypeID { get; set;}

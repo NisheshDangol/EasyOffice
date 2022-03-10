@@ -47,6 +47,39 @@ namespace Easy.Services.Services
 
         }
 
+        public async Task<FollowupListDto> followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate)
+        {
+            var followuplist = new FollowupListDto();
+            followuplist.StatusCode = 400;
+            followuplist.FollowupLists = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) followuplist.Message = "Input CompanyId";
+
+            else
+            {
+                string sql = "sp_followup";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@createdby", EmployeeId);
+                parameters.Add("@fromDate", FromDate);
+                parameters.Add("@toDate", ToDate);
+                parameters.Add("@flag", 2);
+                var data = await DBHelper.RunProc<FollowupList>(sql, parameters);
+                if (data.Count() != 0)
+                {
+                    followuplist.StatusCode = 200;
+                    followuplist.FollowupLists = data.ToList();
+                    followuplist.Message = "success";
+                }
+                else
+                {
+                    followuplist.Message = "NO data";
+                }
+
+            }
+            return followuplist;
+        }
+
         public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
             string sql = "sp_doc @ComId '" + ComId + "'";
@@ -90,7 +123,7 @@ namespace Easy.Services.Services
                 parameters.Add("@userid", UserId);
                 parameters.Add("@flag", 2);
                 var data = await DBHelper.RunProc<OrganizationList>(sql, parameters);
-                if (data.Count() != 0)
+                if (data.Count() != 0 && data.FirstOrDefault().OrgId!=0)
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;
@@ -155,7 +188,7 @@ namespace Easy.Services.Services
                 parameters.Add("@SubDepartmentId", SubDepartmentId);
                 parameters.Add("@flag", 5);
                 var data = await DBHelper.RunProc<OrganizationStaff>(sql, parameters);
-                if (data.Count() != 0)
+                if (data.Count() != 0 && data.FirstOrDefault().StaffId!=0)
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;
@@ -186,7 +219,7 @@ namespace Easy.Services.Services
                 parameters.Add("@branchid", BranchId);
                 parameters.Add("@flag", 6);
                 var data = await DBHelper.RunProc<OrganizationType>(sql, parameters);
-                if (data.Count() != 0)
+                if (data.Count() != 0 && data.FirstOrDefault().OrgTypeID!=0)
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;
