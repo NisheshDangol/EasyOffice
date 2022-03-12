@@ -29,5 +29,6 @@ namespace Easy.Models.Models
         public string CurrentSystem { get; set; }
         public int BranchId { get; set; }
         public int FiscalId { get; set; }
+        public int AssignedTo { get; set; }
     }
 }

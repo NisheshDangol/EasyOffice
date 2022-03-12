@@ -28,7 +28,7 @@ namespace Easy.Models.Models
         public string OrgName { get; set; }
         public string OrgType { get; set; }
         public string FollowStatus { get; set; }
-        public string Name { get; set; }
+        public string FollowTypeName { get; set; }
         public string ProductName { get; set; }
         public string FollowDate { get; set; }
         public string FollowTime { get; set; }

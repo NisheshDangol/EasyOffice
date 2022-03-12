@@ -28,7 +28,8 @@ namespace Easy.Models.Models
     {
         public string OrgId { get; set; }
         public string OrgName { get; set; }
-        public string OrgType { get; set; }
+        public string OrgTypeId { get; set; }
+        public string StaffName { get; set; }
         public string Address { get; set; }
         public string District { get; set; }
         public string Source { get; set; }

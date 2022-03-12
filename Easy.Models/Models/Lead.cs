@@ -19,5 +19,6 @@ namespace Easy.Models.Models
         public int LeadStatus { get; set; }
         public int BranchId { get; set; }
         public int FiscalId { get; set; }
+        public int LeadSource { get; set; }
     }
 }

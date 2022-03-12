@@ -39,6 +39,7 @@ namespace Easy.Services.Services
             parameter.Add("@currentsystem", orgnization.CurrentSystem);
             parameter.Add("@branchid", orgnization.BranchId);
             parameter.Add("@fiscalid", orgnization.FiscalId);
+            parameter.Add("@Assignedto", orgnization.AssignedTo);
             parameter.Add("@flag",1);
             var data= await DBHelper.RunProc<CommonResponse>(sql,parameter);
             return new CommonResponse
@@ -89,18 +90,19 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_leads";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@CompanyId", lead.CompanyId);
-                parameters.Add("@EmpId", lead.EmpId);
-                parameters.Add("@OrganizationId", lead.OrganizationId);
-                parameters.Add("@ProductId", lead.ProductId);
-                parameters.Add("@EnquiryDate", lead.EnquiryDate);
-                parameters.Add("@EnquiryTime", lead.EnquiryTime);
-                parameters.Add("@Assignedto", lead.Assignedto);
-                parameters.Add("@Remarks", lead.Remarks);
-                parameters.Add("@LeadStatus", lead.LeadStatus);
-                parameters.Add("@BranchId", lead.BranchId);
-                parameters.Add("@FiscalId", lead.FiscalId);
+                parameters.Add("@CompanyId",lead.CompanyId);
+                parameters.Add("@EmpId",lead.EmpId);
+                parameters.Add("@OrganizationId",lead.OrganizationId);
+                parameters.Add("@ProductId",lead.ProductId);
+                parameters.Add("@EnquiryDate",lead.EnquiryDate);
+                parameters.Add("@EnquiryTime",lead.EnquiryTime);
+                parameters.Add("@Assignedto",lead.Assignedto);
+                parameters.Add("@Remarks",lead.Remarks);
+                parameters.Add("@LeadStatus",lead.LeadStatus);
+                parameters.Add("@BranchId",lead.BranchId);
+                parameters.Add("@FiscalId",lead.FiscalId);
                 parameters.Add("@flag",1);
+                parameters.Add("@LeadSource",lead.LeadSource);
                 await DBHelper.RunProc<CommonResponse>(sql, parameters);
                 response.StatusCode = 200;
                 response.Message = "Success";
