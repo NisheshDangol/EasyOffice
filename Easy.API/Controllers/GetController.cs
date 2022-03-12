@@ -58,9 +58,18 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/org-type")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> OrgType(string CompanyId, string BranchId)
+        public async Task<IActionResult> OrgType(string CompanyId, int BranchId)
         {
             var data= await _unitOfWork.GetServices.orgtype(CompanyId, BranchId);
+            return Ok(data);
+
+        }
+        [HttpGet]
+        [Route("~/api/lead-source")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> LeadSource(string CompanyId, int BranchId)
+        {
+            var data= await _unitOfWork.GetServices.leadSource(CompanyId, BranchId);
             return Ok(data);
 
         }

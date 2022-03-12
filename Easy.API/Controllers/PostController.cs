@@ -31,7 +31,7 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
         [HttpPost]
-        [Route("~/api/create-follow-org")]
+        [Route("~/api/create-follow-up")]
         public async Task<IActionResult> CreateFollowOrg(Followup followup)
         {
             var data = await _unitOfWork.PostServices.CreateFollowUp(followup);

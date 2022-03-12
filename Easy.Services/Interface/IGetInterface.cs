@@ -12,8 +12,9 @@ namespace Easy.Services.Interface
         Task<DocInfo> listdoc(string ComId,int EmpId);
         Task<OrganizationDto> orglist(string CompanyId, int IsOurClient, int UserId);
         Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate);
-        Task<OrganizationTypeDto> orgtype(string CompanyId,string BranchId);
+        Task<OrganizationTypeDto> orgtype(string CompanyId,int BranchId);
         Task<OrganizationProductDto> orgproduct(string CompanyId,int BranchId);
+        Task<LeadSourceDto> leadSource(string CompanyId,int BranchId);
         Task<OrgnizationStaffDto> orgstaff(string CompanyId,string BranchId,int DepartmentId,int SubDepartmentId);
         Task<FollowupListDto> followuplist (string CompanyId, int EmployeeId, string FromDate, string ToDate);
     }

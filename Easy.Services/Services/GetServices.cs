@@ -80,12 +80,43 @@ namespace Easy.Services.Services
             return followuplist;
         }
 
+        public async Task<LeadSourceDto> leadSource(string CompanyId, int BranchId)
+        {
+            var lead = new LeadSourceDto();
+            lead.StatusCode = 400;
+            lead.LeadSources = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) lead.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_leads";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@branchid", BranchId);
+                parameters.Add("@flag", 2);
+                var data = await DBHelper.RunProc<LeadSource>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().SourceId != 0)
+                {
+                    lead.Message = "Success";
+                    lead.StatusCode = 200;
+                    lead.LeadSources = data.ToList();
+                }
+                else
+                {
+                    lead.Message = "No Data Found.";
+                    lead.StatusCode = 400;
+                    lead.LeadSources = null;
+                }
+            }
+            return lead;
+        }
+
         public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
             string sql = "sp_doc @ComId '" + ComId + "'";
             sql += ",@EmpId '" + EmpId + "'";
             var data= await DBHelper.RunProc<DocMain>(sql);
-            if(data.Count()==0)
+            if(data.Count()!=0)
             {
                 return new DocInfo
                 {
@@ -204,7 +235,7 @@ namespace Easy.Services.Services
             return org;
         }
 
-        public async Task<OrganizationTypeDto> orgtype(string CompanyId, string BranchId)
+        public async Task<OrganizationTypeDto> orgtype(string CompanyId, int BranchId)
         {
             var org = new OrganizationTypeDto();
             org.StatusCode = 400;
