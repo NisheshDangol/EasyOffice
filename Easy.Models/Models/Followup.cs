@@ -38,4 +38,16 @@ namespace Easy.Models.Models
     {
         public List<FollowupList> FollowupLists { get; set; }
     }
+
+    public class Followuptype
+    {
+        public int FollowTypeID { get; set; }
+        public string FollowTypeName { get; set; }
+        public string OrganizationCount { get; set; } 
+        public string PersonCount { get; set; } 
+    }
+    public class FollowUpTypeDto:CommonResponse
+    {
+        public List<Followuptype> Followuptype { get; set; }
+    }
 }

@@ -65,13 +65,21 @@ namespace Easy.API.Controllers
 
         }
         [HttpGet]
+        [Route("~/api/follow-type")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> followuptype(string CompanyId, int BranchId)
+        {
+            var data= await _unitOfWork.GetServices.FollowupType(CompanyId, BranchId);
+            return Ok(data);
+
+        }
+        [HttpGet]
         [Route("~/api/lead-source")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> LeadSource(string CompanyId, int BranchId)
         {
             var data= await _unitOfWork.GetServices.leadSource(CompanyId, BranchId);
             return Ok(data);
-
         }
 
         [HttpGet]

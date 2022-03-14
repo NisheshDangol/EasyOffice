@@ -79,6 +79,37 @@ namespace Easy.Services.Services
             return followuplist;
         }
 
+        public async Task<FollowUpTypeDto> FollowupType(string CompanyId, int BranchId)
+        {
+            var followtype = new FollowUpTypeDto();
+            followtype.StatusCode = 400;
+            followtype.Followuptype = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) followtype.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_followup";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@branchid", BranchId);
+                parameters.Add("@flag", 3);
+                var data = await DBHelper.RunProc<Followuptype>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().FollowTypeID != 0)
+                {
+                    followtype.Message = "Success";
+                    followtype.StatusCode = 200;
+                    followtype.Followuptype = data.ToList();
+                }
+                else
+                {
+                    followtype.Message = "No Data Found.";
+                    followtype.StatusCode = 400;
+                    followtype.Followuptype = null;
+                }
+            }
+            return followtype;
+        }
+
         public async Task<LeadSourceDto> leadSource(string CompanyId, int BranchId)
         {
             var lead = new LeadSourceDto();
