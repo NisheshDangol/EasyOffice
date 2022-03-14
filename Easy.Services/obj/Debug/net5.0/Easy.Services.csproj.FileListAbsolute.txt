@@ -1,6 +1,5 @@
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Services.deps.json
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Services.dll
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\ref\Easy.Services.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Services.pdb
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Connection.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\bin\Debug\net5.0\Easy.Models.dll
@@ -15,3 +14,4 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\ref\Easy.Services.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\Easy.Services.pdb
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Services\obj\Debug\net5.0\refint\Easy.Services.dll

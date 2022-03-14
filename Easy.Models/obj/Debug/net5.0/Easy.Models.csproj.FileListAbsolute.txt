@@ -1,6 +1,5 @@
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.deps.json
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.dll
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\ref\Easy.Models.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Models.pdb
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Connection.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\bin\Debug\net5.0\Easy.Connection.pdb
@@ -13,3 +12,4 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\ref\Easy.Models.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\Easy.Models.pdb
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.Models\obj\Debug\net5.0\refint\Easy.Models.dll

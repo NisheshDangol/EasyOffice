@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "Rgx/LSeiqKTl1Ud8tH9tJjXQZKRbnllxtjQQ/9V1HgpvWG+ET8QV/QtQSDJHkA0Br0nBvawF0J8P9dbxzM0v/A==",
+  "dgSpecHash": "pAby6dnUfjuNTBcwmO0SOJM/6Ajm5e7lex3+tC1btsQDILiNHO4DoaDMVsrd/gPiezjESrnB8EcAG9cHGOtvSQ==",
   "success": true,
   "projectFilePath": "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.API\\Easy.API.csproj",
   "expectedPackageFiles": [
@@ -101,8 +101,7 @@
     "C:\\Users\\pudas\\.nuget\\packages\\system.xml.readerwriter\\4.3.0\\system.xml.readerwriter.4.3.0.nupkg.sha512",
     "C:\\Users\\pudas\\.nuget\\packages\\system.xml.xdocument\\4.3.0\\system.xml.xdocument.4.3.0.nupkg.sha512",
     "C:\\Users\\pudas\\.nuget\\packages\\system.xml.xmldocument\\4.3.0\\system.xml.xmldocument.4.3.0.nupkg.sha512",
-    "C:\\Users\\pudas\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512",
-    "C:\\Users\\pudas\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\5.0.13\\microsoft.netcore.app.host.win-x64.5.0.13.nupkg.sha512"
+    "C:\\Users\\pudas\\.nuget\\packages\\system.xml.xmlserializer\\4.3.0\\system.xml.xmlserializer.4.3.0.nupkg.sha512"
   ],
   "logs": []
 }

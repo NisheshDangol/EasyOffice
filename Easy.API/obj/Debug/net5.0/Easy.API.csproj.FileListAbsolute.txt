@@ -5,7 +5,6 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\E
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Easy.API.runtimeconfig.json
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Easy.API.runtimeconfig.dev.json
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Easy.API.dll
-C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\ref\Easy.API.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Easy.API.pdb
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Dapper.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\bin\Debug\net5.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
@@ -66,3 +65,4 @@ C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\obj\Debug\net5.0\E
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\obj\Debug\net5.0\ref\Easy.API.dll
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\obj\Debug\net5.0\Easy.API.pdb
 C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\obj\Debug\net5.0\Easy.API.genruntimeconfig.cache
+C:\Users\pudas\OneDrive\Desktop\Startup\EasySolution\Easy.API\obj\Debug\net5.0\refint\Easy.API.dll

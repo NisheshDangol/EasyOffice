@@ -43,7 +43,7 @@ namespace Easy.Services.Services
 
         }
 
-        public async Task<FollowupListDto> followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate)
+        public async Task<FollowupListDto> followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate,int OrgType,int FollowType,int FollowStatus)
         {
             var followuplist = new FollowupListDto();
             followuplist.StatusCode = 400;
@@ -59,6 +59,9 @@ namespace Easy.Services.Services
                 parameters.Add("@createdby", EmployeeId);
                 parameters.Add("@fromDate", FromDate);
                 parameters.Add("@toDate", ToDate);
+                parameters.Add("@followstatus", FollowStatus);
+                parameters.Add("@followtype", FollowType);
+                parameters.Add("@OrgType", OrgType);
                 parameters.Add("@flag", 2);
                 var data = await DBHelper.RunProc<FollowupList>(sql, parameters);
                 if (data.Count() != 0)

@@ -49,9 +49,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/follow-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate)
+        public async Task<IActionResult> Followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus)
         {
-            var data= await _unitOfWork.GetServices.followuplist(CompanyId, EmployeeId,FromDate,ToDate);
+            var data= await _unitOfWork.GetServices.followuplist(CompanyId, EmployeeId,FromDate,ToDate,OrgType,FollowType,FollowStatus);
             return Ok(data);
 
         }
