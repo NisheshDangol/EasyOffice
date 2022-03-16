@@ -15,6 +15,8 @@ namespace Easy.Models.Models
         public string Address { get; set; }
         public string District { get; set; }
         public string Phone { get; set; }
+        public string AssignedTo { get; set; }
+        public string StaffName { get; set; }
         public string ContectPerson { get; set; }
         public string LeadCount { get; set; }
         public string FollowCount { get; set; }
