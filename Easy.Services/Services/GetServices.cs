@@ -143,8 +143,8 @@ namespace Easy.Services.Services
 
         public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
-            string sql = "sp_doc @ComId '" + ComId + "'";
-            sql += ",@EmpId '" + EmpId + "'";
+            string sql = "sp_doc @ComId= '" + ComId + "'";
+            sql += ",@EmpId='" + EmpId + "'";
             var data= await DBHelper.RunProc<DocMain>(sql);
             if(data.Count()!=0)
             {
