@@ -15,5 +15,6 @@ namespace Easy.Services.Interface
         Task<CommonResponse> CreateFollowUp(Followup followup);
         Task<CommonResponse> CreateContact(Contact contact);
         Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport);
+        Task<CommonResponse> ContactUpdate(UpdateContect contact);
     }
 }

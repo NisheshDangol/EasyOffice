@@ -51,5 +51,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CustomerSupport(customerSupport);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/update-contact")]
+        public async Task<IActionResult> UpdateContact(UpdateContect contect)
+        {
+            var data = await _unitOfWork.PostServices.ContactUpdate(contect);
+            return Ok(data);
+        }
     }
 }

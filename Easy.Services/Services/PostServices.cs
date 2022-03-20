@@ -13,6 +13,51 @@ namespace Easy.Services.Services
 {
     public class PostServices : IPostInterface
     {
+        public async Task<CommonResponse> ContactUpdate(UpdateContect contact)
+        {
+            var common = new CommonResponse();
+           
+                
+                string sql = "sp_contect";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", contact.CompanyId);
+                parameters.Add("@employeeid", contact.Employeeid);
+                parameters.Add("@ID", contact.ContactId);
+
+
+                parameters.Add("@firstname", contact.FirstName);
+                parameters.Add("@middlename", contact.MiddleName);
+                parameters.Add("@lastname", contact.LastName);
+                parameters.Add("@email", contact.Email);
+                parameters.Add("@website", contact.Website);
+                parameters.Add("@phone", contact.Phone);
+                parameters.Add("@contact", contact.Contact);
+                parameters.Add("@jobtitle", contact.JobTitle);
+                parameters.Add("@jobOrg", contact.JobOrg);
+                parameters.Add("@dateOfBirth", contact.DateOfBirth);
+                parameters.Add("@address", contact.Address);
+                parameters.Add("@district", contact.District);
+                parameters.Add("@gender", contact.Gender);
+                parameters.Add("@pan", contact.Pan);
+                parameters.Add("@maritalStatus", contact.MaritalStatus);
+                parameters.Add("@bloodGroup", contact.BloodGroup);
+                parameters.Add("@religion", contact.Religion);
+                parameters.Add("@image", contact.Image);
+                parameters.Add("@fb", contact.Fb);
+                parameters.Add("@source", contact.Source);
+                parameters.Add("@remarks", contact.Remarks);
+                parameters.Add("@branchID", contact.Branch);
+                parameters.Add("@fiscalID", contact.Fiscal);
+                parameters.Add("@flag", "UpdateContact");
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+
+                common.StatusCode = 200;
+                common.Message = "Success";
+                return common;
+            
+            
+        }
+
         public async Task<CommonResponse> CreateCompany(OrgnizationGet orgnization)
         {
             string sql = "sp_organization";
