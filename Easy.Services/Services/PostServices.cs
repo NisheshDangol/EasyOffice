@@ -49,6 +49,44 @@ namespace Easy.Services.Services
             };
         }
 
+        public async Task<CommonResponse> CreateContact(Contact contact)
+        {
+            var common = new CommonResponse();
+            string sql = "sp_contect";
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@companyid",contact.CompanyId);
+            parameters.Add("@employeeid",contact.EmployeeId);
+            parameters.Add("@firstname",contact.FirstName);
+            parameters.Add("@middlename",contact.MiddleName);
+            parameters.Add("@lastname",contact.LastName);
+            parameters.Add("@email",contact.Email);
+            parameters.Add("@website",contact.Website);
+            parameters.Add("@phone",contact.Phone);
+            parameters.Add("@contact",contact.ContactName);
+            parameters.Add("@jobtitle",contact.JobTitle);
+            parameters.Add("@jobOrg",contact.JobOrg);
+            parameters.Add("@dateOfBirth",contact.DateOfBirth);
+            parameters.Add("@address",contact.Address);
+            parameters.Add("@district",contact.District);
+            parameters.Add("@gender",contact.Gender);
+            parameters.Add("@pan",contact.Pan);
+            parameters.Add("@maritalStatus",contact.MaritalStatus);
+            parameters.Add("@bloodGroup",contact.BloodGroup);
+            parameters.Add("@religion",contact.Religion);
+            parameters.Add("@image",contact.Image);
+            parameters.Add("@fb",contact.Fb);
+            parameters.Add("@source",contact.Source);
+            parameters.Add("@remarks",contact.Remarks);
+            parameters.Add("@branchID",contact.Branch);
+            parameters.Add("@fiscalID",contact.Fiscal);
+            parameters.Add("@flag", "Create");
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+
+            common.StatusCode = 200;
+            common.Message = "Success";
+            return common;
+        }
+
         public async Task<CommonResponse> CreateFollowUp(Followup followup)
         {
             var common = new CommonResponse();
