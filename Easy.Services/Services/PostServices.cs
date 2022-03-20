@@ -149,5 +149,34 @@ namespace Easy.Services.Services
             
             
         }
+
+        public async Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport)
+        {
+            var data12 = new CommonResponse();
+            string sql = "sp_customer_support";
+            DynamicParameters parameters=new DynamicParameters();
+            parameters.Add("@companyid",customerSupport.CompanyId);
+            parameters.Add("@createdby",customerSupport.EmplopyeeId);
+            parameters.Add("@organizationid",customerSupport.OrganizationId);
+            parameters.Add("@productid",customerSupport.ProductId);
+            parameters.Add("@issue",customerSupport.Issue);
+            parameters.Add("@issuedate",customerSupport.IssueDate);
+            parameters.Add("@starttime",customerSupport.StartTime);
+            parameters.Add("@endtime",customerSupport.EndTime);
+            parameters.Add("@attachment",customerSupport.Attachment);
+            parameters.Add("@assignedto",customerSupport.AssignedTo);
+            parameters.Add("@supportstatus",customerSupport.SupportStatus);
+            parameters.Add("@supportmedium",customerSupport.SupportMedium);
+            parameters.Add("@clientcomment",customerSupport.clientComment);
+            parameters.Add("@remarks",customerSupport.Remarks);
+            parameters.Add("@branch",customerSupport.BranchId);
+            parameters.Add("@fiscal",customerSupport.FiscalId);
+            parameters.Add("@flag","Create");
+
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            data12.Message = data.FirstOrDefault().Message;
+            data12.StatusCode = data.FirstOrDefault().StatusCode;
+            return data12;
+        }
     }
 }

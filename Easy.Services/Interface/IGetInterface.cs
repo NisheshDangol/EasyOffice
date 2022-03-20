@@ -18,5 +18,7 @@ namespace Easy.Services.Interface
         Task<FollowUpTypeDto> FollowupType(string CompanyId,int BranchId);
         Task<OrgnizationStaffDto> orgstaff(string CompanyId,string BranchId,int DepartmentId,int SubDepartmentId);
         Task<FollowupListDto> followuplist (string CompanyId, int EmployeeId, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus);
+        Task<ContectInfoList> ContactInfo (string CompanyId, int EmployeeId);
+        Task<ContactListDto> ContactList (string CompanyId, int EmployeeId);
     }
 }

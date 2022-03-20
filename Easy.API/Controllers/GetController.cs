@@ -101,5 +101,24 @@ namespace Easy.API.Controllers
             return Ok(data);
 
         }
+        [HttpGet]
+        [Route("~/api/contact-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ContactList(string CompanyId, int EmployeeId)
+        {
+            var data = await _unitOfWork.GetServices.ContactInfo(CompanyId,EmployeeId);
+            return Ok(data);
+
+        }
+        [HttpGet]
+        [Route("~/api/contact-info")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ContactInfo(string CompanyId, int EmployeeId)
+        {
+            var data = await _unitOfWork.GetServices.ContactList(CompanyId,EmployeeId);
+            return Ok(data);
+
+        }
+        
     }
 }

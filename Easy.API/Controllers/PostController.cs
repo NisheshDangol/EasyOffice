@@ -44,5 +44,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CreateContact(contact);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/create-customer-support")]
+        public async Task<IActionResult> CustomerSupport(CustomerSupport customerSupport)
+        {
+            var data = await _unitOfWork.PostServices.CustomerSupport(customerSupport);
+            return Ok(data);
+        }
     }
 }

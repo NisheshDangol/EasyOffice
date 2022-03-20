@@ -43,6 +43,40 @@ namespace Easy.Services.Services
 
         }
 
+        public async Task<ContectInfoList> ContactInfo(string CompanyId, int EmployeeId)
+        {
+            var contlist = new ContectInfoList();
+            contlist.StatusCode = 400;
+            contlist.ContactInfo = null;
+            if(string.IsNullOrEmpty(CompanyId))
+            {
+                contlist.Message = "Input CompanyId";
+            }
+            else
+            {
+                string sql = "sp_contect";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@employeeid", EmployeeId);
+                parameters.Add("@flag", "ContactList");
+                var data = await DBHelper.RunProc<ContactInfo>(sql, parameters);
+                if (data.Count() != 0)
+                {
+                    contlist.StatusCode = 200;
+                    contlist.ContactInfo = data.ToList();
+                    contlist.Message = "success";
+                }
+                else
+                {
+                    contlist.Message = "NO data";
+                }
+            }
+            
+
+
+            return contlist;
+        }
+
         public async Task<FollowupListDto> followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate,int OrgType,int FollowType,int FollowStatus)
         {
             var followuplist = new FollowupListDto();
@@ -294,6 +328,42 @@ namespace Easy.Services.Services
                 }
             }
             return org;
+        }
+
+
+
+        public async Task<ContactListDto> ContactList(string CompanyId, int EmployeeId)
+        {
+            var contlist = new ContactListDto();
+            contlist.StatusCode = 400;
+            contlist.ContactListInfo = null;
+            if (string.IsNullOrEmpty(CompanyId))
+            {
+                contlist.Message = "Input CompanyId";
+            }
+            else
+            {
+                string sql = "sp_contect";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@employeeid", EmployeeId);
+                parameters.Add("@flag", "ContactInfo");
+                var data = await DBHelper.RunProc<ContactList>(sql, parameters);
+                if (data.Count() != 0)
+                {
+                    contlist.StatusCode = 200;
+                    contlist.ContactListInfo = data.ToList();
+                    contlist.Message = "success";
+                }
+                else
+                {
+                    contlist.Message = "NO data";
+                }
+            }
+
+
+
+            return contlist;
         }
     }
 }
