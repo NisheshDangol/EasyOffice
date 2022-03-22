@@ -17,7 +17,6 @@ namespace Easy.Models.Models
         public string Email { get; set; }
         public string Website { get; set; }
         public string Phone { get; set; }
-        public string ContactName { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
         public string Address { get; set; }
@@ -35,7 +34,6 @@ namespace Easy.Models.Models
     {
         public string ContactId { get; set; }
         public string FullName { get; set; }
-        public string Contact { get; set; }
         public string Email { get; set; }
         public string Address { get; set; }
         public string District { get; set; }
@@ -54,7 +52,6 @@ namespace Easy.Models.Models
         public string Email { get; set; }
         public string Website { get; set; }
         public string Phone { get; set; }
-        public string Contact { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
         public string Address { get; set; }
@@ -82,7 +79,6 @@ namespace Easy.Models.Models
         public string Email { get; set; }
         public string Website { get; set; }
         public string Phone { get; set; }
-        public string Contact { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
         public string Address { get; set; }
