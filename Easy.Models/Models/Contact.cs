@@ -20,14 +20,10 @@ namespace Easy.Models.Models
         public string ContactName { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
         public int District { get; set; }
         public int Gender { get; set; }
-        public string Pan { get; set; }
-        public int MaritalStatus { get; set; }
-        public int BloodGroup { get; set; }
-        public int Religion { get; set; }
+        
         public string Image { get; set; }
         public string Fb { get; set; }
         public string Source { get; set; }
@@ -61,14 +57,9 @@ namespace Easy.Models.Models
         public string Contact { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
-        public string DateOfBirth { get; set; }
         public string Address { get; set; }
         public string District { get; set; }
         public string Gender { get; set; }
-        public string Pan { get; set; }
-        public string MaritalStatus { get; set; }
-        public string BloodGroup { get; set; }
-        public string Religion { get; set; }
         public string Image { get; set; }
         public string Fb { get; set; }
         public string Source { get; set; }
@@ -94,14 +85,9 @@ namespace Easy.Models.Models
         public string Contact { get; set; }
         public string JobTitle { get; set; }
         public string JobOrg { get; set; }
-        public DateTime DateOfBirth { get; set; }
         public string Address { get; set; }
         public int District { get; set; }
         public int Gender { get; set; }
-        public string Pan { get; set; }
-        public int MaritalStatus { get; set; }
-        public int BloodGroup { get; set; }
-        public int Religion { get; set; }
         public string Image { get; set; }
         public string Fb { get; set; }
         public string Source { get; set; }
