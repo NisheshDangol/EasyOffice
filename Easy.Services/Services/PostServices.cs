@@ -31,7 +31,7 @@ namespace Easy.Services.Services
                 parameters.Add("@email", contact.Email);
                 parameters.Add("@website", contact.Website);
                 parameters.Add("@phone", contact.Phone);
-                parameters.Add("@contact", contact.Contact);
+               
                 parameters.Add("@jobtitle", contact.JobTitle);
                 parameters.Add("@jobOrg", contact.JobOrg);
                 parameters.Add("@address", contact.Address);
@@ -102,7 +102,7 @@ namespace Easy.Services.Services
             parameters.Add("@email",contact.Email);
             parameters.Add("@website",contact.Website);
             parameters.Add("@phone",contact.Phone);
-            parameters.Add("@contact",contact.ContactName);
+            
             parameters.Add("@jobtitle",contact.JobTitle);
             parameters.Add("@jobOrg",contact.JobOrg);
             parameters.Add("@address",contact.Address);

@@ -365,5 +365,44 @@ namespace Easy.Services.Services
 
             return contlist;
         }
+
+        public async Task<CustomerSupportListDto> CustomersupportList(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate)
+        {
+            var customersupport = new CustomerSupportListDto();
+            customersupport.StatusCode = 400;
+            customersupport.customerlist = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) customersupport.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_customer_support";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@createdby", EmployeeId);
+                parameters.Add("@organizationid", Organizationid);
+                parameters.Add("@supportstatus", Supportstatus);
+                parameters.Add("@supportmedium", Supportmedium);
+                parameters.Add("@fromdate", Fromdate);
+                parameters.Add("@supportmedium", Supportmedium);
+                parameters.Add("@todate", Todate);
+                parameters.Add("@flag", "CustomerSupportList");
+                var data = await DBHelper.RunProc<CustomerSupportList>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().CustomerSupportId != 0)
+                {
+                    customersupport.Message = "Success";
+                    customersupport.StatusCode = 200;
+                    customersupport.customerlist = data.ToList();
+                }
+                else
+                {
+                    customersupport.Message = "No Data Found.";
+                    customersupport.StatusCode = 400;
+                    customersupport.customerlist = null;
+                }
+            }
+            return customersupport;
+        }
+
     }
+    
 }

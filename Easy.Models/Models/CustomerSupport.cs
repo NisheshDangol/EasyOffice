@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Easy.Connection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,5 +25,27 @@ namespace Easy.Models.Models
         public string Remarks { get; set; }
         public int BranchId { get; set; }
         public int FiscalId { get; set; }
+    }
+
+    public class CustomerSupportList
+    {
+        public int CustomerSupportId { get; set; }
+        public string OrganizationName { get; set; }
+        public string ProductName { get; set; }
+        public string Issue { get; set; }
+        public string IssueDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public string Attachment { get; set; }
+        public string UserName { get; set; }
+        public string AssignedToId { get; set; }
+        public string SupportStatus { get; set; }
+        public string SupportMedium { get; set; }
+        public DateTime AddedDate { get; set; }
+    }
+    public class CustomerSupportListDto:CommonResponse
+    {
+        public List<CustomerSupportList> customerlist { get; set; }
+
     }
 }

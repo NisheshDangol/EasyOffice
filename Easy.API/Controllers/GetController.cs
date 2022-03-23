@@ -119,6 +119,15 @@ namespace Easy.API.Controllers
             return Ok(data);
 
         }
+        [HttpGet]
+        [Route("~/api/csupport-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CustomerSupport(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate)
+        {
+            var data = await _unitOfWork.GetServices.CustomersupportList(CompanyId,EmployeeId,Organizationid,Supportstatus,Supportmedium,Fromdate,Todate);
+            return Ok(data);
+
+        }
         
     }
 }
