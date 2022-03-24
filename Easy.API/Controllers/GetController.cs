@@ -128,6 +128,24 @@ namespace Easy.API.Controllers
             return Ok(data);
 
         }
+        [HttpGet]
+        [Route("~/api/notification-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> NotificationList(string CompanyId, int EmployeeId)
+        {
+            var data = await _unitOfWork.GetServices.NotificationList(CompanyId,EmployeeId);
+            return Ok(data);
+
+        }
+        [HttpGet]
+        [Route("~/api/csupport-info")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> CustomerSupportInfo(string CompanyId, int EmployeeId, int CustomerSupportId)
+        {
+            var data = await _unitOfWork.GetServices.CustomerSupportInfo(CompanyId,EmployeeId,CustomerSupportId);
+            return Ok(data);
+
+        }
         
     }
 }

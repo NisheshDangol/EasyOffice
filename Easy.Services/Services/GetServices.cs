@@ -403,6 +403,68 @@ namespace Easy.Services.Services
             return customersupport;
         }
 
+        public async Task<NotificationListDto> NotificationList(string CompanyId, int EmployeeId)
+        {
+            var notificationlist = new NotificationListDto();
+            notificationlist.StatusCode = 400;
+            notificationlist.NotificationList = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) notificationlist.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_notification";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@comid", CompanyId);
+                parameters.Add("@empID", EmployeeId);
+                parameters.Add("@flag", "NotificationList");
+                var data = await DBHelper.RunProc<NotificationList>(sql, parameters);
+                if (data.Count() != 0 && !String.IsNullOrEmpty(data.FirstOrDefault().Title))
+                {
+                    notificationlist.Message = "Success";
+                    notificationlist.StatusCode = 200;
+                    notificationlist.NotificationList = data.ToList();
+                }
+                else
+                {
+                    notificationlist.Message = "No Data Found.";
+                    notificationlist.StatusCode = 400;
+                    notificationlist.NotificationList = null;
+                }
+            }
+            return notificationlist;
+        }
+
+        public async Task<CustomerSupportInfoDto> CustomerSupportInfo(string CompanyId, int EmployeeId, int CustomerSupportId)
+        {
+            var customersupport = new CustomerSupportInfoDto();
+            customersupport.StatusCode = 400;
+            customersupport.CustomerSupportInfo = null;
+
+            if (string.IsNullOrEmpty(CompanyId)) customersupport.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_customer_support";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@createdby", EmployeeId);
+                parameters.Add("@id", CustomerSupportId);
+                parameters.Add("@flag", "CustomerSupportInfo");
+                var data = await DBHelper.RunProc<CustomerSupportInfo>(sql, parameters);
+                if (data.Count() != 0)
+                {
+                    customersupport.Message = "Success";
+                    customersupport.StatusCode = 200;
+                    customersupport.CustomerSupportInfo = data.ToList();
+                }
+                else
+                {
+                    customersupport.Message = "No Data Found.";
+                    customersupport.StatusCode = 400;
+                    customersupport.CustomerSupportInfo = null;
+                }
+            }
+            return customersupport;
+        }
     }
     
 }

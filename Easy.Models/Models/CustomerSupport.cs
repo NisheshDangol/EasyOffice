@@ -20,7 +20,7 @@ namespace Easy.Models.Models
         public string Attachment { get; set; }
         public int AssignedTo { get; set; }
         public int SupportStatus { get; set; }
-        public string SupportMedium { get; set; }
+        public int SupportMedium { get; set; }
         public string clientComment { get; set; }
         public string Remarks { get; set; }
         public int BranchId { get; set; }
@@ -47,5 +47,31 @@ namespace Easy.Models.Models
     {
         public List<CustomerSupportList> customerlist { get; set; }
 
+    }
+
+    public class CustomerSupportInfo
+    {
+        public string OrgId { get; set; }
+        public string OrganizationName { get; set; }
+        public string ProductId { get; set; }
+        public string ProductName { get; set; }
+        public string Issue { get; set; }
+        public string IssueDate { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
+        public string Attachment { get; set; }
+        public string AssignedToId { get; set; }
+        public string AssignedTo { get; set; }
+        public string SupportStatusId { get; set; }
+        public string SupportStatus { get; set; }
+        public string SupportMediumId { get; set; }
+        public string SupportMedium { get; set; }
+        public string ClientComment { get; set; }
+        public string Remarks { get; set; }
+        public string AddedDate { get; set; }
+    }
+    public class CustomerSupportInfoDto :CommonResponse
+    {
+        public List<CustomerSupportInfo> CustomerSupportInfo { get; set; }
     }
 }

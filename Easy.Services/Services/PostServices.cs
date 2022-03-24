@@ -13,6 +13,33 @@ namespace Easy.Services.Services
 {
     public class PostServices : IPostInterface
     {
+        public async Task<CommonResponse> CreateNotification(Notification notifi)
+        {
+            CommonResponse response = new CommonResponse();
+            response.StatusCode = 400;
+            if (string.IsNullOrEmpty(notifi.ComId)) response.Message = "Input CompanyId";
+            else
+            {
+                string sql = "sp_notification";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@comid", notifi.ComId);
+                parameters.Add("@title", notifi.Title);
+                parameters.Add("@description", notifi.Description);
+                parameters.Add("@image", notifi.Image);
+                parameters.Add("@publisheddate", notifi.PublishedDate);
+                parameters.Add("@userid", notifi.UserId);
+                parameters.Add("@acBtn", notifi.AcBtn);
+                parameters.Add("@redurl", notifi.RedUrl);
+                parameters.Add("@fiscalid", notifi.FiscalId);
+                parameters.Add("@createdby", notifi.Createdby);
+                parameters.Add("@flag", "CreateNotifi");
+                await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                response.StatusCode = 200;
+                response.Message = "Success";
+            }
+            return response;
+        }
+
         public async Task<CommonResponse> ContactUpdate(UpdateContect contact)
         {
             var common = new CommonResponse();

@@ -58,5 +58,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.ContactUpdate(contect);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/create-notification")]
+        public async Task<IActionResult> CreateNotication(Notification notifi)
+        {
+            var data = await _unitOfWork.PostServices.CreateNotification(notifi);
+            return Ok(data);
+        }
     }
 }
