@@ -26,7 +26,7 @@ namespace Easy.Models.Models
         public string Description { get; set; }
         public string Image { get; set; }
         public string PublishedDate { get; set; }
-        public string UserId { get; set; }
+        public string CreatedBy { get; set; }
         public string AcBtn { get; set; }
         public string RedUrl { get; set; }
     }
