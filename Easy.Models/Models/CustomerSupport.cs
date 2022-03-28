@@ -15,8 +15,8 @@ namespace Easy.Models.Models
         public int ProductId { get; set; }
         public string Issue { get; set; }
         public DateTime IssueDate { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
         public string Attachment { get; set; }
         public int AssignedTo { get; set; }
         public int SupportStatus { get; set; }
