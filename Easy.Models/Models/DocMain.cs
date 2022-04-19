@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace Easy.Models.Models
 {
-    public class DocMain
-    {
-        public string FileName { get; set; }
-        public string FileType { get; set; }
-        public string FilePath { get; set; }
-    }
+    //public class DocMain
+    //{
+    //    public string FileName { get; set; }
+    //    public string FileType { get; set; }
+    //    public string FilePath { get; set; }
+    //}
     public class DocInfo:CommonResponse
     {
-        public List<DocMain> docs { get; set; }
+        public List<dynamic> docs { get; set; }
     }
 }

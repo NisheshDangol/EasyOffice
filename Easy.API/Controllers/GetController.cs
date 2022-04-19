@@ -21,7 +21,7 @@ namespace Easy.API.Controllers
         }
         [HttpGet]
         [Route("~/api/doc-information")]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDoc(string ComId, int EmpId)
         {
             var data= await _unitOfWork.GetServices.listdoc(ComId, EmpId);

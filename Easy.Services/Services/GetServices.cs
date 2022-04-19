@@ -179,7 +179,7 @@ namespace Easy.Services.Services
         {
             string sql = "sp_doc @ComId= '" + ComId + "'";
             sql += ",@EmpId='" + EmpId + "'";
-            var data= await DBHelper.RunProc<DocMain>(sql);
+            var data= await DBHelper.RunProc<dynamic>(sql);
             if(data.Count()!=0)
             {
                 return new DocInfo
@@ -194,8 +194,8 @@ namespace Easy.Services.Services
                 return new DocInfo
                 {
                     docs = null,
-                    Message = "No data Found.",
-                    StatusCode = 400
+                    Message = data.FirstOrDefault().Message,
+                    StatusCode = data.FirstOrDefault().StatusCode
                 };
 
             }
