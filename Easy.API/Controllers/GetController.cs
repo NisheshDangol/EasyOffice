@@ -20,7 +20,7 @@ namespace Easy.API.Controllers
             _unitOfWork = unitOfWork;
         }
         [HttpGet]
-        [Route("~/api/GetDoc")]
+        [Route("~/api/doc-information")]
         [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetDoc(string ComId, int EmpId)
         {

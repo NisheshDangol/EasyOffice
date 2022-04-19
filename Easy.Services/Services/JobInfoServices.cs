@@ -17,31 +17,31 @@ namespace Easy.Services.Services
             if (ComId == "")
             {
                 job.Jobinfo = null;
-                job.StatusCode = 201;
-                job.Message = "comId is null";
+                job.StatusCode = 400;
+                job.Message = "ComId is null";
             }
             else if (EmpId == 0)
             {
                 job.Jobinfo = null;
-                job.StatusCode = 201;
+                job.StatusCode = 400;
                 job.Message = "EmpId is null";
             }
             else
             {
                 string sql = "sp_jobinfo @comId='" + ComId + "'";
                 sql += ",@empId = '" + EmpId + "'";
-                var data = await DBHelper.RunQuery<Jobinfo>(sql);
-                if(data.Count() ==0 && data.FirstOrDefault().StartDate =="" && data.FirstOrDefault().StartDate ==null  )
-                {
-                    job.Jobinfo = null;
-                    job.StatusCode = 201;
-                    job.Message = "data not found.";
-                }
-                else
+                var data = await DBHelper.RunQuery<dynamic>(sql);
+                if(data.Count() !=0 && data.FirstOrDefault().StatusCode ==null )
                 {
                     job.Jobinfo = data.ToList();
                     job.StatusCode = 200;
-                    job.Message = "Success";
+                    job.Message = "success";
+                }
+                else
+                {
+                    job.Jobinfo = null;
+                    job.StatusCode = data.FirstOrDefault().StatusCode;
+                    job.Message = data.FirstOrDefault().Message;
                 }
                 
             }

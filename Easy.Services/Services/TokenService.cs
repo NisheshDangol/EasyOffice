@@ -38,10 +38,6 @@ namespace Easy.Services.Services
             var tokenhandler = new JwtSecurityTokenHandler();
             var token = tokenhandler.CreateToken(tokenDescripter);
             return tokenhandler.WriteToken(token);
-
-
-
-
         }
     }
 }

@@ -16,6 +16,6 @@ namespace Easy.Models.Models
     }
     public class Bank:CommonResponse
     {
-        public List<BankInfo> BankInfo { get; set; }
+        public List<dynamic> BankInfo { get; set; }
     }
 }

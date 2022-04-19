@@ -17,7 +17,7 @@ namespace Easy.API.Controllers
             _unitOfWork = unitOfWork;
         }
         [HttpPost]
-        [Route("~/api/create-organization")]
+        [Route("~/api/create-org")]
         public async Task<IActionResult> CreateOrganization(OrgnizationGet orgnization)
         {
             var data = await _unitOfWork.PostServices.CreateCompany(orgnization);

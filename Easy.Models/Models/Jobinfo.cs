@@ -20,6 +20,6 @@ namespace Easy.Models.Models
     }
     public class JobReturn : CommonResponse
     {
-        public List<Jobinfo> Jobinfo { get; set; }
+        public List<dynamic> Jobinfo { get; set; }
     }
 }

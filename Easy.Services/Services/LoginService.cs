@@ -28,8 +28,8 @@ namespace Easy.Services.Services
             parameters.Add("@username", Login.UserName);
             parameters.Add("@device_id", Login.DeviceID);
             parameters.Add("@notification_token", Login.NotificationToken);
-            parameters.Add("@flag", 2);
-            var common = await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
+            parameters.Add("@flag", "CheckSession");
+            var common = await DBHelper.RunProc<dynamic>(sqluser, parameters);
             if (common.Count() != 0 && common.FirstOrDefault().UID !=0)
             {
                 return new CheckSessionOutput
@@ -44,8 +44,8 @@ namespace Easy.Services.Services
                 return new CheckSessionOutput
                 {
                     Logins = null,
-                    Message = "No User Found.",
-                    StatusCode = 400
+                    Message = common.FirstOrDefault().Message,
+                    StatusCode = common.FirstOrDefault().StatusCode
                 };
             }
         }
@@ -60,8 +60,8 @@ namespace Easy.Services.Services
             parameters.Add("@password", Login.Password);
             parameters.Add("@notification_token", Login.NotificationToken);
             parameters.Add("@device_id", Login.DeviceId);
-            parameters.Add("@flag",1);
-            var common= await DBHelper.RunProc<LoginViewModel>(sqluser, parameters);
+            parameters.Add("@flag","Login");
+            var common= await DBHelper.RunProc<dynamic>(sqluser, parameters);
             if (common.Count() == 0 || common.FirstOrDefault().UID == 0)
             {
                 logout.Token = null;

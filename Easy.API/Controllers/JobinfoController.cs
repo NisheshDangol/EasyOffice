@@ -19,7 +19,7 @@ namespace Easy.API.Controllers
         }
         [Route("~/api/jobinfo")]
         [HttpGet]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> GetJobInfo(string ComId, int EmpId)
         {
             var data= await _unitOfWork.jobInfoServices.Jobinfo(ComId, EmpId);

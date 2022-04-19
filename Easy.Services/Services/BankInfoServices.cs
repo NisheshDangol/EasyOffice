@@ -1,4 +1,5 @@
-﻿using Easy.Connection.Dapper;
+﻿using Dapper;
+using Easy.Connection.Dapper;
 using Easy.Models.Models;
 using Easy.Services.Interface;
 using System;
@@ -14,23 +15,28 @@ namespace Easy.Services.Services
         public async Task<Bank> BankInfo(string ComID, int EmpID)
         {
             var bank = new Bank();
-            if (ComID =="")
+            if (string.IsNullOrEmpty(ComID))
             {
                 bank.BankInfo = null;
-                bank.StatusCode = 201;
-                bank.Message = "comId is null";
+                bank.StatusCode = 400;
+                bank.Message = "ComId is null";
             }
             else if(EmpID==0)
                 {
                 bank.BankInfo = null;
-                bank.StatusCode = 202;
+                bank.StatusCode = 400;
                 bank.Message = "EmpId is null";
             }
             else
             {
-                string sql = "select bank_name as BankName, ac_name as AcNumber, ac_no as AcName, branch as Branch from tbl_bank_information where com_id ='" + ComID + "' and employee_id = '" + EmpID + "' and status=1";
-                var data = await DBHelper.RunQuery<BankInfo>(sql);
-                if (data.Count() != 0)
+                string sql = "sp_user";
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", "bankinfo");
+                parameters.Add("@com_id", ComID);
+                parameters.Add("@emp_id", EmpID);
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                
+                if (data.Count() != 0 && data.FirstOrDefault().StatusCode== null)
                 {
 
                     bank.BankInfo = data.ToList();
@@ -41,14 +47,11 @@ namespace Easy.Services.Services
                 else
                 {
                     bank.BankInfo = null;
-                    bank.StatusCode = 400;
-                    bank.Message = "No Data";
+                    bank.StatusCode = data.FirstOrDefault().StatusCode;
+                    bank.Message = data.FirstOrDefault().Message;
                 }
             }
-            return bank;
-            
-            
-            
+            return bank;      
         }
     }
 }

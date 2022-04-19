@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.Connection\\Easy.Connection.csproj": {}
+    "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.Connection\\Easy.Connection.csproj": {
+    "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.Connection\\Easy.Connection.csproj",
+        "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
         "projectName": "Easy.Connection",
-        "projectPath": "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.Connection\\Easy.Connection.csproj",
-        "packagesPath": "C:\\Users\\pudas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pudas\\OneDrive\\Desktop\\Startup\\EasySolution\\Easy.Connection\\obj\\",
+        "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+        "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\pudas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\NisAceDanGol\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -67,7 +64,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.202\\RuntimeIdentifierGraph.json"
         }
       }
     }
