@@ -18,27 +18,32 @@ namespace Easy.Services.Services
             var orglist = new AllOrganizationDto();
             orglist.StatusCode = 400;
             orglist.OrgList = null;
+            orglist.Message = "";
+            if (string.IsNullOrEmpty(CompanyId)) orglist.Message = "CompanyId is empty";
+            else if (EmployeeId == 0) orglist.Message = "EmployeeId is empty";
+            else
+            {
                 string sql = "sp_organization";
-                DynamicParameters parameters=new DynamicParameters();
+                DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@createdby", EmployeeId);
                 parameters.Add("@FromDate", FromDate);
                 parameters.Add("@ToDate", ToDate);
                 parameters.Add("@isourclient", IsOurClient);
-                parameters.Add("@flag", 3);
-                var data = await DBHelper.RunProc<AllOrganizationList>(sql,parameters);
-               if(data.Count()!=0)
+                parameters.Add("@flag", "allorglist");
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0)
                 {
                     orglist.StatusCode = 200;
                     orglist.OrgList = data.ToList();
                     orglist.Message = "success";
                 }
-               else
+                else
                 {
                     orglist.Message = "NO data";
                 }
-               
-            
+
+            }
             return orglist;
 
         }
@@ -71,9 +76,6 @@ namespace Easy.Services.Services
                     contlist.Message = "NO data";
                 }
             }
-            
-
-
             return contlist;
         }
 
@@ -177,10 +179,12 @@ namespace Easy.Services.Services
 
         public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
-            string sql = "sp_doc @ComId= '" + ComId + "'";
-            sql += ",@EmpId='" + EmpId + "'";
-            var data= await DBHelper.RunProc<dynamic>(sql);
-            if(data.Count()!=0)
+            string sql = "sp_doc" ;
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@ComId",  ComId);
+            parameters.Add("@EmpId", EmpId);
+            var data= await DBHelper.RunProc<dynamic>(sql, parameters);
+            if(data.Count()!=0 && data.FirstOrDefault().StatusCode == null)
             {
                 return new DocInfo
                 {
@@ -202,55 +206,58 @@ namespace Easy.Services.Services
 
         }
 
-        public async Task<OrganizationDto> orglist(string CompanyId, int IsOurClient, int UserId)
+        public async Task<OrganizationDto> orglist(string ComID, int IsOurClient, int UserID)
         {
             var org = new OrganizationDto();
             org.StatusCode = 400;
             org.OrgList = null;
-            
-            if (string.IsNullOrEmpty(CompanyId)) org.Message = "Input CompanyId";
+            org.Message = "";
+
+            if (string.IsNullOrEmpty(ComID)) org.Message = "Input CompanyId";
+            else if (UserID == 0) org.Message = "UserID is Empty";
             else
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@companyid", ComID);
                 parameters.Add("@isourclient", IsOurClient);
-                parameters.Add("@userid", UserId);
-                parameters.Add("@flag", 2);
-                var data = await DBHelper.RunProc<OrganizationList>(sql, parameters);
-                if (data.Count() != 0 && data.FirstOrDefault().OrgId!=0)
+                parameters.Add("@userid", UserID);
+                parameters.Add("@flag", "orglist");
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;
                     org.OrgList = data.ToList();
                 }
-                else
-                {
-                    org.Message = "No Data Found.";
-                    org.StatusCode = 400;
-                    org.OrgList = null;
-                }
+                //else
+                //{
+                //    org.Message = data.FirstOrDefault().Message;
+                //    org.StatusCode = data.FirstOrDefault().StatusCode;
+                //    org.OrgList = null;
+                //}
             }
             return org;
             
         }
 
-        public async Task<OrganizationProductDto> orgproduct(string CompanyId, int BranchId)
+        public async Task<OrganizationProductDto> orgproduct(string ComID, int BranchID)
         {
             var org = new OrganizationProductDto();
             org.StatusCode = 400;
             org.OrganizationProducts = null;
 
-            if (string.IsNullOrEmpty(CompanyId)) org.Message = "Input CompanyId";
+            if (string.IsNullOrEmpty(ComID)) org.Message = "Empty CompanyId";
+            else if (BranchID == 0) org.Message = "Empty BranchID";
             else
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
-                parameters.Add("@branchid", BranchId);
-                parameters.Add("@flag", 4);
-                var data = await DBHelper.RunProc<OrganizationProduct>(sql, parameters);
-                if (data.Count() != 0 && data.FirstOrDefault().ProductId !=0)
+                parameters.Add("@companyid", ComID);
+                parameters.Add("@branchid", BranchID);
+                parameters.Add("@flag", "orgproduct");
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().ProductId != 0)
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;

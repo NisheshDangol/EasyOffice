@@ -82,38 +82,47 @@ namespace Easy.Services.Services
 
         public async Task<CommonResponse> CreateCompany(OrgnizationGet orgnization)
         {
-            string sql = "sp_organization";
-            
-            var parameter = new DynamicParameters();
-            parameter.Add("@companyid", orgnization.CompanyId);
-            parameter.Add("@createdby", orgnization.EmployeId);
-            parameter.Add("@organizationname", orgnization.OrganizationName);
-            parameter.Add("@organizationtype", orgnization.OrganizationType);
-            parameter.Add("@address", orgnization.Address);
-            parameter.Add("@district", orgnization.District);
-            parameter.Add("@landline", orgnization.LandLine);
-            parameter.Add("@phoneno", orgnization.Phone);
-            parameter.Add("@cpersonname", orgnization.ContactPerson);
-            parameter.Add("@cpersoncontact", orgnization.PersonContact);
-            parameter.Add("@email", orgnization.Email);
-            parameter.Add("@pan", orgnization.Pan);
-            parameter.Add("@website", orgnization.Website);
-            parameter.Add("@fb", orgnization.Fb);
-            parameter.Add("@latitude", orgnization.Latitude);
-            parameter.Add("@longitude", orgnization.Longitude);
-            parameter.Add("@source", orgnization.Source);
-            parameter.Add("@isourclient", orgnization.IsOurClient);
-            parameter.Add("@currentsystem", orgnization.CurrentSystem);
-            parameter.Add("@branchid", orgnization.BranchId);
-            parameter.Add("@fiscalid", orgnization.FiscalId);
-            parameter.Add("@Assignedto", orgnization.AssignedTo);
-            parameter.Add("@flag",1);
-            var data= await DBHelper.RunProc<CommonResponse>(sql,parameter);
-            return new CommonResponse
+            CommonResponse res = new CommonResponse();
+            res.StatusCode = 400;
+            res.Message = "";
+            if (string.IsNullOrEmpty(orgnization.ComID)) res.Message = "ComID is Empty";
+            else if (orgnization.EmpID == 0) res.Message = "EmpID is Empty ";
+            else if (string.IsNullOrEmpty(orgnization.Email)) res.Message = "Email is Empty";
+            else if (orgnization.BranchID == 0) res.Message = "BranchID is Empty";
+            else if (orgnization.FiscalID == 0) res.Message = "FiscalID is Empty";
+            else
             {
-                StatusCode = data.FirstOrDefault().StatusCode,
-                Message = data.FirstOrDefault().Message
-            };
+                string sql = "sp_organization";
+
+                var parameter = new DynamicParameters();
+                parameter.Add("@companyid", orgnization.ComID);
+                parameter.Add("@createdby", orgnization.EmpID);
+                parameter.Add("@organizationname", orgnization.OrgName);
+                parameter.Add("@organizationtype", orgnization.OrgType);
+                parameter.Add("@address", orgnization.Address);
+                parameter.Add("@district", orgnization.District);
+                parameter.Add("@landline", orgnization.LandLine);
+                parameter.Add("@phoneno", orgnization.Phone);
+                parameter.Add("@cpersonname", orgnization.ContactPerson);
+                parameter.Add("@cpersoncontact", orgnization.PersonContact);
+                parameter.Add("@email", orgnization.Email);
+                parameter.Add("@pan", orgnization.PAN);
+                parameter.Add("@website", orgnization.Website);
+                parameter.Add("@fb", orgnization.Fb);
+                parameter.Add("@latitude", orgnization.Latitude);
+                parameter.Add("@longitude", orgnization.Longitude);
+                parameter.Add("@source", orgnization.Source);
+                parameter.Add("@isourclient", orgnization.IsOurClient);
+                parameter.Add("@currentsystem", orgnization.CurrentSystem);
+                parameter.Add("@branchid", orgnization.BranchID);
+                parameter.Add("@fiscalid", orgnization.FiscalID);
+                parameter.Add("@AssignedTo", orgnization.AssignedTo);
+                parameter.Add("@flag", "createorg");
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameter);
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            return res;
         }
 
         public async Task<CommonResponse> CreateContact(Contact contact)

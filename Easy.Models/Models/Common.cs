@@ -8,10 +8,10 @@ namespace Easy.Models.Models
 {
     public class OrgnizationGet
     {
-        public string CompanyId { get; set; }
-        public int EmployeId { get; set; }
-        public string OrganizationName { get; set; }
-        public int OrganizationType { get; set; }
+        public string ComID { get; set; }
+        public int EmpID { get; set; }
+        public string OrgName { get; set; }
+        public int OrgType { get; set; }
         public string Address { get; set; }
         public int District { get; set; }
         public string LandLine { get; set; }
@@ -19,7 +19,7 @@ namespace Easy.Models.Models
         public string ContactPerson { get; set; }
         public string PersonContact { get; set; }
         public string Email { get; set; }
-        public string Pan { get; set; }
+        public string PAN { get; set; }
         public string Website { get; set; }
         public string Fb { get; set; }
         public decimal Latitude { get; set; }
@@ -27,8 +27,9 @@ namespace Easy.Models.Models
         public int Source { get; set; }
         public int IsOurClient { get; set; }
         public string CurrentSystem { get; set; }
-        public int BranchId { get; set; }
-        public int FiscalId { get; set; }
+        public int StaffID { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
         public int AssignedTo { get; set; }
     }
 }

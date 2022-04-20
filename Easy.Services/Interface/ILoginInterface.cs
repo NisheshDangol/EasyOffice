@@ -1,4 +1,5 @@
-﻿using Easy.Models.Models;
+﻿using Easy.Connection;
+using Easy.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,5 +12,6 @@ namespace Easy.Services.Interface
     {
         Task<ListOutPut> Login(Login login);
         Task<CheckSessionOutput> CheckSession(CheckSession login);
+        Task<CommonResponse> ChangePassword(int UserID, string OldPwd, string NewPwd);
     }
 }

@@ -62,7 +62,7 @@ namespace Easy.Services.Services
             parameters.Add("@device_id", Login.DeviceId);
             parameters.Add("@flag","Login");
             var common= await DBHelper.RunProc<dynamic>(sqluser, parameters);
-            if (common.Count() == 0 || common.FirstOrDefault().UID == 0)
+            if (common.Count() == 0 || common.FirstOrDefault().StatusCode != null)
             {
                 logout.Token = null;
                 logout.Logins = null;
@@ -79,5 +79,27 @@ namespace Easy.Services.Services
             return logout;  
         }
             
+        public async Task<CommonResponse> ChangePassword(int UserID, string OldPwd, string NewPwd)
+        {
+            CommonResponse res = new CommonResponse();
+            res.Message = "";
+            res.StatusCode = 400;
+            if (UserID == 0) res.Message = "UserID is empty";
+            else if (string.IsNullOrEmpty(OldPwd)) res.Message = "OldPwd is empty";
+            else if (string.IsNullOrEmpty(NewPwd)) res.Message = "NewPwd is empty";
+            else
+            {
+                string sql = "sp_user";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@flag", "ChangePwd");
+                parameters.Add("@user_id", UserID);
+                parameters.Add("@oldpassword", OldPwd);
+                parameters.Add("@password", NewPwd);
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                res.Message = data.FirstOrDefault().Message;
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+            }
+            return res;
+        }
     }
 }
