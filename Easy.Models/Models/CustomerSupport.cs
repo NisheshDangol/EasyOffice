@@ -9,10 +9,10 @@ namespace Easy.Models.Models
 {
     public class CustomerSupport
     {
-        public string CompanyId { get; set; }
-        public int EmplopyeeId { get; set; }
-        public int OrganizationId { get; set; }
-        public int ProductId { get; set; }
+        public string ComID { get; set; }
+        public int EmpID { get; set; }
+        public int OrgID { get; set; }
+        public int ProductID { get; set; }
         public string Issue { get; set; }
         public DateTime IssueDate { get; set; }
         public string StartTime { get; set; }
@@ -21,10 +21,10 @@ namespace Easy.Models.Models
         public int AssignedTo { get; set; }
         public int SupportStatus { get; set; }
         public int SupportMedium { get; set; }
-        public string clientComment { get; set; }
+        public string ClientComment { get; set; }
         public string Remarks { get; set; }
-        public int BranchId { get; set; }
-        public int FiscalId { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
     }
 
     public class CustomerSupportList

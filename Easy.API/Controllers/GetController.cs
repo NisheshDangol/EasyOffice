@@ -22,63 +22,63 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/doc-information")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetDoc(string ComId, int EmpId)
+        public async Task<IActionResult> GetDoc(string ComID, int EmpID)
         {
-            var data= await _unitOfWork.GetServices.listdoc(ComId, EmpId);
+            var data= await _unitOfWork.GetServices.listdoc(ComID, EmpID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/org-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> OrgList(string CompanyId, int IsOurClient, int UserId)
+        public async Task<IActionResult> OrgList(string ComID, int IsOurClient, int UserID)
         {
-            var data= await _unitOfWork.GetServices.orglist(CompanyId, IsOurClient, UserId);
+            var data= await _unitOfWork.GetServices.orglist(ComID, IsOurClient, UserID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/all-org-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AllOrgList(string CompanyId, int EmployeeId, string FromDate, string ToDate, int IsOurClient)
+        public async Task<IActionResult> AllOrgList(string ComID, int EmpID, string FromDate, string ToDate, int IsOurClient)
         {
-            var data= await _unitOfWork.GetServices.allorglist(CompanyId, EmployeeId,FromDate,ToDate,IsOurClient);
+            var data= await _unitOfWork.GetServices.allorglist(ComID, EmpID,FromDate,ToDate,IsOurClient);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/follow-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Followuplist(string CompanyId, int EmployeeId, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus)
+        public async Task<IActionResult> Followuplist(string ComID, int EmpID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType)
         {
-            var data= await _unitOfWork.GetServices.followuplist(CompanyId, EmployeeId,FromDate,ToDate,OrgType,FollowType,FollowStatus);
+            var data= await _unitOfWork.GetServices.followuplist(ComID, EmpID,IsOurClient,FromDate,ToDate,OrgType,FollowType,FollowStatus,ToType);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/org-type")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> OrgType(string CompanyId, int BranchId)
+        public async Task<IActionResult> OrgType(string ComID, int BranchID)
         {
-            var data= await _unitOfWork.GetServices.orgtype(CompanyId, BranchId);
+            var data= await _unitOfWork.GetServices.orgtype(ComID, BranchID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/follow-type")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> followuptype(string CompanyId, int BranchId)
+        public async Task<IActionResult> followuptype(string ComID, int BranchID)
         {
-            var data= await _unitOfWork.GetServices.FollowupType(CompanyId, BranchId);
+            var data= await _unitOfWork.GetServices.FollowupType(ComID, BranchID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/lead-source")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> LeadSource(string CompanyId, int BranchId)
+        public async Task<IActionResult> LeadSource(string ComID, int BranchID)
         {
-            var data= await _unitOfWork.GetServices.leadSource(CompanyId, BranchId);
+            var data= await _unitOfWork.GetServices.leadSource(ComID, BranchID);
             return Ok(data);
         }
 

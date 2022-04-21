@@ -47,15 +47,15 @@ namespace Easy.Models.Models
         public List<dynamic> OrgList { get; set; }
     }
 
-    public class OrganizationType
-    {
-        public int OrgTypeID { get; set;}
-        public string OrgTypeName { get; set;}
-        public string OrgCount { get; set;}
-    }
+    //public class OrganizationType
+    //{
+    //    public int OrgTypeID { get; set;}
+    //    public string OrgTypeName { get; set;}
+    //    public string OrgCount { get; set;}
+    //}
     public class OrganizationTypeDto:CommonResponse
     {
-        public List<OrganizationType> organizationTypes { get; set; }
+        public List<dynamic> organizationTypes { get; set; }
     }
 
 

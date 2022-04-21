@@ -162,28 +162,28 @@ namespace Easy.Services.Services
         {
             var common = new CommonResponse();
             common.StatusCode = 400;
-            if (string.IsNullOrEmpty(followup.CompanyId)) common.Message = "Input Companyid";
+            if (string.IsNullOrEmpty(followup.ComID)) common.Message = "Input Companyid";
             else
             {
                 string sql = "sp_followup";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", followup.CompanyId);
-                parameters.Add("@createdby", followup.CreatedBy);
-                parameters.Add("@organizationid", followup.OrganizationId);
-                parameters.Add("@productid", followup.ProductId);
+                parameters.Add("@companyid", followup.ComID);
+                parameters.Add("@createdby", followup.EmpID);
+                parameters.Add("@organizationid", followup.OrganizationID);
+                parameters.Add("@productid", followup.ProductID);
                 parameters.Add("@followdate", followup.FollowDate);
                 parameters.Add("@followtime", followup.FollowTime);
                 parameters.Add("@assignedto", followup.AssignedTo);
                 parameters.Add("@remarks", followup.Remarks);
                 parameters.Add("@followstatus", followup.FollowStatus);
                 parameters.Add("@followtype", followup.FollowType);
-                parameters.Add("@branchid", followup.BranchId);
-                parameters.Add("@fiscal_id", followup.FiscalId);
-                parameters.Add("@flag", 1);
+                parameters.Add("@branchid", followup.BranchID);
+                parameters.Add("@fiscal_id", followup.FiscalID);
+                parameters.Add("@flag", "createfollow");
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
 
-                common.StatusCode = 200;
-                common.Message = "Success";
+                common.StatusCode = data.FirstOrDefault().StatusCode;
+                common.Message = data.FirstOrDefault().Message;
             }
             
             return common;
@@ -194,31 +194,34 @@ namespace Easy.Services.Services
         {
             CommonResponse response=new CommonResponse();
             response.StatusCode = 400;
-            if (string.IsNullOrEmpty(lead.CompanyId)) response.Message = "Input CompanyId";
+            if (string.IsNullOrEmpty(lead.ComID)) response.Message = "Input CompanyId";
+            else if (lead.EmpID == 0) response.Message = "Input EmpID";
+            else if (lead.OrgID == 0) response.Message = "Input OrgID";
+            else if (lead.ProductID == 0) response.Message = "Input ProductID";
+            else if (lead.BranchID == 0) response.Message = "Input BranchID";
+            else if (lead.FiscalID == 0) response.Message = "Input FiscalID";
             else
             {
                 string sql = "sp_leads";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@CompanyId",lead.CompanyId);
-                parameters.Add("@EmpId",lead.EmpId);
-                parameters.Add("@OrganizationId",lead.OrganizationId);
-                parameters.Add("@ProductId",lead.ProductId);
-                parameters.Add("@EnquiryDate",lead.EnquiryDate);
-                parameters.Add("@EnquiryTime",lead.EnquiryTime);
-                parameters.Add("@Assignedto",lead.Assignedto);
-                parameters.Add("@Remarks",lead.Remarks);
-                parameters.Add("@LeadStatus",lead.LeadStatus);
-                parameters.Add("@BranchId",lead.BranchId);
-                parameters.Add("@FiscalId",lead.FiscalId);
-                parameters.Add("@flag",1);
-                parameters.Add("@LeadSource",lead.LeadSource);
-                await DBHelper.RunProc<CommonResponse>(sql, parameters);
-                response.StatusCode = 200;
-                response.Message = "Success";
+                parameters.Add("@CompanyId", lead.ComID);
+                parameters.Add("@EmpId", lead.EmpID);
+                parameters.Add("@OrganizationId", lead.OrgID);
+                parameters.Add("@ProductId", lead.ProductID);
+                parameters.Add("@EnquiryDate", lead.EnquiryDate);
+                parameters.Add("@EnquiryTime", lead.EnquiryTime);
+                parameters.Add("@Assignedto", lead.AssignedTo);
+                parameters.Add("@Remarks", lead.Remarks);
+                parameters.Add("@LeadStatus", lead.LeadStatus);
+                parameters.Add("@BranchId", lead.BranchID);
+                parameters.Add("@FiscalId", lead.FiscalID);
+                parameters.Add("@flag", "CreateLead");
+                parameters.Add("@LeadSource", lead.LeadSource);
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                response.StatusCode = data.FirstOrDefault().StatusCode;
+                response.Message = data.FirstOrDefault().Message;
             }
-            return response;
-            
-            
+            return response;      
         }
 
         public async Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport)
