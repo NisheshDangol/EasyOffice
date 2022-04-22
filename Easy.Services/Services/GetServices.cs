@@ -399,16 +399,22 @@ namespace Easy.Services.Services
                 parameters.Add("@supportmedium", Supportmedium);
                 parameters.Add("@todate", Todate);
                 parameters.Add("@flag", "CustomerSupportList");
-                var data = await DBHelper.RunProc<CustomerSupportList>(sql, parameters);
-                if (data.Count() != 0 && data.FirstOrDefault().CustomerSupportId != 0)
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
                     customersupport.Message = "Success";
                     customersupport.StatusCode = 200;
                     customersupport.customerlist = data.ToList();
                 }
+                else if(data.Count() != 0 && data.FirstOrDefault().StatusCode != null)
+                {
+                    customersupport.Message = data.FirstOrDefault().Message;
+                    customersupport.StatusCode = data.FirstOrDefault().StatusCode;
+                    customersupport.customerlist = null;
+                }
                 else
                 {
-                    customersupport.Message = "No Data Found.";
+                    customersupport.Message = "Nodata";
                     customersupport.StatusCode = 400;
                     customersupport.customerlist = null;
                 }
@@ -462,12 +468,18 @@ namespace Easy.Services.Services
                 parameters.Add("@createdby", EmployeeId);
                 parameters.Add("@id", CustomerSupportId);
                 parameters.Add("@flag", "CustomerSupportInfo");
-                var data = await DBHelper.RunProc<CustomerSupportInfo>(sql, parameters);
-                if (data.Count() != 0)
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
                 {
                     customersupport.Message = "Success";
                     customersupport.StatusCode = 200;
                     customersupport.CustomerSupportInfo = data.ToList();
+                }
+                else if (data.Count() != 0 && data.FirstOrDefault().StatusCode != null)
+                {
+                    customersupport.Message = data.FirstOrDefault().Message;
+                    customersupport.StatusCode = data.FirstOrDefault().StatusCode;
+                    customersupport.CustomerSupportInfo = null;
                 }
                 else
                 {

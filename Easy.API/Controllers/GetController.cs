@@ -122,9 +122,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/csupport-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CustomerSupport(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate)
+        public async Task<IActionResult> CustomerSupport(string ComID, int EmpID, int OrgID, int SupportStatus, string SupportMedium, string FromDate, string ToDate)
         {
-            var data = await _unitOfWork.GetServices.CustomersupportList(CompanyId,EmployeeId,Organizationid,Supportstatus,Supportmedium,Fromdate,Todate);
+            var data = await _unitOfWork.GetServices.CustomersupportList(ComID,EmpID,OrgID,SupportStatus,SupportMedium,FromDate,ToDate);
             return Ok(data);
 
         }
@@ -140,9 +140,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/csupport-info")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CustomerSupportInfo(string CompanyId, int EmployeeId, int CustomerSupportId)
+        public async Task<IActionResult> CustomerSupportInfo(string ComID, int EmpID, int CustomerSupportID)
         {
-            var data = await _unitOfWork.GetServices.CustomerSupportInfo(CompanyId,EmployeeId,CustomerSupportId);
+            var data = await _unitOfWork.GetServices.CustomerSupportInfo(ComID,EmpID,CustomerSupportID);
             return Ok(data);
 
         }
