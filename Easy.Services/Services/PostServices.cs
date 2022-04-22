@@ -17,25 +17,33 @@ namespace Easy.Services.Services
         {
             CommonResponse response = new CommonResponse();
             response.StatusCode = 400;
-            if (string.IsNullOrEmpty(notifi.ComId)) response.Message = "Input CompanyId";
+            if (string.IsNullOrEmpty(notifi.ComID)) response.Message = "Input CompanyId";
             else
             {
                 string sql = "sp_notification";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@comid", notifi.ComId);
+                parameters.Add("@comid", notifi.ComID);
                 parameters.Add("@title", notifi.Title);
                 parameters.Add("@description", notifi.Description);
                 parameters.Add("@image", notifi.Image);
                 parameters.Add("@publisheddate", notifi.PublishedDate);
-                parameters.Add("@userid", notifi.UserId);
+                parameters.Add("@userid", notifi.UserID);
                 parameters.Add("@acBtn", notifi.AcBtn);
                 parameters.Add("@redurl", notifi.RedUrl);
-                parameters.Add("@fiscalid", notifi.FiscalId);
+                parameters.Add("@fiscalid", notifi.FiscalID);
                 parameters.Add("@createdby", notifi.Createdby);
                 parameters.Add("@flag", "CreateNotifi");
-                await DBHelper.RunProc<CommonResponse>(sql, parameters);
-                response.StatusCode = 200;
-                response.Message = "Success";
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                if (data.FirstOrDefault().StatusCode == 0 )
+                {
+                    response.StatusCode = 200;
+                    response.Message = "Success";
+                }
+                else
+                {
+                    response.StatusCode = data.FirstOrDefault().StatusCode;
+                    response.Message = data.FirstOrDefault().Message;
+                }
             }
             return response;
         }

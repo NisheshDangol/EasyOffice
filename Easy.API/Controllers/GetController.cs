@@ -131,9 +131,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/notification-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> NotificationList(string CompanyId, int EmployeeId)
+        public async Task<IActionResult> NotificationList(string ComID, int EmpID)
         {
-            var data = await _unitOfWork.GetServices.NotificationList(CompanyId,EmployeeId);
+            var data = await _unitOfWork.GetServices.NotificationList(ComID,EmpID);
             return Ok(data);
 
         }

@@ -429,6 +429,7 @@ namespace Easy.Services.Services
             notificationlist.NotificationList = null;
 
             if (string.IsNullOrEmpty(CompanyId)) notificationlist.Message = "Input CompanyId";
+            else if (EmployeeId == 0) notificationlist.Message = "Input EmployeeId";
             else
             {
                 string sql = "sp_notification";
@@ -436,12 +437,18 @@ namespace Easy.Services.Services
                 parameters.Add("@comid", CompanyId);
                 parameters.Add("@empID", EmployeeId);
                 parameters.Add("@flag", "NotificationList");
-                var data = await DBHelper.RunProc<NotificationList>(sql, parameters);
-                if (data.Count() != 0 && !String.IsNullOrEmpty(data.FirstOrDefault().Title))
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
                     notificationlist.Message = "Success";
                     notificationlist.StatusCode = 200;
                     notificationlist.NotificationList = data.ToList();
+                }
+                else if (data.Count() != 0 && data.FirstOrDefault().Message != null)
+                {
+                    notificationlist.Message = data.FirstOrDefault().Message;
+                    notificationlist.StatusCode = data.FirstOrDefault().StatusCode;
+                    notificationlist.NotificationList = null;
                 }
                 else
                 {
