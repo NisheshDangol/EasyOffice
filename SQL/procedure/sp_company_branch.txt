@@ -1,0 +1,144 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_company_branch]    Script Date: 4/28/2022 11:15:16 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_company_branch](
+@ID  int=NULL,
+@companyid nvarchar(50)=NULL,
+@branchhead int=NULL,
+@createdby int = NULL,
+@branchname int = NULL,
+@flag int,
+@updatedby int=NULL,
+@status int=NULL
+)
+As
+Begin
+if @flag=1
+begin
+
+if exists(select 'M' from tbl_company_branch where branchname=@branchname)
+begin
+Select 400 STATUS_CODE,
+'branch name already exist.' Message
+return;
+end
+
+if exists(select 'M' from tbl_company_branch where branchhead=@branchhead)
+begin
+Select 400 STATUS_CODE,
+'branch head is already assigned.' Message
+return;
+end
+
+
+
+
+if  exists(select 'M' from tbl_company_branch where branchname=@branchname)
+begin
+Select 400 STATUS_CODE,
+'branch name is already assigned.' Message
+return;
+end
+
+
+if  exists(select 'M' from tbl_user where Id=@branchhead)
+begin
+Select 400 STATUS_CODE,
+'branch head not found.' Message
+return;
+end
+
+insert into tbl_company_branch(companyid,branchname,branchhead,createdby,status,createddate,updateddate)
+values(@companyid,@branchname,@branchhead,@createdby,1,GETDATE(),GETDATE())
+Select 200 STATUS_CODE,
+'Success.' Message
+return;
+
+
+
+
+
+end
+
+if @flag = 2
+begin
+select t.Id,t.companyid,t.status,u1.username as branchhead,u2.username as createdby,u3.username as updatedby from tbl_company_branch as t
+left join tbl_user as u1 on t.branchhead=u1.ID
+left join tbl_user as u2 on t.createdby=u2.ID
+left join tbl_user as u3 on t.updatedby=u3.ID
+where companyid='string'
+end
+
+
+
+if @flag=3
+begin
+if not exists(select 'M' from tbl_user where ID=@branchname)
+begin
+Select 400 STATUS_CODE,
+'branch name not found.' Message
+return;
+end
+
+if  exists(select 'M' from tbl_company_branch where branchhead=@branchhead)
+begin
+Select 400 STATUS_CODE,
+'branch head is already assigned.' Message
+return;
+end
+
+
+
+if exists(select 'M' from tbl_company_branch where branchname=@branchname)
+begin
+Select 400 STATUS_CODE,
+'branch name is already assigned.' Message
+return;
+end
+
+
+update tbl_company_branch
+set branchname=@branchname,branchhead=@branchhead,updatedby=@updatedby,updateddate=GETDATE()
+where companyid = @companyid and ID=@id
+
+Select 200 STATUS_CODE,
+'Success.' Message
+return;
+
+end
+
+
+if @flag = 4
+BEGIN
+if  @status=1 and @status=2 and @status=0
+BEGIN
+SELECT 400 STATUS_CODE ,
+'status is invalid'  Message
+RETURN;
+END
+if exists(select 'M' from tbl_company_branch where companyid=@companyid and updatedby=@updatedby and Id=@ID)
+Begin
+
+UPDATE tbl_company_branch
+set status=@status
+WHERE companyid=@companyid and updatedby=@updatedby and Id=@ID
+Select 200 STATUS_CODE,
+'Success.' Message
+
+End
+
+Select 400 STATUS_CODE,
+'Not Found' Message
+
+
+
+return;
+
+END
+
+
+end

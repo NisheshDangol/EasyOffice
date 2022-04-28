@@ -1,0 +1,72 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_contect]    Script Date: 4/28/2022 11:14:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_contect](
+@companyid nvarchar(250)=NULL,
+@employeeid int=NULL,
+@firstname nvarchar(250)=NULL,
+@middlename nvarchar(250)=NULL,
+@lastname nvarchar(250)=NULL,
+@email nvarchar(250)=NULL,
+@website nvarchar(250)=NULL,
+@phone nvarchar(250)=NULL,
+@contact nvarchar(250)=NULL,
+@jobtitle nvarchar(250)=NULL,
+@jobOrg nvarchar(250)=NULL,
+@dateOfBirth date=NULL,
+@address nvarchar(250)=NULL,
+@district int=NULL,
+@gender int=NULL,
+@pan nvarchar(250)=NULL,
+@maritalStatus int=NULL,
+@bloodGroup int=NULL,
+@religion int=NULL,
+@image nvarchar(250)=NULL,
+@fb nvarchar(250)=NULL,
+@source nvarchar(250)=NULL,
+@remarks nvarchar(250)=NULL,
+@branchID int=NULL,
+@fiscalID int=NULL,
+@flag nvarchar(250),
+@ID int=NULL
+)
+As
+BEGIN
+if @flag = 'Create'
+BEGIN
+
+insert into tbl_contact(com_id,created_by,first_name,middle_name,last_name,email,website,phone,
+job_title,job_org,address,district,gender,image,fb,source,remarks,branch_id,fiscal_id,updated_by,created_date,updated_date,status)
+
+values(@companyid,@employeeid,@firstname,@middlename,@lastname,@email,@website,@phone,
+@jobtitle,@jobOrg,@address,@district,@gender,@image,@fb,@source,@remarks,@branchID,@fiscalID,@employeeid,(select dbo.fndate()),(select dbo.fndate()),1)	
+
+END
+if @flag = 'ContactList'
+BEGIN
+Select ID ContactId,(first_name+' '+middle_name+' '+last_name) FullName,phone Contact,email,address,district from tbl_contact where com_id=@companyid and created_by=@employeeid
+END
+
+if @flag = 'ContactInfo'
+BEGIN
+Select com_id CompanyId,created_by Employeeid,first_name FirstName,middle_name MiddleName,last_name LastName,
+email,website,phone,job_title JobTitle,job_org JobOrg,
+address,district,gender,image,
+fb,source,remarks from tbl_contact where status=1 and com_id=@companyid and created_by=@employeeid
+
+END
+
+if @flag='UpdateContact'
+BEGIN
+UPDATE tbl_contact set first_name=@firstname,middle_name=@middlename,last_name=@lastname,
+email=@email,website=@website,phone=@phone,job_title=@jobtitle,job_org=@jobOrg,address=@address,district=@district,gender=@gender,
+image=@image,fb=@fb,source=@source,remarks=@remarks,branch_id=@branchID,
+fiscal_id=@fiscalID
+where com_id=@companyid and created_by=@employeeid and ID=@ID
+END
+
+END

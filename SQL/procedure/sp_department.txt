@@ -1,0 +1,115 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_department]    Script Date: 4/28/2022 11:14:02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_department](
+@Id int = NULL,
+@companyid nvarchar(250) ='-',
+@departmentname nvarchar(250)='-',
+@status int=0,
+@headid int =0,
+@createdby int =0,
+@createddate date=NULL,
+@updateddate date =NULL,
+@updatedby int=NULL,
+@flag int
+)
+As
+Begin
+if @flag=1
+BEGIN
+
+if not exists(select 'M' from tbl_user where ID =@createdby)
+Begin
+Select 400 STATUS_CODE,
+'User not found' Message
+return
+End
+
+if exists(select 'M' from tbl_department where departmentname =@departmentname)
+Begin
+Select 400 STATUS_CODE,
+'Department already exists' Message
+return
+End
+
+if exists(select 'M' from tbl_department where headid=@headid)
+Begin
+Select 400 STATUS_CODE,
+'head already exists' Message
+return
+End
+
+INSERT INTO tbl_department(headid,companyid,departmentname,createdby,createddate,updateddate,status)
+VALUES(@headid,@companyid,@departmentname,@createdby,GETDATE(),GETDATE(),1)
+Select 200 STATUS_CODE,
+'Success.' Message
+return
+END
+
+if @flag=2
+Begin
+select departmentname,createddate,d.status,t.username as createdby,createddate from tbl_department as d
+left join tbl_user as t on d.createdby=t.ID
+where companyid=@companyid and d.status !=2
+End
+
+if @flag=3
+Begin
+if not exists(select 'M' from tbl_user where ID=@updatedby)
+Begin
+Select 400 STATUS_CODE,
+'updated_by not exists' Message
+return
+End
+
+if not exists(select 'M' from tbl_department where ID=@Id)
+Begin
+select 400 STATUS_CODE,
+'department doesnot exists'
+ENd
+
+
+if exists(select 'M' from tbl_department where departmentname =@departmentname)
+Begin
+Select 400 STATUS_CODE,
+'Department already exists' Message
+return
+End
+
+Update tbl_department
+set companyid=@companyid,headid=@headid,departmentname=@departmentname,updatedby=@updatedby,updateddate=GETDATE()
+where ID=@Id
+Select 200 STATUS_CODE,
+'Success.' Message
+return
+End
+
+
+
+if @flag=4
+Begin
+if @status=0 and @status=1 and @status=2
+Begin
+Select 400 STATUS_CODE,
+'status is invalid' Message
+return
+End
+
+if exists(select 'M' from tbl_department where companyid=@companyid and updatedby=@updatedby)
+Begin
+update tbl_department set status=@status
+where ID=@Id and companyid=@companyid and updatedby=@updatedby
+Select 200 STATUS_CODE,
+'Success.' Message
+return
+ENd
+Select 400 STATUS_CODE,
+'No Data.' Message
+
+End
+
+END

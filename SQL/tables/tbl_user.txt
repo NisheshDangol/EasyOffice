@@ -1,0 +1,127 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_user]    Script Date: 4/22/2022 2:56:47 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_user](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[user_id] [nvarchar](100) NULL,
+	[user_code] [nvarchar](150) NULL,
+	[com_id] [nvarchar](50) NULL,
+	[device_code] [nvarchar](150) NULL,
+	[user_name] [nvarchar](150) NULL,
+	[password] [varbinary](max) NULL,
+	[first_name] [nvarchar](150) NULL,
+	[middle_name] [nvarchar](150) NULL,
+	[last_name] [nvarchar](150) NULL,
+	[contact] [nvarchar](15) NULL,
+	[pan] [nvarchar](20) NULL,
+	[phone] [nvarchar](20) NULL,
+	[marital_status] [int] NULL,
+	[device_id] [nvarchar](250) NULL,
+	[notification_token] [nvarchar](250) NULL,
+	[date_of_birth] [nvarchar](100) NULL,
+	[email] [nvarchar](150) NULL,
+	[citizenship_no] [nvarchar](150) NULL,
+	[gender] [int] NULL,
+	[blood_group] [int] NULL,
+	[religion] [int] NULL,
+	[address] [nvarchar](250) NULL,
+	[district] [int] NULL,
+	[image] [nvarchar](250) NULL,
+	[is_manager] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[shift_id] [int] NULL,
+	[shift_type_id] [int] NULL,
+	[branch] [int] NULL,
+	[grade_id] [int] NULL,
+	[enroll_date] [date] NULL,
+	[design_id] [int] NULL,
+	[depart_id] [int] NULL,
+	[sub_depart_id] [int] NULL,
+	[job_type] [int] NULL,
+	[leave_date] [date] NULL,
+	[working_status] [int] NULL,
+	[working_day] [nvarchar](150) NULL,
+	[added_date] [date] NULL,
+	[updated_date] [date] NULL,
+	[added_by] [int] NULL,
+	[updated_by] [int] NULL,
+ CONSTRAINT [PK_tbl_user] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_User_id]  DEFAULT ('-') FOR [user_id]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_username]  DEFAULT ('-') FOR [user_name]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_first_name]  DEFAULT (N'-') FOR [first_name]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_middle_name]  DEFAULT (N'-') FOR [middle_name]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_last_name]  DEFAULT (N'-') FOR [last_name]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_contact_no]  DEFAULT (N'-') FOR [contact]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_marital_status]  DEFAULT ((0)) FOR [marital_status]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_notification_token]  DEFAULT (N'-') FOR [notification_token]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_date_of_birth]  DEFAULT (N'-') FOR [date_of_birth]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_email]  DEFAULT (N'-') FOR [email]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_gender]  DEFAULT ((0)) FOR [gender]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_bloodgroup]  DEFAULT (N'-') FOR [blood_group]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_address]  DEFAULT (N'-') FOR [address]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_district]  DEFAULT ((0)) FOR [district]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_image]  DEFAULT (N'-') FOR [image]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_branch]  DEFAULT ((0)) FOR [branch]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_design_id]  DEFAULT ((0)) FOR [design_id]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_depart_id]  DEFAULT ((0)) FOR [depart_id]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_user_type]  DEFAULT ((0)) FOR [sub_depart_id]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_jobtype]  DEFAULT ((0)) FOR [job_type]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_bio]  DEFAULT (N'-') FOR [working_status]
+GO
+
+ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_fb]  DEFAULT (N'-') FOR [working_day]
+GO
+

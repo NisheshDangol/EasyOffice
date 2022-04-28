@@ -1,0 +1,28 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_bank_information]    Script Date: 4/22/2022 1:45:37 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_bank_information](
+	[Id] [int] NULL,
+	[com_id] [nvarchar](250) NULL,
+	[employee_id] [int] NULL,
+	[bank_name] [nvarchar](250) NULL,
+	[ac_name] [nvarchar](250) NULL,
+	[ac_no] [nvarchar](150) NULL,
+	[branch] [nvarchar](150) NULL,
+	[status] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[branch_id] [int] NULL,
+	[created_by] [int] NULL,
+	[updated_by] [int] NULL,
+	[created_date] [date] NULL,
+	[updated_date] [date] NULL
+) ON [PRIMARY]
+GO
+

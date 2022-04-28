@@ -38,9 +38,9 @@ namespace Easy.API.Controllers
         [Route("~/api/change-password")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(int UserID, string oldPassword, string newPassword)
+        public async Task<IActionResult> ChangePassword(int UserID, string OldPwd, string NewPwd)
         {
-            var data = await _unitOfWork.service.ChangePassword(UserID, oldPassword, newPassword);
+            var data = await _unitOfWork.service.ChangePassword(UserID, OldPwd, NewPwd);
             return Ok(data);
         }
     }

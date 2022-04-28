@@ -1,0 +1,77 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 4/28/2022 11:11:55 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_leads]
+(
+@ID int=NULL,
+@CompanyId nvarchar(250)=NULL,
+@OrganizationId int=NULL,
+@ProductId int=NULL,
+@EnquiryDate date =NULL,
+@EnquiryTime nvarchar(250)=NULL,
+@LeadStatus int=NULL,
+@Assignedto int=NULL,
+@Remarks nvarchar(250)=NULL,
+@EmpId int=NULL,
+@BranchId int=NULL,
+@FiscalId int=NULL,
+@flag nvarchar(50),
+@LeadSource int=NULL
+)
+As
+BEGIN
+IF @flag='CreateLead'
+BEGIN
+	if not exists (select 'm' from tbl_organization where ID = @OrganizationId)
+	begin
+		select 202 StatusCode , 'OrganizationID does not match' Message
+		return;
+	end
+	else
+	begin
+		insert into tbl_leads(
+		  com_id, created_by, org_id, product_id, 
+		  enquiry_date, enquiry_time, assigned_to, 
+		  remarks, lead_status, branch_id, 
+		  fiscal_id, updated_by, status,created_date,updated_date,lead_source
+		) 
+		values 
+		  (
+			@CompanyId, @EmpId, @OrganizationId, 
+			@ProductId, @EnquiryDate, @EnquiryTime, 
+			@Assignedto, @Remarks, @LeadStatus, 
+			@BranchId, @FiscalId, @EmpId, 1,(select dbo.fndate()),(select dbo.fndate()),@LeadSource
+		  )
+		  select 200 StatusCode, 'Lead Inserted Successfully' Message
+		  return;
+	end
+
+
+
+END
+
+
+IF @flag='leadsource'
+BEGIN
+	if not exists(select 'm' from tbl_branch where ID = @BranchId)
+	begin
+		select 202 StatusCode, 'Branch Id does not exists' Message
+		return;
+	end
+	else
+	begin
+		select tbl_lead_source.ID SourceID,tbl_lead_source.name SourceName,(select COUNT(*) 
+		from tbl_organization where tbl_organization.comp_id=tbl_lead_source.com_id) OrganizationCount,
+		(select COUNT(*) from tbl_leads where tbl_leads.lead_source=tbl_lead_source.ID) LeadCount from tbl_lead_source
+		where tbl_lead_source.com_id=@CompanyId and tbl_lead_source.branch_id=@BranchId and status=1
+		group by tbl_lead_source.ID,name,com_id
+		select 200 StatusCode , 'Success' Message
+	end
+	END
+
+
+END

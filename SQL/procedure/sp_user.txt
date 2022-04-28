@@ -1,0 +1,349 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 4/28/2022 11:08:35 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_user]
+(
+@com_id nvarchar(50)=null,
+@username nvarchar(150)=null,
+@password nvarchar(150)=null,
+--@first_name nvarchar(150)=null,
+--@middle_name nvarchar(150)=null,
+--@last_name nvarchar(150)=null,
+@notification_token nvarchar(100)=NUll,
+@device_id nvarchar(250) = NULL,
+@emp_id int = NULL,
+@user_id int = NULL,
+@oldpassword nvarchar(150) = NULL,
+
+
+@flag nvarchar(50)
+)
+As
+Begin
+
+if @flag='Login'
+Begin
+	if not exists(select 'M' from tbl_user where com_id = @com_id)
+	Begin
+		select 201 StatusCode,
+		'companyid does not exists' Message
+	return;
+	end
+	if not exists(select 'M' from tbl_user where user_name = @username)
+	Begin
+		select 202 StatusCode,
+		'username doesnot exists.' Message
+	return;
+	End
+
+	if not exists(select 'M' from tbl_user where device_id = @device_id and user_name = @username)
+	Begin
+		select 204 StatusCode,
+		'Device not allowed' Message
+		return;
+	end
+
+	if exists (select 'm' from tbl_user where user_name = @username and working_status = 3)
+	begin
+		select 206 StatusCode, 'User not allowed. Please contact to organisation' Message
+		return;
+	end
+
+	if exists(select 'M' from tbl_user where user_name=@username and PwdCompare(@password,(select password from tbl_user where user_name = @username ))=1 )
+	Begin
+		select 
+		  u.ID as UID,
+		  u.user_id as UserID,
+		  u.device_code as DeviceCode,
+		  u.first_name as FirstName,
+		  u.middle_name as MiddleName,
+		  u.last_name as LastName,
+		  u.contact as Contact,
+		  u.pan as PAN,
+		  u.phone as Phone,
+
+		  case u.marital_status
+		  when 1 then 'Single'
+		  when 2 then 'Married'
+		  when 3 then 'Widow'
+		  else 'Divorced'
+		  end MaritalStatus,
+
+		  u.date_of_birth as DateOfBirth, 
+		  u.email as Email, 
+		  u.citizenship_no as CitizenshipNo,
+
+		  case u.gender
+		  when 1 then 'Male'
+		  when 2 then 'Female'
+		  Else 'Others'
+		  end Gender,
+
+		  case u.blood_group
+		  when 1 then 'A+'
+		  when 2 then 'A-'
+		  when 3 then 'B+'
+		  when 4 then 'B-'
+		  when 5 then 'AB+'
+		  when 6 then 'AB-'
+		  when 7 then 'O+'
+		  else 'O-'
+		  end BloodGroup,
+
+		  case u.religion
+		  when 1 then 'Hindu'
+		  when 2 then 'Buddhist'
+		  when 3 then 'Islam'
+		  else 'Christian'
+		  end Religion,
+
+		  u.sub_depart_id as SubDepartmentID, 
+		  u.address as Address, 
+		  u.district as District, 
+		  u.image as Image, 
+		  u.is_manager as IsManager, 
+		  y.fiscal_year as FiscalYear,
+		  u.fiscal_id as FiscalId,
+		  s.shift_name as ShiftName, 
+		  s.shift_start as ShiftStart, 
+		  s.shift_end as ShiftEnd, 
+		  s.allowed_late_in as AllowedLateIn, 
+		  s.allowed_early_out as AllowedEarlyOut, 
+		  s.launch_start as LaunchStart, 
+		  s.launch_end as LaunchEnd,
+
+		  case u.shift_type_id
+		  when 1 then 'Weekly'
+		  when 2 then 'Monthly'
+		  when 3 then 'Yearly' 
+		  end as ShiftType, 
+
+		  u.shift_id as ShiftID,
+		  b.name as BranchName,
+		  u.branch as BranchId,
+		  g.grade_name as GradeName,
+		  u.grade_id as GradeID, 		  
+		  u.enroll_date as EnrollDate,
+		  de.desig_name as DesignationName,
+		  u.design_id as DesignationID, 		  
+		  u.depart_id as DepartmentID, 	
+		  d.depart_name as DepartmentName,
+		  u.sub_depart_id as SubDepartmentID, 
+		  sd.sub_dep_name as SubDepartmentName,
+
+		  case u.job_type
+		  when 1 then 'Full Time'
+		  when 2 then 'Part Time'
+		  when 3 then 'Freelance'
+		  else 'Contract'
+		  end JobType,
+
+		  u.leave_date as LeavedDate, 
+
+		  case u.working_status
+		  when 1 then 'Working'
+		  else 'Not Working'
+		  end WorkingStatus,
+		  u.working_day as WorkingDays 
+		  
+		from 
+		  tbl_user as u 
+		  left join tbl_shift as s on s.ID = u.shift_id 
+		  left join tbl_department as d on d.ID = u.depart_id 
+		  left join tbl_designation as de on de.ID = u.design_id 
+		  left join tbl_sub_department as sd on sd.Id = u.sub_depart_id
+		  left join tbl_company_branch as b on b.Id = u.branch
+		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
+		  left join tbl_grade as g on g.Id=u.grade_id
+		  where u.user_name=@username and u.working_status = 1
+
+
+		update tbl_user set notification_token = @notification_token where user_name = @username
+		return;
+	end
+
+	else
+	begin
+		select 203 StatusCode,
+		'Password doesnot match' Message
+		return;
+end
+end
+
+
+if @flag='CheckSession'
+Begin
+	if not exists(select 'M' from tbl_user where com_id = @com_id)
+	Begin
+		select 201 StatusCode,
+		'companyid does not exists' Message
+	return;
+	end
+	if not exists(select 'M' from tbl_user where user_name = @username)
+	Begin
+		select 202 StatusCode,
+		'username doesnot exists.' Message
+	return;
+	End
+
+	if not exists(select 'M' from tbl_user where device_id = @device_id and user_name = @username)
+	Begin
+		select 204 StatusCode,
+		'Device not allowed' Message
+		return;
+	end
+
+	if exists (select 'm' from tbl_user where user_name = @username and working_status = 3)
+	begin
+		select 206 StatusCode, 'User not allowed. Please contact to organisation' Message
+		return;
+	end
+
+	if exists(select 'm' from tbl_user where user_name=@username and com_id=@com_id and device_id=@device_id)
+	begin
+		select 
+		  u.ID as UID,
+		  u.user_id as UserId,
+		  u.device_code as DeviceCode,
+		  u.first_name as FirstName,
+		  u.middle_name as MiddleName,
+		  u.last_name as LastName,
+		  u.contact as Contact,
+		  u.pan as PAN,
+		  u.phone as Phone,
+
+		  case u.marital_status
+		  when 1 then 'Single'
+		  when 2 then 'Married'
+		  when 3 then 'Widow'
+		  else 'Divorced'
+		  end MaritalStatus,
+
+		  u.date_of_birth as DateOfBirth, 
+		  u.email as Email, 
+		  u.citizenship_no as CitizenshipNo,
+
+		  case u.gender
+		  when 1 then 'Male'
+		  when 2 then 'Female'
+		  Else 'Others'
+		  end Gender,	  
+
+		  case u.blood_group
+		  when 1 then 'A+'
+		  when 2 then 'A-'
+		  when 3 then 'B+'
+		  when 4 then 'B-'
+		  when 5 then 'AB+'
+		  when 6 then 'AB-'
+		  when 7 then 'O+'
+		  else 'O-'
+		  end BloodGroup,
+
+		  case u.religion
+		  when 1 then 'Hindu'
+		  when 2 then 'Buddhist'
+		  when 3 then 'Islam'
+		  else 'Christian'
+		  end Religion,
+
+		  u.sub_depart_id as SubDepartmentID, 
+		  u.address as  Address, 
+		  u.district as District, 
+		  u.image as Image,  
+		  u.is_manager as IsManager,
+		  y.fiscal_year as FiscalYear,
+		  u.fiscal_id as FiscalId,		 
+		  s.shift_name as ShiftName, 
+		  s.shift_start as ShiftStart, 
+		  s.shift_end as ShiftEnd, 
+		  s.allowed_late_in as AllowedLateIn, 
+		  s.allowed_early_out as AllowedEarlyOut, 
+		  s.launch_start as LaunchStart, 
+		  s.launch_end as LaunchEnd, 
+		  u.shift_type_id as ShiftTypeId, 
+		  b.name as Branch,
+		  u.branch as BranchId,
+		  u.shift_id as shiftID, 
+		  u.grade_id as gradeID, 
+		  g.grade_name as GradeName,
+		  u.enroll_date as EnrollDate, 
+		  u.design_id as DesignationID, 
+		  u.depart_id as DepartmentID, 
+		  d.depart_name as DepartmentName,
+		  de.desig_name as DesignationName, 
+		  u.sub_depart_id as SubDepartmentID,
+		  sd.sub_dep_name as subDepartmentName,
+		  case u.job_type
+		  when 1 then 'Full Time'
+		  when 2 then 'Part Time'
+		  when 3 then 'Freelance'
+		  else 'Contract'
+		  end JobType,
+		  u.leave_date as LeavedDate, 
+		  case u.working_status
+		  when 1 then 'Working'
+		  else 'Not Working'
+		  end WorkingStatus,
+		  u.working_day as WorkingDays  
+		  
+		from 
+		  tbl_user as u 
+		  left join tbl_shift as s on s.ID = u.shift_id 
+		  left join tbl_department as d on d.ID = u.depart_id 
+		  left join tbl_designation as de on de.ID = u.design_id 
+		  left join tbl_sub_department as sd on sd.Id = u.sub_depart_id
+		  left join tbl_company_branch as b on b.Id = u.branch
+		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
+		  left join tbl_grade as g on g.Id=u.grade_id
+		  where u.user_name=@username
+
+		return;
+	end
+End
+
+if(@flag = 'bankinfo')
+BEGIN
+	if not exists(select 'm' from tbl_bank_information where com_id = @com_id)
+	begin
+		select 201 StatusCode, 'Company ID does not exist' Message
+		return;
+	end
+	else if not exists(select 'm' from tbl_user where ID = @emp_id)
+	begin
+		Select 202 StatusCode, 'empID does not exist' Message
+		return;
+	end
+	else
+	begin
+		select bank_name as BankName, ac_name as AcNumber, ac_no as AcName, branch as Branch from tbl_bank_information where com_id = @com_id and employee_id = @emp_id and status=1
+		return;
+	end
+END
+
+
+if(@flag = 'ChangePwd')
+Begin
+	if not exists (Select 'M' from tbl_user where ID = @user_id)
+	begin
+		Select 202 StatusCode, 'UserId does not exists' Message
+		return;
+	end
+	if not exists (select 'M' from tbl_user where PWDCOMPARE(@oldpassword,(Select password from tbl_user where ID = @user_id))=1)
+	begin
+		Select 203 StatusCode, 'OldPassword does not match' Message
+		return;
+	end
+	if exists(select 'M' from tbl_user where PWDCOMPARE(@oldpassword,(Select password from tbl_user where ID = @user_id))=1)
+	begin
+		Update tbl_user set password = PWDENCRYPT(@password), updated_date=GETDATE(), updated_by=@user_id where ID = @user_id
+		Select 200 StatusCode, 'Success' Message
+		return;
+	end
+End
+
+End

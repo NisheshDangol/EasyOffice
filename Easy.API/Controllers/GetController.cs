@@ -85,9 +85,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/org-product")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> OrgProduct(string CompanyId, int BranchId)
+        public async Task<IActionResult> OrgProduct(string ComID, int BranchID)
         {
-            var data = await _unitOfWork.GetServices.orgproduct(CompanyId, BranchId);
+            var data = await _unitOfWork.GetServices.orgproduct(ComID, BranchID);
             return Ok(data);
 
         }
@@ -95,27 +95,27 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/org-staff")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> OrgStaff(string CompanyId, string BranchId, int DepartmentId, int SubDepartmentId)
+        public async Task<IActionResult> OrgStaff(string ComID, string BranchID, int DepartmentID, int SubDepartmentID)
         {
-            var data = await _unitOfWork.GetServices.orgstaff(CompanyId, BranchId,DepartmentId,SubDepartmentId);
+            var data = await _unitOfWork.GetServices.orgstaff(ComID, BranchID,DepartmentID,SubDepartmentID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/contact-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ContactList(string CompanyId, int EmployeeId)
+        public async Task<IActionResult> ContactList(string ComID, int EmpID)
         {
-            var data = await _unitOfWork.GetServices.ContactInfo(CompanyId,EmployeeId);
+            var data = await _unitOfWork.GetServices.ContactInfo(ComID, EmpID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/contact-info")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ContactInfo(string CompanyId, int EmployeeId)
+        public async Task<IActionResult> ContactInfo(string ComID, int EmpID)
         {
-            var data = await _unitOfWork.GetServices.ContactList(CompanyId,EmployeeId);
+            var data = await _unitOfWork.GetServices.ContactList(ComID,EmpID);
             return Ok(data);
 
         }

@@ -1,0 +1,70 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_notification]    Script Date: 4/28/2022 11:11:40 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Proc [dbo].[sp_notification]
+(
+@comid nvarchar(250)=NULL,
+@title nvarchar(250)=NULL,
+@description nvarchar(250)=NULL,
+@image nvarchar(250)=NULL,
+@publisheddate date =NULL,
+@userid int=NULL,
+@acBtn nvarchar(250)=NULL,
+@redurl nvarchar(250)=NULL,
+@branchId int =NULL,
+@fiscalid int=NULL,
+@createdby int=NULL,
+@empID int=NULL,
+@flag nvarchar(25)
+
+)
+AS
+BEGIN
+
+if @flag='CreateNotifi'
+	if not exists (select 'm' from tbl_user where ID = @createdby)
+	begin
+		Select 203 StatusCode, 'Employee ID does not exist' Message
+		return;
+	end
+	else
+	BEGIN
+		INSERT INTO tbl_notification(com_id,title,description,image,published_date,user_id,ac_btn,red_url,fiscal_id,created_by,status,updated_by,created_date,updated_date)
+		values(@comid,@title,@description,@image,@publisheddate,@userid,@acBtn,@redurl,@fiscalid,@createdby,1,@createdby,(select dbo.fndate()),(select dbo.fndate()))
+	END
+
+	
+
+if @flag='NotificationList'
+BEGIN
+	
+	if @empID=-1
+	begin
+		select title,n.description,n.image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,tbl_user.user_name CreatedBy from tbl_notification n
+		left join tbl_user on tbl_user.ID=n.created_by
+
+		where n.com_id=@comid
+	end
+	else
+	begin
+		if not exists (select 'm' from tbl_user where ID = @empID)
+		begin
+			Select 203 StatusCode, 'Employee ID does not exist' Message
+			return;
+		end
+		else
+		begin
+			select title,n.description,n.image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,tbl_user.user_name CreatedBy from tbl_notification n
+			left join tbl_user on tbl_user.ID=n.created_by
+
+			where created_by=@empID
+		end
+	end
+END
+
+
+END

@@ -1,0 +1,37 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_follow_up]    Script Date: 4/22/2022 2:23:23 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_follow_up](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[com_id] [nvarchar](250) NULL,
+	[org_id] [int] NULL,
+	[product_id] [int] NULL,
+	[follow_date] [nvarchar](250) NULL,
+	[follow_type] [int] NULL,
+	[follow_for] [int] NULL,
+	[assigned_to] [int] NULL,
+	[remarks] [nvarchar](250) NULL,
+	[status] [int] NULL,
+	[follow_status] [int] NULL,
+	[created_by] [int] NULL,
+	[updated_by] [int] NULL,
+	[added_date] [nvarchar](250) NULL,
+	[updated_date] [nvarchar](250) NULL,
+	[follow_time] [nvarchar](250) NULL,
+	[branch_id] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[add_to_type] [int] NULL,
+ CONSTRAINT [PK_tbl_follow_up] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

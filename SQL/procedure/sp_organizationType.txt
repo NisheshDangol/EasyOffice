@@ -1,0 +1,192 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_Organizationtype]    Script Date: 4/28/2022 11:10:22 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_Organizationtype](
+@ID int=NULL,
+@companyId nvarchar(250) = NULL,
+@name nvarchar(250) = NULL,
+@status int =NULL,
+@createdby int =NULL,
+@updatedby int =NULL,
+@addeddate date=NULL,
+@updateddate date=NULL,
+@flag int
+)
+As
+BEGIN
+if @flag=1
+BEGIN
+
+
+if @companyId=''
+Begin
+	Select 400 STATUS_CODE,
+	'CompanyId not found.' Message
+	return;
+END
+if exists(select 'M' from tbl_organizationtype where name=@name)
+Begin
+	Select 400 STATUS_CODE,
+	'Name already exists' Message
+	return;
+ENd
+
+if not exists(select 'M' from tbl_user where ID=@createdby)
+Begin
+	Select 400 STATUS_CODE,
+	'Created By not found.' Message
+	return;
+End
+
+
+Insert into tbl_organizationtype(companyid,name,createdby,addeddate,updateddate)
+Values(@companyId,@name,@createdby,GETDATE(),GETDATE())
+
+SELECT 200 STATUS_CODE,
+'Success' Message
+return
+
+END
+
+
+if @flag=2
+BEGIN
+
+	if @companyId=''
+	BEGIN
+		Select 400 STATUS_CODE,
+		'CompanyId not found.' Message
+		return;
+	END
+	if not exists(select 'M' from tbl_user where ID=@createdby)
+	BEGIN
+		Select 400 STATUS_CODE,
+		'Updated By not found' Message
+		return;
+	END
+	if exists(select 'M' from tbl_organizationtype where companyid=@companyId and createdby=@createdby)
+	BEGIN
+		select o.Id,o.name,u2.username as createdby,u3.username as updatedby from tbl_organizationtype as o 
+		left join tbl_user as u2 on o.createdby=u2.ID
+		left join tbl_user as u3 on o.updatedby=u3.ID
+		where companyid=@companyId and createdby=@createdby
+		SELECT 200 STATUS_CODE,
+		'Success' Message
+		return
+	END
+END
+
+
+
+
+
+
+
+if @flag=3
+BEGIN
+if @companyId=''
+Begin
+	Select 400 STATUS_CODE,
+	'CompanyId not found.' Message
+	return;
+END
+if exists(select 'M' from tbl_organizationtype where name=@name)
+Begin
+	Select 400 STATUS_CODE,
+	'Name already exists' Message
+	return;
+ENd
+
+if not exists(select 'M' from tbl_user where ID=@updatedby)
+Begin
+	Select 400 STATUS_CODE,
+	'Updated By not found.' Message
+	return;
+End
+
+if exists(select 'M' from tbl_organizationtype where Id=@ID)
+Begin
+	update tbl_organizationtype
+	set companyid=@companyId,name=@name,updatedby=@updatedby,updateddate=GETDATE()
+	where Id=@ID
+	SELECT 200 STATUS_CODE,
+	'Success' Message
+	return
+End
+
+
+
+END
+
+if @flag=4
+Begin
+if @companyId=''
+Begin
+	Select 400 STATUS_CODE,
+	'CompanyId not found.' Message
+	return;
+END
+if exists(select 'M' from tbl_organizationtype where name=@name)
+Begin
+	Select 400 STATUS_CODE,
+	'Name already exists' Message
+	return;
+ENd
+
+if not exists(select 'M' from tbl_user where ID=@updatedby)
+Begin
+	Select 400 STATUS_CODE,
+	'Updated By not found.' Message
+	return;
+End
+
+
+--if @status !=0 and @status !=1 and @status != 2
+--BEGIN
+--	select 400 STATUS_CODE,
+--	'status in invalid' Message
+--	return;
+--END
+if exists(select 'M' from tbl_organizationtype where Id=@ID)
+BEGIN
+	update tbl_organizationtype 
+	set status=@status
+	where Id=@ID and companyid=@companyId and updatedby=@updatedby
+	SELECT 200 STATUS_CODE,
+	'Success' Message
+	return
+END
+
+
+
+End
+
+if @flag=5
+BEGIN
+	if @companyId=''
+	BEGIN
+		Select 400 STATUS_CODE,
+		'CompanyId not found.' Message
+		return
+	END
+	if not exists(select 'M' from tbl_user where ID=@createdby)
+	BEGIN
+		Select 400 STATUS_CODE,
+		'Updated By not found' Message
+		return
+	END
+	if exists(select 'M' from tbl_organizationtype where companyid=@companyId and createdby=@createdby and Id=@ID)
+	BEGIN
+		select * from tbl_organizationtype where companyid=@companyId and createdby=@createdby and Id=@ID
+		SELECT 200 STATUS_CODE,
+		'Success' Message
+		return
+	END
+END
+
+
+END

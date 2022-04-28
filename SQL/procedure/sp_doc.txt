@@ -1,0 +1,39 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_doc]    Script Date: 4/28/2022 11:13:16 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_doc](
+@ComId nvarchar(150),
+@EmpId int
+)
+As
+BEGIN
+	if not exists(select 'M' from tbl_user where ID = @EmpId)
+	begin
+		select 202 StatusCode, 'EmpID does not exists' Message
+		return;
+	end
+
+	if not exists(select '' from tbl_document where com_id =@ComId)
+	begin
+		select 201 StatusCode, 'ComID does not exists' Message
+		return;
+	end
+
+	if exists(select 'M' from tbl_document where com_id=@ComId and employee_id = @EmpId)
+	BEGIN
+		Select file_name as FileName,
+		case file_type
+		when 1 then 'doc'
+		when 2 then 'pdf'
+		when 3 then 'ppt'
+		when 4 then 'file'
+		end FileType,
+		file_path as FilePath
+		from tbl_document where com_id=@ComId and employee_id=@EmpId and status = 1
+		return;
+	END
+end

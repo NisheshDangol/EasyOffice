@@ -1,0 +1,49 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_jobinfo]    Script Date: 4/28/2022 11:12:18 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_jobinfo]
+(
+@comId nvarchar(250) = null,
+@empId int = null
+)
+as
+begin
+if not exists(select 'm' from tbl_job_information where com_id = @comId)
+begin
+	select 201 StatusCode, 'Company ID does not exist' Message
+	return;
+end
+else if not exists(select 'm' from tbl_user where ID = @empId)
+begin
+	Select 202 StatusCode, 'EmpID does not exist' Message
+	return;
+end
+else if exists(select 'M' from tbl_job_information where com_id=@comId and employee_id=@empId)
+begin
+Select 
+  tbl_designation.desig_name as Designation, 
+  tbl_department.depart_name as Department, 
+  tbl_sub_department.sub_dep_name as SubDepartment, 
+  tbl_grade.grade_name as Grade, 
+  tbl_user.user_name as Manager, 
+  tbl_job_information.working_status as WorkingStatus, 
+  tbl_job_information.start_date as StartDate, 
+  tbl_job_information.end_date as Enddate
+from 
+  tbl_job_information 
+  left join tbl_designation on tbl_job_information.designation_id = tbl_designation.ID 
+  left join tbl_department on tbl_job_information.department_id = tbl_department.ID 
+  left join tbl_sub_department on tbl_job_information.sub_department_id = tbl_sub_department.Id 
+  left join tbl_grade on tbl_job_information.grade_group_id = tbl_grade.ID 
+  left join tbl_user on tbl_job_information.grade_group_id = tbl_user.ID 
+where 
+  tbl_job_information.com_id = @comId 
+  and tbl_job_information.employee_id = @empId
+
+  end
+
+end

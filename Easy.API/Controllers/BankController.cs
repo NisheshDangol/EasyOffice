@@ -19,7 +19,7 @@ namespace Easy.API.Controllers
             _unitOfWork = unitOfWork;
         }
         [HttpGet]
-        [Route("~/api/bankinfo")]
+        [Route("~/api/bank-information")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> BankList(string ComID, int EmpID)
         {

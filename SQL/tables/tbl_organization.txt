@@ -1,0 +1,45 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_organization]    Script Date: 4/22/2022 2:53:50 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_organization](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[comp_id] [nvarchar](250) NULL,
+	[org_name] [nvarchar](250) NULL,
+	[org_type] [int] NULL,
+	[address] [nvarchar](250) NULL,
+	[district] [int] NULL,
+	[landline] [nvarchar](250) NULL,
+	[phone_no] [nvarchar](50) NULL,
+	[cperson_name] [nvarchar](150) NULL,
+	[cperson_contact] [nvarchar](50) NULL,
+	[email] [nvarchar](150) NULL,
+	[pan] [nvarchar](50) NULL,
+	[website] [nvarchar](150) NULL,
+	[fb] [nvarchar](100) NULL,
+	[latitude] [decimal](18, 2) NULL,
+	[longitude] [decimal](18, 2) NULL,
+	[source] [int] NULL,
+	[is_our_client] [int] NULL,
+	[current_system] [nvarchar](250) NULL,
+	[status] [int] NULL,
+	[branch_id] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[created_by] [int] NULL,
+	[added_date] [datetime] NULL,
+	[updated_date] [datetime] NULL,
+	[updated_by] [int] NULL,
+	[assigned_to] [int] NULL,
+ CONSTRAINT [PK_tbl_organization] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

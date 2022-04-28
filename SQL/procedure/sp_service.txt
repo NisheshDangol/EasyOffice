@@ -1,0 +1,25 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_service]    Script Date: 4/28/2022 11:09:14 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Proc [dbo].[sp_service]
+(
+@flag varchar(20)
+)
+AS
+BEGIN
+
+DECLARE @ServiceList nvarchar(100)
+SET @ServiceList='select ID serviceID,service_name ServiceName,slug Slug,image from tbl_service where status=1'
+
+if @flag = 'Service'
+BEGIN
+EXEC(@ServiceList)
+END
+
+
+
+END

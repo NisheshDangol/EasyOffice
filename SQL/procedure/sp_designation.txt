@@ -1,0 +1,90 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_designation]    Script Date: 4/28/2022 11:13:42 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[sp_designation] 
+(@ID int = NULL,
+@companyid nvarchar(50)=NULL,
+@designationname nvarchar(150)=NULL,
+@status int=NULL,
+@createdby int=NULL,
+@updatedby int=NULL,
+@createddate date=NULL,
+@updatedate date=NULL,
+@flag int)
+AS
+BEGIN
+	SET NOCOUNT ON;
+if @flag = 1
+BEGIN
+if @createdby=0
+Begin
+Select 400 STATUS_CODE,
+'createdby Not Found.' Message
+return;
+END
+
+
+if exists (select 'm' from tbl_designation where designationname=@designationname)
+BEGIN
+select 400 STATUS_CODE,
+'designation already exists' Message
+return;
+END
+
+
+INSERT INTO tbl_designation(companyid,designationname,createdby,updatedby,status,createddate,updatedate)
+VALUES(@companyid,@designationname,@createdby,@createdby,1,GETDATE(),GETDATE())
+select 200 STATUS_CODE,
+'Success.' Message
+return;
+END
+
+if @flag = 2
+BEGIN
+SELECT designationname,createddate,d.status,t.username as createdby,t1.username as updatedby,createddate 
+from tbl_designation as d
+left join tbl_user as t on d.createdby=t.ID
+left join tbl_user as t1 on d.updatedby=t.ID
+where companyid=@companyid and d.status !=2
+END
+
+if @flag = 3
+BEGIN
+
+if exists(select 'M' from tbl_designation where companyid=@companyid)
+Begin
+UPDATE tbl_designation
+SET designationname=@designationname,status=@status,updatedby=@updatedby
+WHERE companyid=@companyid
+select 200 STATUS_CODE,
+'Success.' Message
+END
+End
+Select 400 STATUS_CODE,
+'Companyid doesnot exists' Message
+
+
+
+if @flag=4
+BEGIN
+IF @status=0 and @status=1 and @status=2
+BEGIN
+SELECT 400 STATUS_CODE,
+'Status is Invalid' Message
+RETURN;
+END
+UPDATE tbl_designation
+SET status=@status
+WHERE companyid=@companyid and updatedby=@updatedby and ID=@ID
+select 200 STATUS_CODE,
+'Success.' Message
+
+
+END
+
+
+END

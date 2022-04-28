@@ -1,0 +1,30 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_sub_department]    Script Date: 4/22/2022 2:56:03 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_sub_department](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[com_id] [nvarchar](50) NULL,
+	[dep_id] [nvarchar](50) NULL,
+	[sub_dep_name] [nvarchar](50) NULL,
+	[sub_dep_head_id] [int] NULL,
+	[status] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[branch_id] [int] NULL,
+	[created_date] [date] NULL,
+	[update_date] [date] NULL,
+	[created_by] [int] NULL,
+	[updated_by] [int] NULL,
+ CONSTRAINT [PK_tbl_sub_department] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

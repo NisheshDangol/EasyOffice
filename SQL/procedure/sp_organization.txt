@@ -1,0 +1,213 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 4/28/2022 11:11:11 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_organization](
+@Id int=NULL,
+@companyid nvarchar(250) =NULL,
+@organizationname nvarchar(250)=NULL,
+@organizationtype int=null,
+@address nvarchar(250)=NULL,
+@userid int=NULL,
+
+@landline nvarchar(250)=NULL,
+@phoneno nvarchar(100)=NULL,
+
+@status int=NULL,
+@district int =NULL,
+@FromDate nvarchar(250)=NULL,
+@ToDate nvarchar(250)=NULL,
+@DepartmentId int=NULL,
+@SubDepartmentId int=NULL,
+@Assignedto int=NULL,
+
+@cpersonname nvarchar(150)=NULL,
+@cpersoncontact nvarchar(150)=NULL,
+@email nvarchar(250)=NULL,
+@pan nvarchar(50)=NULL,
+@website nvarchar(150)=NULL,
+@fb nvarchar(150)=NULL,
+@latitude decimal(18,2)=NULL,
+@longitude decimal(18,2)=NULL,
+@source int=NULL,
+@isourclient int=null,
+@currentsystem nvarchar(250)=NULL,
+@branchid int=NULL,
+@fiscalid int=NULL,
+@createdby int=NULL,
+@updatedby int=NULL,
+@flag nvarchar(50)
+)
+AS
+BEGIN
+if @flag='createorg'
+BEGIN
+	--if not exists( select 'm' from tbl_organization where comp_id=@companyid)
+	--BEGIN
+	--	Select 201 StatusCode,
+	--	'CompanyId does Not Exist' Message
+	--	return;
+	--END
+	--if @organizationtype=''
+	--BEGIN
+	--	Select 400 StatusCode,
+	--	'Organization Type' Message
+	--END
+	
+	if exists(select 'M' from tbl_organization where org_name=@organizationname)
+	BEGIN
+		SELECT 202 StatusCode,
+		'Organization name already exists.' Message
+		return;
+
+	END
+
+	if exists(select 'M' from tbl_organization where pan=@pan) 
+	BEGIN		
+		SELECT 203 StatusCode,
+		'Pan already exists.' Message
+		return;
+	END
+
+	if exists(select 'M' from tbl_organization where email=@email)
+	BEGIN
+		
+		SELECT 204 StatusCode,
+		'Email already exists.' Message
+		return;
+	END
+	Insert into tbl_organization(
+  comp_id, created_by, org_name, org_type, 
+  address, district, landline, phone_no, 
+  cperson_name, cperson_contact, email, 
+  pan, website, fb, latitude, longitude, 
+  source, is_our_client, current_system, 
+  branch_id, fiscal_id,updated_by,added_date
+  ,updated_date,status,assigned_to
+) 
+values 
+  (
+    @companyid, @createdby, @organizationname, 
+    @organizationtype, @address, @district, 
+    @landline, @phoneno, @cpersonname, 
+    @cpersoncontact, @email, @pan, @website, 
+    @fb, @latitude, @longitude, @source, 
+    @isourclient, @currentsystem,
+	@branchid,@fiscalid,@createdby,(select dbo.fndate())
+	,(select dbo.fndate()),1,@Assignedto
+  )
+	SELECT 200 StatusCode,
+	'Success.' Message
+	return;
+END
+
+
+if @flag='orglist'
+BEGIN
+
+if @isourclient=-1
+BEGIN
+select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
+o.district as District,o.phone_no as Phone,o.cperson_contact as ContectPerson,
+o.assigned_to AssignedTo,u.user_name as StaffName,COUNT(l.Id) as LeadCount,
+COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
+from tbl_organization as o 
+left join tbl_user as u on o.assigned_to=u.ID
+left join tbl_organizationtype as t on o.org_type=t.Id
+left join tbl_leads as l on l.org_id=o.Id
+left join tbl_follow_up as f on f.org_id=o.Id
+left join tbl_customer_support as s on s.org_id=o.Id
+group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+END
+Else
+BEGIN
+select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,o.district as District,o.phone_no as Phone
+,o.assigned_to AssignedTo,u.user_name as StaffName,o.cperson_contact as ContactPerson,COUNT(l.Id) as LeadCount,COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
+from tbl_organization as o 
+left join tbl_user as u on o.assigned_to=u.ID
+left join tbl_organizationtype as t on o.org_type=t.Id
+left join tbl_leads as l on l.org_id=o.Id
+left join tbl_follow_up as f on f.org_id=o.Id
+left join tbl_customer_support as s on s.org_id=o.Id
+where comp_id=@companyid and is_our_client=@isourclient and o.created_by=@userid
+group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+
+END
+
+END
+
+if @flag='allorglist'
+if @isourclient=-1
+BEGIN
+Select o.Id as OrgID,o.org_name as OrgName,ot.name as OrgType,o.address as Address,o.District as District,
+o.source as Source,o.email as Email,o.phone_no as Phone,o.website as Website,(u.first_name+' '+u.last_name) as AssignedTo,COUNT(l.Id) as LeadCount,
+COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount from tbl_organization as o
+left join tbl_customer_support as s on s.org_id=o.Id
+left join tbl_follow_up as f on f.org_id=o.Id
+left join tbl_product as p on o.comp_id=p.com_id
+left join tbl_leads as l on l.product_id=p.ID
+left join tbl_user as u on u.ID = o.assigned_to
+left join tbl_organizationtype as ot on ot.ID = o.org_type
+where o.status =1
+group by o.Id,o.org_name,ot.name,o.address,o.district
+,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
+END
+ELSE
+BEGIN
+Select o.Id as OrgId,o.org_name as OrgName,ot.name as OrgType,o.address,o.district
+,o.source,o.email,o.phone_no as Phone,o.website as Website,(u.first_name+' '+u.last_name) as AssignedTo,COUNT(l.Id) as LeadCount,COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount from tbl_organization as o
+left join tbl_customer_support as s on s.org_id=o.Id
+left join tbl_follow_up as f on f.org_id=o.Id
+left join tbl_leads as l on l.org_id=o.Id
+left join tbl_user as u on u.ID = o.assigned_to
+left join tbl_organizationtype as ot on ot.ID = o.org_type
+where o.comp_id=@companyid and o.created_by=@createdby and o.is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
+group by o.Id,o.org_name,ot.name,o.address,o.district
+,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
+END
+
+if @flag='orgproduct'
+BEGIN
+
+select p.ID ProductID,p.prod_name ProductName,
+(select COUNT(*) from tbl_leads where tbl_leads.product_id=p.ID) LeadCount,
+(select COUNT(*) from tbl_follow_up f where f.product_id=p.ID) FollowCount,
+(select COUNT(*) from tbl_customer_support,tbl_follow_up f where tbl_customer_support.org_id=f.org_id) SupportCount
+
+from tbl_product p
+where p.com_id=@companyid and p.branch_id=@branchid and p.status = 1
+
+END
+
+if @flag='orgstaff'
+if @SubDepartmentId=-1
+BEGIN
+select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
+join tbl_department on tbl_user.depart_id=tbl_department.ID
+join tbl_designation on tbl_user.design_id = tbl_designation.ID
+join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
+where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
+tbl_department.ID=@DepartmentId;
+END
+ELSE
+BEGIN
+select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
+join tbl_department on tbl_user.depart_id=tbl_department.ID
+join tbl_designation on tbl_user.design_id = tbl_designation.ID
+join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
+where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
+tbl_department.ID=@DepartmentId and tbl_sub_department.Id=@SubDepartmentId;
+END
+
+if @flag='orgtype'
+BEGIN
+select tbl_organizationtype.Id as OrgTypeID,tbl_organizationtype.name as OrgTypeName,COUNT(tbl_organization.Id) as OrgCount from tbl_organization
+left join tbl_organizationtype on tbl_organizationtype.Id=tbl_organization.org_type
+where comp_id=@companyid and tbl_organization.branch_id=@branchid and tbl_organization.status=1
+group by tbl_organizationtype.Id ,tbl_organizationtype.name
+END
+
+END

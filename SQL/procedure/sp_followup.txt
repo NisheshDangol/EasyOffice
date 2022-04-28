@@ -1,0 +1,117 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 4/28/2022 11:12:47 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER procedure [dbo].[sp_followup]
+(
+@ID int=NULL,
+@companyid nvarchar(250)=NULL,
+@organizationid int=NULL,
+@productid int=NULL,
+@followdate nvarchar(250)=NULL,
+@followfor int=NULL,
+@assignedto int=NULL,
+@remarks nvarchar(250)=NULL,
+@status int=NULL,
+@followstatus int=NULL,
+@createdby int=NULL,
+@addeddate nvarchar(250)=NULL,
+@updateddate nvarchar(250)=NULL,
+@followtime nvarchar(250)=NULL,
+@followtype int=NULL,
+@branchid int=NUll,
+@fiscal_id int=NULL,
+@fromDate nvarchar(250)=NULL,
+@toDate nvarchar(250)=NULL,
+@OrgType int =NULL,
+@isourclient int = NULL,
+@totype int =NULL,
+
+
+@flag nvarchar(50)
+)
+As
+
+BEGIN
+
+if @flag='createfollow'
+BEGIN
+	if not exists (Select 'm' from tbl_user where ID = @createdby)
+	begin
+		Select 201 StatusCode, 'Employee ID does not exists' Message
+		return;
+	end
+	if not exists (Select 'm' from tbl_organization where ID = @organizationid)
+	begin
+		Select 202 StatusCode, 'OrganizationID does not exists' Message
+		return;
+	end
+	else
+	begin
+
+		Insert into tbl_follow_up(com_id,created_by,org_id,product_id,follow_date,follow_time,assigned_to,remarks,follow_status,follow_type,branch_id,fiscal_id,updated_by,added_date,updated_date,status)
+		values(@companyid,@createdby,@organizationid,@productid,@followdate,@followtime,@assignedto,@remarks,@followstatus,@followtype,@branchid,@fiscal_id,@createdby,(select dbo.fndate()),(select dbo.fndate()),1)
+		Select 200 StatusCode,
+		'Follow up Inserted Successfully' Message
+		return;
+	end
+END
+
+if @flag='followList'
+BEGIN
+
+if not exists (Select 'm' from tbl_user where ID = @createdby)
+begin
+	Select 202 StatusCode, 'Emp Id does not exist' Message
+	return;
+end
+
+if @isourclient = -1 or @OrgType=-1 or @followtype=-1 or @followstatus=-1
+begin
+	select f.org_id as OrgID,o.org_name as OrgName,ot.name as OrgType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as ProductName
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,u.user_name as AssignedTo 
+	from tbl_follow_up as f
+	left join tbl_organization as o on o.Id=f.org_id
+	left join tbl_organizationtype as ot on o.org_type = ot.Id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+end
+else
+begin
+	select f.org_id as OrgId,o.org_name as OrgName,ot.name as OrgType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as ProductName
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,u.user_name as AssignedTo 
+	from tbl_follow_up as f
+	left join tbl_organization as o on o.Id=f.org_id
+	left join tbl_organizationtype as ot on o.org_type = ot.Id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and o.org_type=@OrgType and f.follow_type=@followtype and f.follow_status=@followstatus and f.status=1
+end
+END
+
+if @flag='followtype'
+BEGIN
+select ID FollowTypeID,name FollowTypeName,(select COUNT(*) from tbl_organization where tbl_organization.comp_id=tbl_follow_type.com_id) OrganizationCount,(select Count(*) from tbl_contact where tbl_contact.ID=tbl_follow_type.created_by) PersonCount from tbl_follow_type
+where com_id=@companyid and branch_id=@branchid and status=1
+group by ID,name,com_id,created_by
+END
+
+END

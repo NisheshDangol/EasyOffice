@@ -1,0 +1,221 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_customer_support]    Script Date: 4/28/2022 11:14:22 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER Procedure [dbo].[sp_customer_support](
+@id int=Null,
+@companyid nvarchar(250)=Null,
+@organizationid int=Null,
+@productid int=Null,
+
+@enquirytime date=Null,
+@enquirydate date=Null,
+
+
+@supportmedium nvarchar(150)=Null,
+@supportstatus int=Null,
+@issue nvarchar(250)=Null,
+
+@clientcomment nvarchar(250)=Null,
+@remarks nvarchar(250)=Null,
+@assignedto int=NUll,
+@status int=Null,
+@createdby int=Null,
+@issuedate nvarchar(250)=Null,
+@updatedby int=Null,
+@starttime nvarchar(250)=NULL,
+@endtime nvarchar(250)=NULL,
+@attachment nvarchar(250)=NULL,
+@branch int=NULL,
+@fiscal int=NULL,
+@fromdate nvarchar(250)=NULL,
+@todate nvarchar(250)=NULL,
+@flag nvarchar(250)
+
+)
+As
+Begin
+if @flag='Create'
+Begin
+	if not exists (select 'm' from tbl_user where ID = @createdby)
+	begin
+		select 203 StatusCode, 'Employee ID does not exists' Message
+		return;
+	end
+	if not exists (select 'm' from tbl_organization where ID = @organizationid)
+	begin
+		select 204 StatusCode, 'OrganizationID does not exists' Message
+		return;
+	end
+	else 
+	begin
+		insert into tbl_customer_support(com_id,created_by,org_id,product_id,issue,issue_date,start_time,end_time,attachment_id,assigned_to,support_status,support_medium,client_comment,remarks,branch_id,fiscal_id,updated_date,created_date,updated_by,status)
+		values(@companyid,@createdby,@organizationid,@productid,@issue,@issuedate,@starttime,@endtime,@attachment,@assignedto,@supportstatus,@supportmedium,@clientcomment,@remarks,@branch,@fiscal,(select dbo.fndate()),(select dbo.fndate()),@createdby,1)
+		Select 200 StatusCode, 'Success.' Message
+		return;
+	end
+end
+
+if @flag ='CustomerSupportList'
+Begin
+	if not exists (select 'm' from tbl_user where ID = @createdby)
+	begin
+		select 203 StatusCode, 'Employee ID does not exists' Message
+		return;
+	end
+	if not exists (select 'm' from tbl_organization where ID = @organizationid)
+	begin
+		select 204 StatusCode, 'OrganizationID does not exists' Message
+		return;
+	end
+	if(@supportstatus = -1)
+	begin
+		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
+		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		case c.support_status
+		when 1 then 'Pending'
+		when 2 then 'Success'
+		else 'Failed'
+		end SupportStatus,
+		case c.support_medium
+		when '1' then 'Online'
+		else 'Ofline'
+		end SupportMedium,
+		c.created_date AddedDate 
+
+		from tbl_customer_support c
+		left join tbl_organization o on c.org_id=o.Id
+		left join tbl_product p on p.ID=c.product_id
+		left join tbl_user u on u.ID=c.assigned_to
+
+		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
+		and c.support_medium=@supportmedium and c.issue_date>=@fromdate
+		and c.issue_date<=@todate
+		return;
+	end
+	if(@supportmedium=-1)
+	begin
+		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
+		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		case c.support_status
+		when 1 then 'Pending'
+		when 2 then 'Success'
+		else 'Failed'
+		end SupportStatus,
+		case c.support_medium
+		when '1' then 'Online'
+		else 'Ofline'
+		end SupportMedium,
+		c.created_date AddedDate 
+
+		from tbl_customer_support c
+		left join tbl_organization o on c.org_id=o.Id
+		left join tbl_product p on p.ID=c.product_id
+		left join tbl_user u on u.ID=c.assigned_to
+
+		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
+		and c.support_status=@supportstatus
+		 and c.issue_date>=@fromdate
+		and c.issue_date<=@todate
+	end
+	if(@supportmedium=-1 and @supportstatus = -1)
+	begin
+		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
+		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		case c.support_status
+		when 1 then 'Pending'
+		when 2 then 'Success'
+		else 'Failed'
+		end SupportStatus,
+		case c.support_medium
+		when '1' then 'Online'
+		else 'Ofline'
+		end SupportMedium,
+		c.created_date AddedDate 
+
+		from tbl_customer_support c
+		left join tbl_organization o on c.org_id=o.Id
+		left join tbl_product p on p.ID=c.product_id
+		left join tbl_user u on u.ID=c.assigned_to
+
+		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
+		and c.issue_date>=@fromdate
+		and c.issue_date<=@todate
+	end
+	else
+	begin
+		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
+		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		case c.support_status
+		when 1 then 'Pending'
+		when 2 then 'Success'
+		else 'Failed'
+		end SupportStatus,
+		case c.support_medium
+		when '1' then 'Online'
+		else 'Ofline'
+		end SupportMedium,
+		c.created_date AddedDate 
+
+		from tbl_customer_support c
+		left join tbl_organization o on c.org_id=o.Id
+		left join tbl_product p on p.ID=c.product_id
+		left join tbl_user u on u.ID=c.assigned_to
+
+		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
+		and c.support_status=@supportstatus
+		and c.support_medium=@supportmedium and c.issue_date>=@fromdate
+		and c.issue_date<=@todate
+	end
+End
+
+if @flag = 'CustomerSupportInfo'
+Begin
+	if not exists(select 'm' from tbl_user where ID =@createdby)
+	begin
+		Select 203 StatusCode, 'Employee ID does not exist' Message
+		return;
+	end
+	if not exists(select 'm' from tbl_customer_support where ID = @id)
+	begin
+		Select 204 StatusCode, 'Customer Support ID does not exist' Message
+		return;
+	end
+	else
+	begin
+		select c.org_id OrgID,o.org_name OrganizationName,product_id ProductID,p.prod_name ProductName,c.issue
+		,c.issue_date IssueDate,c.start_time StartTime,c.end_time EndTime,c.attachment_id Attachment,c.assigned_to AssignedtoID 
+		,u.user_name AssignedTo,c.support_status SupportStatusID,
+		case c.support_status
+		when 1 then 'Pending'
+		when 2 then 'Success'
+		when 3 then 'Failed'
+		end SupporStatus,
+		c.support_medium SupportMediumID,
+		case c.support_medium
+		when 1 then 'ONLINE'
+		when 2 then 'OFFLINE'
+		end SupportMedium,
+
+		c.client_comment ClientComment,
+		c.remarks Remarks,
+		c.created_date AddedDate
+		from tbl_customer_support c
+		left join tbl_organization o on o.Id=c.org_id
+		left join tbl_product p on p.ID=c.product_id
+		left join tbl_user u on u.ID=c.assigned_to
+
+		where c.com_id=@companyid and c.created_by=@createdby and c.Id=@id and c.status=1
+	end
+End
+
+
+
+end
