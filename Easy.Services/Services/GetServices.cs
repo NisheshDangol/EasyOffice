@@ -13,7 +13,7 @@ namespace Easy.Services.Services
 {
     public class GetServices : IGetInterface
     {
-        public async Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate,int IsOurClient)
+        public async Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate,int IsOurClient, int OrgType, int SourceID)
         {
             var orglist = new AllOrganizationDto();
             orglist.StatusCode = 400;
@@ -23,14 +23,13 @@ namespace Easy.Services.Services
             else if (EmployeeId == 0) orglist.Message = "EmployeeId is empty";
             else
             {
-                string sql = "sp_organization";
+                string sql = "sp_all_org_list";
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@createdby", EmployeeId);
                 parameters.Add("@FromDate", FromDate);
                 parameters.Add("@ToDate", ToDate);
                 parameters.Add("@isourclient", IsOurClient);
-                parameters.Add("@flag", "allorglist");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 if (data.Count() != 0)
                 {
