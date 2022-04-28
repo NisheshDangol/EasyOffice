@@ -26,10 +26,12 @@ namespace Easy.Services.Services
                 string sql = "sp_all_org_list";
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
-                parameters.Add("@createdby", EmployeeId);
+                parameters.Add("@userid", EmployeeId);
                 parameters.Add("@FromDate", FromDate);
                 parameters.Add("@ToDate", ToDate);
                 parameters.Add("@isourclient", IsOurClient);
+                parameters.Add("@orgtype", OrgType);
+                parameters.Add("@sourceid", SourceID);
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 if (data.Count() != 0)
                 {
