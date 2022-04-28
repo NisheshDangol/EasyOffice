@@ -12,6 +12,6 @@ namespace Easy.Services.Interface
     {
         Task<ListOutPut> Login(Login login);
         Task<CheckSessionOutput> CheckSession(CheckSession login);
-        Task<CommonResponse> ChangePassword(int UserID, string OldPwd, string NewPwd);
+        Task<CommonResponse> ChangePassword(ChangePsw changePsw);
     }
 }
