@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 4/28/2022 11:11:11 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 4/28/2022 11:44:13 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -120,6 +120,7 @@ left join tbl_organizationtype as t on o.org_type=t.Id
 left join tbl_leads as l on l.org_id=o.Id
 left join tbl_follow_up as f on f.org_id=o.Id
 left join tbl_customer_support as s on s.org_id=o.Id
+where comp_id=@companyid and o.created_by=@userid
 group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 END
 Else
@@ -138,7 +139,7 @@ group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contac
 END
 
 END
-
+/*
 if @flag='allorglist'
 if @isourclient=-1
 BEGIN
@@ -151,7 +152,7 @@ left join tbl_product as p on o.comp_id=p.com_id
 left join tbl_leads as l on l.product_id=p.ID
 left join tbl_user as u on u.ID = o.assigned_to
 left join tbl_organizationtype as ot on ot.ID = o.org_type
-where o.status =1
+where o.comp_id=@companyid and o.created_by=@createdby and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
 group by o.Id,o.org_name,ot.name,o.address,o.district
 ,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
 END
@@ -168,7 +169,7 @@ where o.comp_id=@companyid and o.created_by=@createdby and o.is_our_client=@isou
 group by o.Id,o.org_name,ot.name,o.address,o.district
 ,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
 END
-
+*/
 if @flag='orgproduct'
 BEGIN
 
@@ -183,7 +184,7 @@ where p.com_id=@companyid and p.branch_id=@branchid and p.status = 1
 END
 
 if @flag='orgstaff'
-if @SubDepartmentId=-1
+if @SubDepartmentId=0
 BEGIN
 select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
 join tbl_department on tbl_user.depart_id=tbl_department.ID
