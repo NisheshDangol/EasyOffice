@@ -73,4 +73,11 @@ namespace Easy.Models.Models
     {
         public List<dynamic> Logins { get; set; }
     }
+
+    public class ChangePsw
+    {
+        public int UserID { get; set; }
+        public string OldPwd { get; set; }
+        public string NewPwd { get; set; }
+    }
 }

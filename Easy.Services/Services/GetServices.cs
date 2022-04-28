@@ -21,6 +21,8 @@ namespace Easy.Services.Services
             orglist.Message = "";
             if (string.IsNullOrEmpty(CompanyId)) orglist.Message = "CompanyId is empty";
             else if (EmployeeId == 0) orglist.Message = "EmployeeId is empty";
+            else if (string.IsNullOrEmpty(FromDate)) orglist.Message = "FormDate is empty";
+            else if (string.IsNullOrEmpty(ToDate)) orglist.Message = "ToDate is empty";
             else
             {
                 string sql = "sp_all_org_list";

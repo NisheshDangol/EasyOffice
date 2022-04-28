@@ -79,22 +79,22 @@ namespace Easy.Services.Services
             return logout;  
         }
             
-        public async Task<CommonResponse> ChangePassword(int UserID, string OldPwd, string NewPwd)
+        public async Task<CommonResponse> ChangePassword(ChangePsw changePsw)
         {
             CommonResponse res = new CommonResponse();
             res.Message = "";
             res.StatusCode = 400;
-            if (UserID == 0) res.Message = "UserID is empty";
-            else if (string.IsNullOrEmpty(OldPwd)) res.Message = "OldPwd is empty";
-            else if (string.IsNullOrEmpty(NewPwd)) res.Message = "NewPwd is empty";
+            if (changePsw.UserID == 0) res.Message = "UserID is empty";
+            else if (string.IsNullOrEmpty(changePsw.OldPwd)) res.Message = "OldPwd is empty";
+            else if (string.IsNullOrEmpty(changePsw.NewPwd)) res.Message = "NewPwd is empty";
             else
             {
                 string sql = "sp_user";
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@flag", "ChangePwd");
-                parameters.Add("@user_id", UserID);
-                parameters.Add("@oldpassword", OldPwd);
-                parameters.Add("@password", NewPwd);
+                parameters.Add("@user_id", changePsw.UserID);
+                parameters.Add("@oldpassword", changePsw.OldPwd);
+                parameters.Add("@password", changePsw.NewPwd);
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
                 res.Message = data.FirstOrDefault().Message;
                 res.StatusCode = data.FirstOrDefault().StatusCode;
