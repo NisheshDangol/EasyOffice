@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 4/28/2022 11:08:35 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 5/2/2022 1:08:17 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -297,7 +297,7 @@ Begin
 		  left join tbl_department as d on d.ID = u.depart_id 
 		  left join tbl_designation as de on de.ID = u.design_id 
 		  left join tbl_sub_department as sd on sd.Id = u.sub_depart_id
-		  left join tbl_company_branch as b on b.Id = u.branch
+		  left join tbl_branch as b on b.Id = u.branch
 		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
 		  left join tbl_grade as g on g.Id=u.grade_id
 		  where u.user_name=@username

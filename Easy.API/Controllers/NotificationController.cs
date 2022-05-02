@@ -19,7 +19,7 @@ namespace Easy.API.Controllers
         }
         [HttpPost]
         [Route("~/api/push-notification-by-topic")]
-        public async Task<IActionResult> SendNotificationByTopic(string topic)
+        public async Task<IActionResult> SendNotificationByTopic(PushNotificationByTopic topic)
         {
             var data = await _unitOfWork.SendNotificationServices.SendNotificationByTopic(topic);
             return Ok(data);
@@ -27,7 +27,7 @@ namespace Easy.API.Controllers
 
         [HttpPost]
         [Route("~/api/push-notification-by-deviceID")]
-        public async Task<IActionResult> SendNotificationByDeviceID(string DeviceID)
+        public async Task<IActionResult> SendNotificationByDeviceID(PushNotificationByDeviceId DeviceID)
         {
             var data = await _unitOfWork.SendNotificationServices.SendNotificationByDeviceID(DeviceID);
             return Ok(data);

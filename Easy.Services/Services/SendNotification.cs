@@ -15,7 +15,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using static Easy.Models.Models.GoogleNotification;
+
 
 
 namespace Easy.Services.Services
@@ -29,7 +29,7 @@ namespace Easy.Services.Services
         }
 
 
-        public async Task<String> SendNotificationByTopic(string topic)
+        public async Task<String> SendNotificationByTopic(PushNotificationByTopic topic)
         {
             String sResponseFromServer = "Error";
             try
@@ -47,10 +47,10 @@ namespace Easy.Services.Services
                     notification = new
                     {
                         // Notification title
-                        title = "",
+                        title = topic.Topic,
 
                         // Notification body data
-                        body = "",
+                        body = topic.Body,
 
                         // When click on notification user redirect to this link
                         link = "https://www.dynagroseed.com/app/uploads/2018/02/testing-clipart-quiet-testing-sign-v0ryt0-297x300.jpg",
@@ -97,7 +97,7 @@ namespace Easy.Services.Services
             
         }
 
-        public async Task<String> SendNotificationByDeviceID(string DeviceID)
+        public async Task<String> SendNotificationByDeviceID(PushNotificationByDeviceId DeviceID)
         {
             String sResponseFromServer = "Error";
             try
@@ -115,10 +115,10 @@ namespace Easy.Services.Services
                     notification = new
                     {
                         // Notification title
-                        title = "",
+                        title = DeviceID.Title,
 
                         // Notification body data
-                        body = "",
+                        body = DeviceID.Body,
 
                         // When click on notification user redirect to this link
                         link = "https://www.dynagroseed.com/app/uploads/2018/02/testing-clipart-quiet-testing-sign-v0ryt0-297x300.jpg",

@@ -11,7 +11,7 @@ namespace Easy.Services.Interface
     {
         //public Task SendNotification();
         //Task<ResponseModel> SendNotification(PushNotification notificationModel);
-        Task<String> SendNotificationByTopic(string topic);
-        Task<String> SendNotificationByDeviceID(string DeviceID);
+        Task<String> SendNotificationByTopic(PushNotificationByTopic topic);
+        Task<String> SendNotificationByDeviceID(PushNotificationByDeviceId DeviceID);
     }
 }

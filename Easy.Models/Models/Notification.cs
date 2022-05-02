@@ -34,4 +34,20 @@ namespace Easy.Models.Models
     {
         public List<dynamic> NotificationList { get; set; }
     }
+
+    public class PushNotification
+    {
+        public string Title { get; set; }
+        public string Body { get; set; }
+    }
+
+    public class PushNotificationByTopic : PushNotification
+    {
+        public string Topic { get; set; }
+    }
+
+    public class PushNotificationByDeviceId : PushNotification
+    {
+        public string DeviceID { get; set; }
+    }
 }
