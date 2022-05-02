@@ -1,4 +1,7 @@
+using CorePush.Apple;
+using CorePush.Google;
 using Easy.Connection.Dapper;
+using Easy.Models.Models;
 using Easy.Services;
 using Easy.Services.Interface;
 using Easy.Services.Services;
@@ -34,6 +37,9 @@ namespace Easy.API
         public void ConfigureServices(IServiceCollection services)
         {
             DBCon.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
+            
+
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {
@@ -63,6 +69,12 @@ namespace Easy.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Easy.API", Version = "v1" });
             });
+
+            services.AddHttpClient<FcmSender>();
+            services.AddHttpClient<ApnSender>();
+
+            var appSettingsSection = Configuration.GetSection("FcmNotification");
+            services.Configure<FcmNotificationSetting>(appSettingsSection);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

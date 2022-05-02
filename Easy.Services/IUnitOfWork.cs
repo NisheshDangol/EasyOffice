@@ -14,5 +14,6 @@ namespace Easy.Services
         JobInfoServices jobInfoServices { get; }
         GetServices GetServices { get; }
         PostServices PostServices { get; }  
+        SendNotificationService SendNotificationServices { get; }
     }
 }

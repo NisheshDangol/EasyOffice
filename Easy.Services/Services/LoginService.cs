@@ -30,7 +30,7 @@ namespace Easy.Services.Services
             parameters.Add("@notification_token", Login.NotificationToken);
             parameters.Add("@flag", "CheckSession");
             var common = await DBHelper.RunProc<dynamic>(sqluser, parameters);
-            if (common.Count() != 0 && common.FirstOrDefault().UID !=0)
+            if (common.Count() != 0 && common.FirstOrDefault().UID !=null)
             {
                 return new CheckSessionOutput
                 {
