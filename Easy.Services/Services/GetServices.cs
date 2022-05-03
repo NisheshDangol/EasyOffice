@@ -185,10 +185,11 @@ namespace Easy.Services.Services
 
         public async Task<DocInfo> listdoc(string ComId, int EmpId)
         {
-            string sql = "sp_doc" ;
+            string sql = "sp_userinfo" ;
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@ComId",  ComId);
             parameters.Add("@EmpId", EmpId);
+            parameters.Add("@flag", "docinfo");
             var data= await DBHelper.RunProc<dynamic>(sql, parameters);
             if(data.Count()!=0 && data.FirstOrDefault().StatusCode == null)
             {

@@ -1,15 +1,17 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 5/3/2022 10:23:53 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 5/3/2022 10:40:15 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-ALTER Procedure [dbo].[sp_user]
+Create or Alter Procedure [dbo].[sp_userinfo]
 (
 @com_id nvarchar(50)=null,
 @username nvarchar(150)=null,
 @password nvarchar(150)=null,
+@comId nvarchar(250) = null,
+@empId int = null,
 --@first_name nvarchar(150)=null,
 --@middle_name nvarchar(150)=null,
 --@last_name nvarchar(150)=null,
@@ -345,5 +347,74 @@ Begin
 		return;
 	end
 End
+
+
+if (@flag = 'jobinfo')
+begin
+if not exists(select 'm' from tbl_job_information where com_id = @comId)
+begin
+	select 201 StatusCode, 'Company ID does not exist' Message
+	return;
+end
+else if not exists(select 'm' from tbl_user where ID = @empId)
+begin
+	Select 202 StatusCode, 'EmpID does not exist' Message
+	return;
+end
+else if exists(select 'M' from tbl_job_information where com_id=@comId and employee_id=@empId)
+begin
+Select 
+  tbl_designation.desig_name as Designation, 
+  tbl_department.depart_name as Department, 
+  tbl_sub_department.sub_dep_name as SubDepartment, 
+  tbl_grade.grade_name as Grade, 
+  tbl_user.user_name as Manager, 
+  tbl_job_information.working_status as WorkingStatus, 
+  tbl_job_information.start_date as StartDate, 
+  tbl_job_information.end_date as Enddate
+from 
+  tbl_job_information 
+  left join tbl_designation on tbl_job_information.designation_id = tbl_designation.ID 
+  left join tbl_department on tbl_job_information.department_id = tbl_department.ID 
+  left join tbl_sub_department on tbl_job_information.sub_department_id = tbl_sub_department.Id 
+  left join tbl_grade on tbl_job_information.grade_group_id = tbl_grade.ID 
+  left join tbl_user on tbl_job_information.grade_group_id = tbl_user.ID 
+where 
+  tbl_job_information.com_id = @comId 
+  and tbl_job_information.employee_id = @empId
+
+  end
+
+end
+
+
+if(@flag = 'docinfo')
+BEGIN
+	if not exists(select 'M' from tbl_user where ID = @EmpId)
+	begin
+		select 202 StatusCode, 'EmpID does not exists' Message
+		return;
+	end
+
+	if not exists(select '' from tbl_document where com_id =@ComId)
+	begin
+		select 201 StatusCode, 'ComID does not exists' Message
+		return;
+	end
+
+	if exists(select 'M' from tbl_document where com_id=@ComId and employee_id = @EmpId)
+	BEGIN
+		Select file_name as FileName,
+		case file_type
+		when 1 then 'doc'
+		when 2 then 'pdf'
+		when 3 then 'ppt'
+		when 4 then 'file'
+		end FileType,
+		file_path as FilePath
+		from tbl_document where com_id=@ComId and employee_id=@EmpId and status = 1
+		return;
+	END
+end
 
 End

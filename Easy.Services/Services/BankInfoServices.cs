@@ -29,7 +29,7 @@ namespace Easy.Services.Services
             }
             else
             {
-                string sql = "sp_user";
+                string sql = "sp_userinfo";
                 var parameters = new DynamicParameters();
                 parameters.Add("@flag", "bankinfo");
                 parameters.Add("@com_id", ComID);

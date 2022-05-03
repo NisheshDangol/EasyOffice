@@ -1,4 +1,5 @@
-﻿using Easy.Connection.Dapper;
+﻿using Dapper;
+using Easy.Connection.Dapper;
 using Easy.Models.Models;
 using Easy.Services.Interface;
 using System;
@@ -28,10 +29,13 @@ namespace Easy.Services.Services
             }
             else
             {
-                string sql = "sp_jobinfo @comId='" + ComId + "'";
-                sql += ",@empId = '" + EmpId + "'";
-                var data = await DBHelper.RunQuery<dynamic>(sql);
-                if(data.Count() !=0 && data.FirstOrDefault().StatusCode ==null )
+                string sql = "sp_userinfo";
+                DynamicParameters parameters = new DynamicParameters();
+                parameters.Add("@ComId", ComId);
+                parameters.Add("@EmpId", EmpId);
+                parameters.Add("@flag", "jobinfo");
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() !=0 && data.FirstOrDefault().StatusCode ==null )
                 {
                     job.Jobinfo = data.ToList();
                     job.StatusCode = 200;
