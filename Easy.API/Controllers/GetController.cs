@@ -22,9 +22,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/doc-information")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetDoc(string ComID, int EmpID)
+        public async Task<IActionResult> GetDoc(string ComID, int UserID)
         {
-            var data= await _unitOfWork.GetServices.listdoc(ComID, EmpID);
+            var data= await _unitOfWork.GetServices.listdoc(ComID, UserID);
             return Ok(data);
 
         }
@@ -40,18 +40,18 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/all-org-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AllOrgList(string ComID, int EmpID, string FromDate, string ToDate, int IsOurClient,int OrgType, int SourceID)
+        public async Task<IActionResult> AllOrgList(string ComID, int UserID, string FromDate, string ToDate, int IsOurClient,int OrgType, int SourceID)
         {
-            var data= await _unitOfWork.GetServices.allorglist(ComID, EmpID,FromDate,ToDate,IsOurClient,OrgType,SourceID);
+            var data= await _unitOfWork.GetServices.allorglist(ComID, UserID, FromDate,ToDate,IsOurClient,OrgType,SourceID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/follow-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Followuplist(string ComID, int EmpID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType)
+        public async Task<IActionResult> Followuplist(string ComID, int UserID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType)
         {
-            var data= await _unitOfWork.GetServices.followuplist(ComID, EmpID,IsOurClient,FromDate,ToDate,OrgType,FollowType,FollowStatus,ToType);
+            var data= await _unitOfWork.GetServices.followuplist(ComID, UserID,IsOurClient,FromDate,ToDate,OrgType,FollowType,FollowStatus,ToType);
             return Ok(data);
 
         }
@@ -104,48 +104,50 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/contact-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ContactList(string ComID, int EmpID)
+        public async Task<IActionResult> ContactList(string ComID, int UserID)
         {
-            var data = await _unitOfWork.GetServices.ContactInfo(ComID, EmpID);
+            var data = await _unitOfWork.GetServices.ContactInfo(ComID, UserID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/contact-info")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ContactInfo(string ComID, int EmpID)
+        public async Task<IActionResult> ContactInfo(string ComID, int UserID)
         {
-            var data = await _unitOfWork.GetServices.ContactList(ComID,EmpID);
+            var data = await _unitOfWork.GetServices.ContactList(ComID,UserID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/csupport-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CustomerSupport(string ComID, int EmpID, int OrgID, int SupportStatus, string SupportMedium, string FromDate, string ToDate)
+        public async Task<IActionResult> CustomerSupport(string ComID, int UserID, int OrgID, int SupportStatus, string SupportMedium, string FromDate, string ToDate)
         {
-            var data = await _unitOfWork.GetServices.CustomersupportList(ComID,EmpID,OrgID,SupportStatus,SupportMedium,FromDate,ToDate);
+            var data = await _unitOfWork.GetServices.CustomersupportList(ComID,UserID,OrgID,SupportStatus,SupportMedium,FromDate,ToDate);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/notification-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> NotificationList(string ComID, int EmpID)
+        public async Task<IActionResult> NotificationList(string ComID, int UserID)
         {
-            var data = await _unitOfWork.GetServices.NotificationList(ComID,EmpID);
+            var data = await _unitOfWork.GetServices.NotificationList(ComID,UserID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/csupport-info")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CustomerSupportInfo(string ComID, int EmpID, int CustomerSupportID)
+        public async Task<IActionResult> CustomerSupportInfo(string ComID, int UserID, int CustomerSupportID)
         {
-            var data = await _unitOfWork.GetServices.CustomerSupportInfo(ComID,EmpID,CustomerSupportID);
+            var data = await _unitOfWork.GetServices.CustomerSupportInfo(ComID,UserID,CustomerSupportID);
             return Ok(data);
 
         }
-        
+
+
+
     }
 }
