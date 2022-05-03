@@ -18,7 +18,7 @@ namespace Easy.Models.Models
         public string AcBtn { get; set; }
         public string RedUrl { get; set; }
         public int FiscalID { get; set; }
-        public int Createdby { get; set; }
+        public int CreatedBy { get; set; }
     }
     //public class NotificationList
     //{

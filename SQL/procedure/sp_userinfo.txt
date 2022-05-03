@@ -1,11 +1,11 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_user]    Script Date: 5/3/2022 10:40:15 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 5/3/2022 12:31:01 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-Create or Alter Procedure [dbo].[sp_userinfo]
+ALTER Procedure [dbo].[sp_userinfo]
 (
 @com_id nvarchar(50)=null,
 @username nvarchar(150)=null,
@@ -270,8 +270,8 @@ Begin
 		  u.shift_type_id as ShiftTypeId, 
 		  b.name as Branch,
 		  u.branch as BranchId,
-		  u.shift_id as shiftID, 
-		  u.grade_id as gradeID, 
+		  u.shift_id as ShiftID, 
+		  u.grade_id as GradeID, 
 		  g.grade_name as GradeName,
 		  u.enroll_date as EnrollDate, 
 		  u.design_id as DesignationID, 

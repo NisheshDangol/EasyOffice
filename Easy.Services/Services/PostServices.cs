@@ -31,19 +31,12 @@ namespace Easy.Services.Services
                 parameters.Add("@acBtn", notifi.AcBtn);
                 parameters.Add("@redurl", notifi.RedUrl);
                 parameters.Add("@fiscalid", notifi.FiscalID);
-                parameters.Add("@createdby", notifi.Createdby);
+                parameters.Add("@createdby", notifi.CreatedBy);
                 parameters.Add("@flag", "CreateNotifi");
-                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
-                if (data.FirstOrDefault().StatusCode == 0 )
-                {
-                    response.StatusCode = 200;
-                    response.Message = "Success";
-                }
-                else
-                {
-                    response.StatusCode = data.FirstOrDefault().StatusCode;
-                    response.Message = data.FirstOrDefault().Message;
-                }
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                response.StatusCode = data.FirstOrDefault().StatusCode;
+                response.Message = data.FirstOrDefault().Message;
+                
             }
             return response;
         }

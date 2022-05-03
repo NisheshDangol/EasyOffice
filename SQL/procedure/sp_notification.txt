@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_notification]    Script Date: 4/28/2022 11:11:40 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_notification]    Script Date: 5/3/2022 12:32:54 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -19,7 +19,7 @@ ALTER Proc [dbo].[sp_notification]
 @fiscalid int=NULL,
 @createdby int=NULL,
 @empID int=NULL,
-@flag nvarchar(25)
+@flag nvarchar(50)
 
 )
 AS
@@ -31,11 +31,29 @@ if @flag='CreateNotifi'
 		Select 203 StatusCode, 'Employee ID does not exist' Message
 		return;
 	end
+	else if(@userid != -1)
+	begin
+		if not exists (Select 'm' from tbl_user where ID = @userid)
+		begin
+			Select 203 StatusCode, 'User ID does not exist' Message
+			return;
+		end
+		else
+		BEGIN
+			INSERT INTO tbl_notification(com_id,title,description,image,published_date,user_id,ac_btn,red_url,fiscal_id,created_by,status,updated_by,created_date,updated_date)
+			values(@comid,@title,@description,@image,@publisheddate,@userid,@acBtn,@redurl,@fiscalid,@createdby,1,@createdby,(select dbo.fndate()),(select dbo.fndate()))
+			Select 200 StatusCode, 'Success' Message
+			return;
+		END
+	end
 	else
 	BEGIN
 		INSERT INTO tbl_notification(com_id,title,description,image,published_date,user_id,ac_btn,red_url,fiscal_id,created_by,status,updated_by,created_date,updated_date)
 		values(@comid,@title,@description,@image,@publisheddate,@userid,@acBtn,@redurl,@fiscalid,@createdby,1,@createdby,(select dbo.fndate()),(select dbo.fndate()))
+		Select 200 StatusCode, 'Success' Message
+		return;
 	END
+	
 
 	
 
