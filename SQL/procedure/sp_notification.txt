@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_notification]    Script Date: 5/3/2022 12:32:54 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_notification]    Script Date: 5/3/2022 1:43:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -62,10 +62,12 @@ BEGIN
 	
 	if @empID=-1
 	begin
-		select title,n.description,n.image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,tbl_user.user_name CreatedBy from tbl_notification n
+		select title Title,n.description Description,n.image Image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,
+		tbl_user.user_name CreatedBy, tbl_user.image CreatedByImage, tbl_designation.desig_name CreatedByDesign
+		from tbl_notification n
 		left join tbl_user on tbl_user.ID=n.created_by
-
-		where n.com_id=@comid
+		left join tbl_designation on tbl_user.design_id=tbl_designation.ID
+		where n.user_id=@empID
 	end
 	else
 	begin
@@ -76,10 +78,12 @@ BEGIN
 		end
 		else
 		begin
-			select title,n.description,n.image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,tbl_user.user_name CreatedBy from tbl_notification n
+			select n.title Title,n.description Description,n.image Image,n.published_date PublishedDate,n.ac_btn AcBtn,n.red_url RedUrl,
+			tbl_user.user_name CreatedBy, tbl_user.image CreatedByImage, tbl_designation.desig_name CreatedByDesign 
+			from tbl_notification n
 			left join tbl_user on tbl_user.ID=n.created_by
-
-			where created_by=@empID
+			left join tbl_designation on tbl_user.design_id=tbl_designation.ID
+			where n.user_id=@empID
 		end
 	end
 END
