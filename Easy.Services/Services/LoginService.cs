@@ -22,7 +22,7 @@ namespace Easy.Services.Services
         }
         public async Task<CheckSessionOutput> CheckSession(CheckSession Login)
         {
-            string sqluser = "sp_user";
+            string sqluser = "sp_userinfo";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@com_id", Login.CompanyId);
             parameters.Add("@username", Login.UserName);
@@ -53,7 +53,7 @@ namespace Easy.Services.Services
         public async Task<ListOutPut> Login(Login Login)
         {
             var logout = new ListOutPut();
-            string sqluser = "sp_user";
+            string sqluser = "sp_userinfo";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@com_id", Login.CompanyId);
             parameters.Add("@username", Login.UserName);
@@ -89,7 +89,7 @@ namespace Easy.Services.Services
             else if (string.IsNullOrEmpty(changePsw.NewPwd)) res.Message = "NewPwd is empty";
             else
             {
-                string sql = "sp_user";
+                string sql = "sp_userinfo";
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@flag", "ChangePwd");
                 parameters.Add("@user_id", changePsw.UserID);
