@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 4/28/2022 11:44:13 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/5/2022 2:31:04 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -64,44 +64,49 @@ BEGIN
 		return;
 
 	END
-
+	if (@pan != null or @pan = '')
+	begin
 	if exists(select 'M' from tbl_organization where pan=@pan) 
 	BEGIN		
 		SELECT 203 StatusCode,
 		'Pan already exists.' Message
 		return;
 	END
-
-	if exists(select 'M' from tbl_organization where email=@email)
-	BEGIN
+	end
+	if (@email != null or @email = '')
+	begin
+		if exists(select 'M' from tbl_organization where email=@email)
+		BEGIN
 		
-		SELECT 204 StatusCode,
-		'Email already exists.' Message
-		return;
-	END
-	Insert into tbl_organization(
-  comp_id, created_by, org_name, org_type, 
-  address, district, landline, phone_no, 
-  cperson_name, cperson_contact, email, 
-  pan, website, fb, latitude, longitude, 
-  source, is_our_client, current_system, 
-  branch_id, fiscal_id,updated_by,added_date
-  ,updated_date,status,assigned_to
-) 
-values 
-  (
-    @companyid, @createdby, @organizationname, 
-    @organizationtype, @address, @district, 
-    @landline, @phoneno, @cpersonname, 
-    @cpersoncontact, @email, @pan, @website, 
-    @fb, @latitude, @longitude, @source, 
-    @isourclient, @currentsystem,
-	@branchid,@fiscalid,@createdby,(select dbo.fndate())
-	,(select dbo.fndate()),1,@Assignedto
-  )
-	SELECT 200 StatusCode,
-	'Success.' Message
-	return;
+			SELECT 204 StatusCode,
+			'Email already exists.' Message
+			return;
+		END
+	end
+			Insert into tbl_organization(
+		  comp_id, created_by, org_name, org_type, 
+		  address, district, landline, phone_no, 
+		  cperson_name, cperson_contact, email, 
+		  pan, website, fb, latitude, longitude, 
+		  source, is_our_client, current_system, 
+		  branch_id, fiscal_id,updated_by,added_date
+		  ,updated_date,status,assigned_to
+		) 
+		values 
+		  (
+			@companyid, @createdby, @organizationname, 
+			@organizationtype, @address, @district, 
+			@landline, @phoneno, @cpersonname, 
+			@cpersoncontact, @email, @pan, @website, 
+			@fb, @latitude, @longitude, @source, 
+			@isourclient, @currentsystem,
+			@branchid,@fiscalid,@createdby,(select dbo.fndate())
+			,(select dbo.fndate()),1,@Assignedto
+		  )
+			SELECT 200 StatusCode,
+			'Success.' Message
+			return;
+	
 END
 
 
@@ -184,6 +189,7 @@ where p.com_id=@companyid and p.branch_id=@branchid and p.status = 1
 END
 
 if @flag='orgstaff'
+begin
 if @SubDepartmentId=0
 BEGIN
 select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
@@ -202,12 +208,13 @@ join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
 where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
 tbl_department.ID=@DepartmentId and tbl_sub_department.Id=@SubDepartmentId;
 END
+end
 
 if @flag='orgtype'
 BEGIN
-select tbl_organizationtype.Id as OrgTypeID,tbl_organizationtype.name as OrgTypeName,COUNT(tbl_organization.Id) as OrgCount from tbl_organization
-left join tbl_organizationtype on tbl_organizationtype.Id=tbl_organization.org_type
-where comp_id=@companyid and tbl_organization.branch_id=@branchid and tbl_organization.status=1
+select tbl_organizationtype.Id as OrgTypeID,tbl_organizationtype.name as OrgTypeName,COUNT(tbl_organization.Id) as OrgCount from tbl_organizationtype
+left join tbl_organization on tbl_organizationtype.Id=tbl_organization.org_type
+where comp_id=@companyid and companyid=@companyid and tbl_organization.branch_id=@branchid and tbl_organization.status=1 and tbl_organizationtype.status=1
 group by tbl_organizationtype.Id ,tbl_organizationtype.name
 END
 

@@ -88,7 +88,6 @@ namespace Easy.Services.Services
             res.Message = "";
             if (string.IsNullOrEmpty(orgnization.ComID)) res.Message = "ComID is Empty";
             else if (orgnization.EmpID == 0) res.Message = "EmpID is Empty ";
-            else if (string.IsNullOrEmpty(orgnization.Email)) res.Message = "Email is Empty";
             else if (orgnization.BranchID == 0) res.Message = "BranchID is Empty";
             else if (orgnization.FiscalID == 0) res.Message = "FiscalID is Empty";
             else
