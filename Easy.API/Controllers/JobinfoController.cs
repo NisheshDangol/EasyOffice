@@ -20,9 +20,9 @@ namespace Easy.API.Controllers
         [Route("~/api/job-information")]
         [HttpGet]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> GetJobInfo(string ComId, int EmpId)
+        public async Task<IActionResult> GetJobInfo(string ComID, int UserID)
         {
-            var data= await _unitOfWork.jobInfoServices.Jobinfo(ComId, EmpId);
+            var data= await _unitOfWork.jobInfoServices.Jobinfo(ComID, UserID);
             return Ok(data);
         }
     }
