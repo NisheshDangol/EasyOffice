@@ -10,7 +10,7 @@ namespace Easy.Models.Models
     public class CustomerSupport
     {
         public string ComID { get; set; }
-        public int EmpID { get; set; }
+        public int UserID { get; set; }
         public int OrgID { get; set; }
         public int ProductID { get; set; }
         public string Issue { get; set; }

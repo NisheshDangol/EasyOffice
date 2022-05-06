@@ -102,19 +102,25 @@ namespace Easy.Services.Services
                 parameters.Add("@followstatus", FollowStatus);
                 parameters.Add("@followtype", FollowType);
                 parameters.Add("@OrgType", OrgType);
+                parameters.Add("@totype", ToType);
                 parameters.Add("@flag", "followList");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-                if (data.Count() != 0)
+                if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
                 {
                     followuplist.StatusCode = 200;
                     followuplist.FollowupLists = data.ToList();
                     followuplist.Message = "success";
                 }
+                else if(data.Count() == 1 && data.FirstOrDefault().StatusCode != null)
+                {
+                    followuplist.Message = data.FirstOrDefault().Message;
+                    followuplist.StatusCode = data.FirstOrDefault().StatusCode;
+                    followuplist.FollowupLists = null;
+                }
                 else
                 {
-                    followuplist.Message = "NO data";
+                    followuplist.Message = "no data";
                 }
-
             }
             return followuplist;
         }
@@ -237,12 +243,11 @@ namespace Easy.Services.Services
                     org.StatusCode = 200;
                     org.OrgList = data.ToList();
                 }
-                //else
-                //{
-                //    org.Message = data.FirstOrDefault().Message;
-                //    org.StatusCode = data.FirstOrDefault().StatusCode;
-                //    org.OrgList = null;
-                //}
+                else
+                {
+                    org.Message = "No Data";
+                    
+                }
             }
             return org;
             

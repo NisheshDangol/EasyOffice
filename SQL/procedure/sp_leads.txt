@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 4/28/2022 11:11:55 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 5/6/2022 2:40:04 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -64,11 +64,15 @@ BEGIN
 	end
 	else
 	begin
-		select tbl_lead_source.ID SourceID,tbl_lead_source.name SourceName,(select COUNT(*) 
-		from tbl_organization where tbl_organization.comp_id=tbl_lead_source.com_id) OrganizationCount,
-		(select COUNT(*) from tbl_leads where tbl_leads.lead_source=tbl_lead_source.ID) LeadCount from tbl_lead_source
-		where tbl_lead_source.com_id=@CompanyId and tbl_lead_source.branch_id=@BranchId and status=1
-		group by tbl_lead_source.ID,name,com_id
+		select ls.ID SourceID, 
+		name SourceName,
+		Count(l.ID) LeadCount,
+		Count(o.Id) OrganizationCount
+		from tbl_lead_source ls
+		left join tbl_leads l on ls.ID=l.lead_source
+		left join tbl_organization o on o.ID=l.org_id
+		where ls.com_id=@CompanyId and ls.branch_id=@BranchId and ls.status=1 and l.status=1
+		group by ls.ID,name
 		select 200 StatusCode , 'Success' Message
 	end
 	END

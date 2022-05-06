@@ -24,7 +24,7 @@ namespace Easy.Services.Services
         {
             string sqluser = "sp_userinfo";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@com_id", Login.CompanyId);
+            parameters.Add("@com_id", Login.ComID);
             parameters.Add("@username", Login.UserName);
             parameters.Add("@device_id", Login.DeviceID);
             parameters.Add("@notification_token", Login.NotificationToken);

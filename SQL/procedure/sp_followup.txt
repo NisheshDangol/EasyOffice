@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 4/28/2022 11:12:47 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/6/2022 12:49:45 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -44,20 +44,30 @@ BEGIN
 		Select 201 StatusCode, 'Employee ID does not exists' Message
 		return;
 	end
+	if (@totype=1)
+	begin
 	if not exists (Select 'm' from tbl_organization where ID = @organizationid)
 	begin
 		Select 202 StatusCode, 'OrganizationID does not exists' Message
 		return;
 	end
-	else
+	end
+	if (@totype=2)
 	begin
+	if not exists (Select 'm' from tbl_contact where ID = @organizationid)
+	begin
+		Select 202 StatusCode, 'ContactID does not exists' Message
+		return;
+	end
+	end
 
-		Insert into tbl_follow_up(com_id,created_by,org_id,product_id,follow_date,follow_time,assigned_to,remarks,follow_status,follow_type,branch_id,fiscal_id,updated_by,added_date,updated_date,status)
-		values(@companyid,@createdby,@organizationid,@productid,@followdate,@followtime,@assignedto,@remarks,@followstatus,@followtype,@branchid,@fiscal_id,@createdby,(select dbo.fndate()),(select dbo.fndate()),1)
+
+		Insert into tbl_follow_up(com_id,created_by,contact_id,product_id,follow_date,follow_time,assigned_to,remarks,follow_status,follow_type,branch_id,fiscal_id,updated_by,added_date,updated_date,status,to_type)
+		values(@companyid,@createdby,@organizationid,@productid,@followdate,@followtime,@assignedto,@remarks,@followstatus,@followtype,@branchid,@fiscal_id,@createdby,(select dbo.fndate()),(select dbo.fndate()),1,@totype)
 		Select 200 StatusCode,
 		'Follow up Inserted Successfully' Message
 		return;
-	end
+	
 END
 
 if @flag='followList'
@@ -69,41 +79,157 @@ begin
 	return;
 end
 
-if @isourclient = -1 or @OrgType=-1 or @followtype=-1 or @followstatus=-1
+if(@totype= 1)
 begin
-	select f.org_id as OrgID,o.org_name as OrgName,ot.name as OrgType,
+if @isourclient = -1 and @followstatus=-1
+begin
+	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
 	case f.follow_status 
 	when 1 then 'Pending'
 	when 2 then 'Success'
 	when 3 then 'Canceled'
 	end as FollowStatus,
-	ft.name followTypeName,p.prod_name as ProductName
-	,f.follow_date as FollowDate,f.follow_time as FollowTime,u.user_name as AssignedTo 
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
 	from tbl_follow_up as f
-	left join tbl_organization as o on o.Id=f.org_id
-	left join tbl_organizationtype as ot on o.org_type = ot.Id
-	left join tbl_follow_type as ft on f.follow_type=ft.ID
-	left join tbl_product as p on p.ID=f.product_id
-	left join tbl_user as u on u.ID=f.assigned_to
-end
-else
-begin
-	select f.org_id as OrgId,o.org_name as OrgName,ot.name as OrgType,
-	case f.follow_status 
-	when 1 then 'Pending'
-	when 2 then 'Success'
-	when 3 then 'Canceled'
-	end as FollowStatus,
-	ft.name followTypeName,p.prod_name as ProductName
-	,f.follow_date as FollowDate,f.follow_time as FollowTime,u.user_name as AssignedTo 
-	from tbl_follow_up as f
-	left join tbl_organization as o on o.Id=f.org_id
-	left join tbl_organizationtype as ot on o.org_type = ot.Id
+	left join tbl_organization as o on o.Id=f.contact_id
 	left join tbl_follow_type as ft on f.follow_type=ft.ID
 	left join tbl_product as p on p.ID=f.product_id
 	left join tbl_user as u on u.ID=f.assigned_to
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	and o.org_type=@OrgType and f.follow_type=@followtype and f.follow_status=@followstatus and f.status=1
+	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype
+	return;
+end
+else if @isourclient = -1
+begin
+	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
+	from tbl_follow_up as f
+	left join tbl_organization as o on o.Id=f.contact_id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype and f.follow_status=@followstatus
+	return;
+end
+else if @followstatus = -1
+begin
+	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
+	from tbl_follow_up as f
+	left join tbl_organization as o on o.Id=f.contact_id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype and o.is_our_client=@isourclient 
+	return;
+end
+else
+begin
+	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
+	from tbl_follow_up as f
+	left join tbl_organization as o on o.Id=f.contact_id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype and o.is_our_client=@isourclient and f.follow_status=@followstatus
+	return;
+end
+end
+if (@totype=2)
+begin
+if @followstatus=-1
+begin
+	select f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
+	case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
+	from tbl_follow_up as f
+	left join tbl_contact as c on c.Id=f.contact_id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and f.to_type=@totype and f.follow_type=@followtype and f.status=1 and c.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype
+	return;
+end
+else
+begin
+		select f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
+	case @totype 
+	when 1 then 'Organizaton'
+	when 2 then 'Individual'
+	end as ContactType,
+	case f.follow_status 
+	when 1 then 'Pending'
+	when 2 then 'Success'
+	when 3 then 'Canceled'
+	end as FollowStatus,
+	ft.name followTypeName,p.prod_name as Product
+	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
+	f.added_date CreatedDate
+	from tbl_follow_up as f
+	left join tbl_contact as c on c.Id=f.contact_id
+	left join tbl_follow_type as ft on f.follow_type=ft.ID
+	left join tbl_product as p on p.ID=f.product_id
+	left join tbl_user as u on u.ID=f.assigned_to
+	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
+	and f.to_type=@totype and f.follow_type=@followtype and f.status=1 and c.status=1 and ft.status=1 
+	and p.status=1 and f.to_type = @totype and f.follow_status=@followstatus
+	return;
+end
 end
 END
 

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 4/28/2022 1:04:45 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/6/2022 10:32:17 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -9,8 +9,8 @@ ALTER proc [dbo].[sp_all_org_list](
 @isourclient int =Null,
 @companyid nvarchar(10) = NULL,
 @userid int = NULL,
-@fromdate date=NULL,
-@todate date = NULL,
+@FromDate nvarchar(500)=NULL,
+@ToDate nvarchar(500) = NULL,
 @orgtype int =NULL,
 @sourceid int= NULL
 ) as
@@ -27,9 +27,9 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.org_id=o.Id
-			left join tbl_follow_up as f on f.org_id=o.Id
-			left join tbl_customer_support as s on s.org_id=o.Id
+			left join tbl_leads as l on l.com_id=o.Id
+			left join tbl_follow_up as f on f.com_id=o.Id
+			left join tbl_customer_support as s on s.com_id=o.Id
 			where comp_id=@companyid and o.created_by=@userid and o.added_date>=@FromDate and o.added_date<=@ToDate
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
@@ -43,9 +43,9 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.org_id=o.Id
-			left join tbl_follow_up as f on f.org_id=o.Id
-			left join tbl_customer_support as s on s.org_id=o.Id
+			left join tbl_leads as l on l.com_id=o.Id
+			left join tbl_follow_up as f on f.com_id=o.Id
+			left join tbl_customer_support as s on s.com_id=o.Id
 			where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
@@ -59,9 +59,9 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.org_id=o.Id
-			left join tbl_follow_up as f on f.org_id=o.Id
-			left join tbl_customer_support as s on s.org_id=o.Id
+			left join tbl_leads as l on l.com_id=o.Id
+			left join tbl_follow_up as f on f.com_id=o.Id
+			left join tbl_customer_support as s on s.com_id=o.Id
 			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.added_date>=@FromDate and o.added_date<=@ToDate
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
@@ -75,9 +75,9 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.org_id=o.Id
-			left join tbl_follow_up as f on f.org_id=o.Id
-			left join tbl_customer_support as s on s.org_id=o.Id
+			left join tbl_leads as l on l.com_id=o.Id
+			left join tbl_follow_up as f on f.com_id=o.Id
+			left join tbl_customer_support as s on s.com_id=o.Id
 			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.source = @sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
@@ -95,9 +95,9 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.org_id=o.Id
-		left join tbl_follow_up as f on f.org_id=o.Id
-		left join tbl_customer_support as s on s.org_id=o.Id
+		left join tbl_leads as l on l.com_id=o.Id
+		left join tbl_follow_up as f on f.com_id=o.Id
+		left join tbl_customer_support as s on s.com_id=o.Id
 		where o.comp_id=@companyid and o.created_by=@userid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
@@ -111,9 +111,9 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.org_id=o.Id
-		left join tbl_follow_up as f on f.org_id=o.Id
-		left join tbl_customer_support as s on s.org_id=o.Id
+		left join tbl_leads as l on l.com_id=o.Id
+		left join tbl_follow_up as f on f.com_id=o.Id
+		left join tbl_customer_support as s on s.com_id=o.Id
 		where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
@@ -127,9 +127,9 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.org_id=o.Id
-		left join tbl_follow_up as f on f.org_id=o.Id
-		left join tbl_customer_support as s on s.org_id=o.Id
+		left join tbl_leads as l on l.com_id=o.Id
+		left join tbl_follow_up as f on f.com_id=o.Id
+		left join tbl_customer_support as s on s.com_id=o.Id
 		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
@@ -143,9 +143,9 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.org_id=o.Id
-		left join tbl_follow_up as f on f.org_id=o.Id
-		left join tbl_customer_support as s on s.org_id=o.Id and o.org_type=@orgtype and o.source = @sourceid
+		left join tbl_leads as l on l.com_id=o.Id
+		left join tbl_follow_up as f on f.com_id=o.Id
+		left join tbl_customer_support as s on s.com_id=o.Id and o.org_type=@orgtype and o.source = @sourceid
 		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;

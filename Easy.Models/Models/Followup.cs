@@ -10,8 +10,9 @@ namespace Easy.Models.Models
     public class Followup
     {
         public string ComID { get; set; }
-        public int EmpID { get; set; }
-        public int OrganizationID { get; set; }
+        public int UserID { get; set; }
+        public int ContactID { get; set; }
+        public int ToType { get; set; }
         public int ProductID { get; set; }
         public string FollowDate { get; set; }
         public string FollowTime { get; set; }

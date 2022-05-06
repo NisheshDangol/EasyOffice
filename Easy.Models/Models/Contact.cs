@@ -9,8 +9,8 @@ namespace Easy.Models.Models
 {
     public class Contact
     {
-        public string CompanyId { get; set; }
-        public int EmployeeId { get; set; }
+        public string ComID { get; set; }
+        public int UserID { get; set; }
         public string FirstName { get; set; }
         public string MiddleName { get; set; }
         public string LastName { get; set; }
@@ -69,8 +69,8 @@ namespace Easy.Models.Models
 
     public class UpdateContect
     {
-        public string CompanyId { get; set; }
-        public int Employeeid { get; set; }
+        public string ComID { get; set; }
+        public int UserID { get; set; }
 
 
         public string FirstName { get; set; }

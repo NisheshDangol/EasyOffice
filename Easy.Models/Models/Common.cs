@@ -9,7 +9,7 @@ namespace Easy.Models.Models
     public class OrgnizationGet
     {
         public string ComID { get; set; }
-        public int EmpID { get; set; }
+        public int UserID { get; set; }
         public string OrgName { get; set; }
         public int OrgType { get; set; }
         public string Address { get; set; }

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/5/2022 2:31:04 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/6/2022 2:17:30 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -64,7 +64,7 @@ BEGIN
 		return;
 
 	END
-	if (@pan != null or @pan = '')
+	if (@pan != null or @pan != '')
 	begin
 	if exists(select 'M' from tbl_organization where pan=@pan) 
 	BEGIN		
@@ -73,7 +73,7 @@ BEGIN
 		return;
 	END
 	end
-	if (@email != null or @email = '')
+	if (@email != null or @email != '')
 	begin
 		if exists(select 'M' from tbl_organization where email=@email)
 		BEGIN
@@ -112,32 +112,31 @@ END
 
 if @flag='orglist'
 BEGIN
-
 if @isourclient=-1
 BEGIN
 select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
 o.district as District,o.phone_no as Phone,o.cperson_contact as ContectPerson,
-o.assigned_to AssignedTo,u.user_name as StaffName,COUNT(l.Id) as LeadCount,
+o.assigned_to StaffID,u.user_name as StaffName,COUNT(l.Id) as LeadCount,
 COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID
 left join tbl_organizationtype as t on o.org_type=t.Id
-left join tbl_leads as l on l.org_id=o.Id
-left join tbl_follow_up as f on f.org_id=o.Id
-left join tbl_customer_support as s on s.org_id=o.Id
+left join tbl_leads as l on l.com_id=o.Id
+left join tbl_follow_up as f on f.com_id=o.Id
+left join tbl_customer_support as s on s.com_id=o.Id
 where comp_id=@companyid and o.created_by=@userid
 group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 END
 Else
 BEGIN
 select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,o.district as District,o.phone_no as Phone
-,o.assigned_to AssignedTo,u.user_name as StaffName,o.cperson_contact as ContactPerson,COUNT(l.Id) as LeadCount,COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
+,o.assigned_to StaffID,u.user_name as StaffName,o.cperson_contact as ContactPerson,COUNT(l.Id) as LeadCount,COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID
 left join tbl_organizationtype as t on o.org_type=t.Id
-left join tbl_leads as l on l.org_id=o.Id
-left join tbl_follow_up as f on f.org_id=o.Id
-left join tbl_customer_support as s on s.org_id=o.Id
+left join tbl_leads as l on l.com_id=o.Id
+left join tbl_follow_up as f on f.com_id=o.Id
+left join tbl_customer_support as s on s.com_id=o.Id
 where comp_id=@companyid and is_our_client=@isourclient and o.created_by=@userid
 group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 
@@ -151,8 +150,8 @@ BEGIN
 Select o.Id as OrgID,o.org_name as OrgName,ot.name as OrgType,o.address as Address,o.District as District,
 o.source as Source,o.email as Email,o.phone_no as Phone,o.website as Website,(u.first_name+' '+u.last_name) as AssignedTo,COUNT(l.Id) as LeadCount,
 COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount from tbl_organization as o
-left join tbl_customer_support as s on s.org_id=o.Id
-left join tbl_follow_up as f on f.org_id=o.Id
+left join tbl_customer_support as s on s.com_id=o.Id
+left join tbl_follow_up as f on f.com_id=o.Id
 left join tbl_product as p on o.comp_id=p.com_id
 left join tbl_leads as l on l.product_id=p.ID
 left join tbl_user as u on u.ID = o.assigned_to
@@ -165,9 +164,9 @@ ELSE
 BEGIN
 Select o.Id as OrgId,o.org_name as OrgName,ot.name as OrgType,o.address,o.district
 ,o.source,o.email,o.phone_no as Phone,o.website as Website,(u.first_name+' '+u.last_name) as AssignedTo,COUNT(l.Id) as LeadCount,COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount from tbl_organization as o
-left join tbl_customer_support as s on s.org_id=o.Id
-left join tbl_follow_up as f on f.org_id=o.Id
-left join tbl_leads as l on l.org_id=o.Id
+left join tbl_customer_support as s on s.com_id=o.Id
+left join tbl_follow_up as f on f.com_id=o.Id
+left join tbl_leads as l on l.com_id=o.Id
 left join tbl_user as u on u.ID = o.assigned_to
 left join tbl_organizationtype as ot on ot.ID = o.org_type
 where o.comp_id=@companyid and o.created_by=@createdby and o.is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
@@ -181,7 +180,7 @@ BEGIN
 select p.ID ProductID,p.prod_name ProductName,
 (select COUNT(*) from tbl_leads where tbl_leads.product_id=p.ID) LeadCount,
 (select COUNT(*) from tbl_follow_up f where f.product_id=p.ID) FollowCount,
-(select COUNT(*) from tbl_customer_support,tbl_follow_up f where tbl_customer_support.org_id=f.org_id) SupportCount
+(select COUNT(*) from tbl_customer_support,tbl_follow_up f where tbl_customer_support.com_id=f.com_id) SupportCount
 
 from tbl_product p
 where p.com_id=@companyid and p.branch_id=@branchid and p.status = 1
@@ -192,7 +191,7 @@ if @flag='orgstaff'
 begin
 if @SubDepartmentId=0
 BEGIN
-select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
+select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
 join tbl_department on tbl_user.depart_id=tbl_department.ID
 join tbl_designation on tbl_user.design_id = tbl_designation.ID
 join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
@@ -201,7 +200,7 @@ tbl_department.ID=@DepartmentId;
 END
 ELSE
 BEGIN
-select tbl_user.Id as staffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
+select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
 join tbl_department on tbl_user.depart_id=tbl_department.ID
 join tbl_designation on tbl_user.design_id = tbl_designation.ID
 join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
