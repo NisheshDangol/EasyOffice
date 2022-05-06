@@ -13,33 +13,39 @@ namespace Easy.Services.Services
 {
     public class GetServices : IGetInterface
     {
-        public async Task<AllOrganizationDto> allorglist(string CompanyId, int EmployeeId, string FromDate, string ToDate,int IsOurClient, int OrgType, int SourceID)
+        public async Task<AllOrganizationDto> allorglist(string ComID, int UserID, string FromDate, string ToDate, int IsOurClient, int OrgType, int SourceID)
         {
             var orglist = new AllOrganizationDto();
             orglist.StatusCode = 400;
             orglist.OrgList = null;
             orglist.Message = "";
-            if (string.IsNullOrEmpty(CompanyId)) orglist.Message = "CompanyId is empty";
-            else if (EmployeeId == 0) orglist.Message = "EmployeeId is empty";
+            if (string.IsNullOrEmpty(ComID)) orglist.Message = "CompanyId is empty";
+            else if (UserID == 0) orglist.Message = "EmployeeId is empty";
             else if (string.IsNullOrEmpty(FromDate)) orglist.Message = "FormDate is empty";
             else if (string.IsNullOrEmpty(ToDate)) orglist.Message = "ToDate is empty";
             else
             {
                 string sql = "sp_all_org_list";
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
-                parameters.Add("@userid", EmployeeId);
+                var parameters = new DynamicParameters();
+                parameters.Add("@companyid", ComID);
+                parameters.Add("@userid", UserID);
                 parameters.Add("@FromDate", FromDate);
                 parameters.Add("@ToDate", ToDate);
                 parameters.Add("@isourclient", IsOurClient);
                 parameters.Add("@orgtype", OrgType);
                 parameters.Add("@sourceid", SourceID);
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-                if (data.Count() != 0)
+                if (data.Count() != 0 )//&& data.FirstOrDefault().Message == null)
                 {
                     orglist.StatusCode = 200;
                     orglist.OrgList = data.ToList();
                     orglist.Message = "success";
+                }
+                else if (data.Count()==1 && data.FirstOrDefault().Message != null)
+                {
+                    orglist.StatusCode = data.FirstOrDefault().StatusCode;
+                    orglist.OrgList = null;
+                    orglist.Message = data.FirstOrDefault().Message;
                 }
                 else
                 {

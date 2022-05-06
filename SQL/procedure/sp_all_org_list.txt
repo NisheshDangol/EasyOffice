@@ -1,21 +1,27 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/6/2022 10:32:17 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/6/2022 3:31:43 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[sp_all_org_list](
 @isourclient int =Null,
-@companyid nvarchar(10) = NULL,
+@companyid nvarchar(250) = NULL,
 @userid int = NULL,
-@FromDate nvarchar(500)=NULL,
-@ToDate nvarchar(500) = NULL,
+@FromDate nvarchar(250)=NULL,
+@ToDate nvarchar(250) = NULL,
 @orgtype int =NULL,
 @sourceid int= NULL
 ) as
 
 BEGIN
+	if not exists (Select 'm' from tbl_user where ID = @userid)
+	begin
+		Select 202 StatusCode, 'EmpId does not exists' Message
+		return;
+	end
+
 	if @isourclient=-1
 	BEGIN
 		if (@orgtype=-1 and @sourceid=-1)
@@ -27,10 +33,10 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.com_id=o.Id
-			left join tbl_follow_up as f on f.com_id=o.Id
-			left join tbl_customer_support as s on s.com_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.added_date>=@FromDate and o.added_date<=@ToDate
+			left join tbl_leads as l on l.org_id=o.Id
+			left join tbl_follow_up as f on f.contact_id=o.Id
+			left join tbl_customer_support as s on s.org_id=o.Id
+			where comp_id=@companyid and o.created_by=@userid and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
 		end		
@@ -43,10 +49,10 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.com_id=o.Id
-			left join tbl_follow_up as f on f.com_id=o.Id
-			left join tbl_customer_support as s on s.com_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate
+			left join tbl_leads as l on l.org_id=o.Id
+			left join tbl_follow_up as f on f.contact_id=o.Id
+			left join tbl_customer_support as s on s.org_id=o.Id
+			where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
 		end
@@ -59,10 +65,10 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.com_id=o.Id
-			left join tbl_follow_up as f on f.com_id=o.Id
-			left join tbl_customer_support as s on s.com_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.added_date>=@FromDate and o.added_date<=@ToDate
+			left join tbl_leads as l on l.org_id=o.Id
+			left join tbl_follow_up as f on f.contact_id=o.Id
+			left join tbl_customer_support as s on s.org_id=o.Id
+			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
 		end
@@ -75,10 +81,10 @@ BEGIN
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organizationtype as t on o.org_type=t.Id
-			left join tbl_leads as l on l.com_id=o.Id
-			left join tbl_follow_up as f on f.com_id=o.Id
-			left join tbl_customer_support as s on s.com_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.source = @sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate
+			left join tbl_leads as l on l.org_id=o.Id
+			left join tbl_follow_up as f on f.contact_id=o.Id
+			left join tbl_customer_support as s on s.org_id=o.Id 
+			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.source = @sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 			group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 			return;
 		end
@@ -95,10 +101,10 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.com_id=o.Id
-		left join tbl_follow_up as f on f.com_id=o.Id
-		left join tbl_customer_support as s on s.com_id=o.Id
-		where o.comp_id=@companyid and o.created_by=@userid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
+		left join tbl_leads as l on l.org_id=o.Id
+		left join tbl_follow_up as f on f.contact_id=o.Id
+		left join tbl_customer_support as s on s.org_id=o.Id
+		where o.comp_id=@companyid and o.created_by=@userid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
 	end		
@@ -111,10 +117,10 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.com_id=o.Id
-		left join tbl_follow_up as f on f.com_id=o.Id
-		left join tbl_customer_support as s on s.com_id=o.Id
-		where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
+		left join tbl_leads as l on l.org_id=o.Id
+		left join tbl_follow_up as f on f.contact_id=o.Id
+		left join tbl_customer_support as s on s.org_id=o.Id
+		where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
 	end
@@ -127,10 +133,10 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.com_id=o.Id
-		left join tbl_follow_up as f on f.com_id=o.Id
-		left join tbl_customer_support as s on s.com_id=o.Id
-		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
+		left join tbl_leads as l on l.org_id=o.Id
+		left join tbl_follow_up as f on f.contact_id=o.Id
+		left join tbl_customer_support as s on s.org_id=o.Id
+		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
 	end
@@ -143,10 +149,10 @@ BEGIN
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organizationtype as t on o.org_type=t.Id
-		left join tbl_leads as l on l.com_id=o.Id
-		left join tbl_follow_up as f on f.com_id=o.Id
-		left join tbl_customer_support as s on s.com_id=o.Id and o.org_type=@orgtype and o.source = @sourceid
-		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate
+		left join tbl_leads as l on l.org_id=o.Id
+		left join tbl_follow_up as f on f.contact_id=o.Id
+		left join tbl_customer_support as s on s.org_id=o.Id and o.org_type=@orgtype 
+		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and f.to_type = 1 and o.source = @sourceid
 		group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 		return;
 	end
