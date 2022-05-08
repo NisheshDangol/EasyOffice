@@ -57,9 +57,9 @@ namespace Easy.Services.Services
 
         }
 
-        public async Task<ContectInfoList> ContactInfo(string CompanyId, int EmployeeId)
+        public async Task<ContactInfoList> ContactInfo(string CompanyId, int EmployeeId, int ContactID)
         {
-            var contlist = new ContectInfoList();
+            var contlist = new ContactInfoList();
             contlist.StatusCode = 400;
             contlist.ContactInfo = null;
             if(string.IsNullOrEmpty(CompanyId))
@@ -72,13 +72,19 @@ namespace Easy.Services.Services
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@employeeid", EmployeeId);
+                parameters.Add("@ID", ContactID);
                 parameters.Add("@flag", "ContactList");
-                var data = await DBHelper.RunProc<ContactInfo>(sql, parameters);
-                if (data.Count() != 0)
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
                     contlist.StatusCode = 200;
                     contlist.ContactInfo = data.ToList();
                     contlist.Message = "success";
+                }
+                else if(data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    contlist.StatusCode = data.FirstOrDefault().StatusCode;
+                    contlist.Message = data.FirstOrDefault().Message;
                 }
                 else
                 {
@@ -376,21 +382,23 @@ namespace Easy.Services.Services
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@employeeid", EmployeeId);
                 parameters.Add("@flag", "ContactInfo");
-                var data = await DBHelper.RunProc<ContactList>(sql, parameters);
-                if (data.Count() != 0)
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
                     contlist.StatusCode = 200;
                     contlist.ContactListInfo = data.ToList();
                     contlist.Message = "success";
+                }
+                else if (data.Count()==1 && data.FirstOrDefault().Message != null)
+                {
+                    contlist.StatusCode = data.FirstOrDefault().StatusCode;
+                    contlist.Message = data.FirstOrDefault().Message;
                 }
                 else
                 {
                     contlist.Message = "NO data";
                 }
             }
-
-
-
             return contlist;
         }
 

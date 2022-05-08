@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Easy.Services\Easy.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Images\Contacts\" />
+  </ItemGroup>
+
 </Project>

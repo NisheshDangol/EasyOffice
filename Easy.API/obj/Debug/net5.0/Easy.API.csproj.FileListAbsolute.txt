@@ -149,3 +149,8 @@ C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\M
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\Microsoft.Extensions.PlatformAbstractions.dll
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\Nancy.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\System.Drawing.Common.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\Microsoft.Win32.SystemEvents.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\runtimes\unix\lib\netcoreapp3.1\System.Drawing.Common.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll

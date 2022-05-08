@@ -30,6 +30,6 @@ namespace Easy.Models.Models
         public int StaffID { get; set; }
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
-        public int AssignedTo { get; set; }
+        
     }
 }

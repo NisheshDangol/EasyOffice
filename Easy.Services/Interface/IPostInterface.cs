@@ -13,9 +13,9 @@ namespace Easy.Services.Interface
         Task<CommonResponse> CreateCompany(OrgnizationGet orgnization);
         Task<CommonResponse> CreateLeads(Lead lead);
         Task<CommonResponse> CreateFollowUp(Followup followup);
-        Task<CommonResponse> CreateContact(Contact contact);
+        Task<CommonResponse> CreateContact(ContactCreate contact);
         Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport);
-        Task<CommonResponse> ContactUpdate(UpdateContect contact);
+        Task<CommonResponse> ContactUpdate(UpdateContact contact);
         Task<CommonResponse> CreateNotification(Notification notifi);
     }
 }

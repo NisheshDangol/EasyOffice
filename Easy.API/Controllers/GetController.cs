@@ -106,16 +106,16 @@ namespace Easy.API.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> ContactList(string ComID, int UserID)
         {
-            var data = await _unitOfWork.GetServices.ContactInfo(ComID, UserID);
+            var data = await _unitOfWork.GetServices.ContactList(ComID, UserID);
             return Ok(data);
 
         }
         [HttpGet]
         [Route("~/api/contact-info")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> ContactInfo(string ComID, int UserID)
+        public async Task<IActionResult> ContactInfo(string ComID, int UserID, int ContactID)
         {
-            var data = await _unitOfWork.GetServices.ContactList(ComID,UserID);
+            var data = await _unitOfWork.GetServices.ContactInfo(ComID,UserID,ContactID);
             return Ok(data);
 
         }

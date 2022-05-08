@@ -5,6 +5,9 @@ using Easy.Models.Models;
 using Easy.Services.Interface;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,39 +44,41 @@ namespace Easy.Services.Services
             return response;
         }
 
-        public async Task<CommonResponse> ContactUpdate(UpdateContect contact)
+        public async Task<CommonResponse> ContactUpdate(UpdateContact contact)
         {
             var common = new CommonResponse();
-           
-                
-                string sql = "sp_contect";
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", contact.ComID);
-                parameters.Add("@employeeid", contact.UserID);
-                parameters.Add("@ID", contact.ContactId);
-                parameters.Add("@firstname", contact.FirstName);
-                parameters.Add("@middlename", contact.MiddleName);
-                parameters.Add("@lastname", contact.LastName);
-                parameters.Add("@email", contact.Email);
-                parameters.Add("@website", contact.Website);
-                parameters.Add("@phone", contact.Phone);               
-                parameters.Add("@jobtitle", contact.JobTitle);
-                parameters.Add("@jobOrg", contact.JobOrg);
-                parameters.Add("@address", contact.Address);
-                parameters.Add("@district", contact.District);
-                parameters.Add("@gender", contact.Gender);
-                parameters.Add("@image", contact.Image);
-                parameters.Add("@fb", contact.Fb);
-                parameters.Add("@source", contact.Source);
-                parameters.Add("@remarks", contact.Remarks);
-                parameters.Add("@branchID", contact.Branch);
-                parameters.Add("@fiscalID", contact.Fiscal);
-                parameters.Add("@flag", "UpdateContact");
-                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            var imageUrl = Convert.FromBase64String(contact.Image);
+            Image image = Image.FromStream(new MemoryStream(imageUrl));
+            var imagename = DateTime.Now.Ticks;
+            image.Save("Images/Contacts/"+imagename+"jpg",ImageFormat.Jpeg);
+            string sql = "sp_contect";
+            DynamicParameters parameters = new DynamicParameters();
+            parameters.Add("@companyid", contact.ComID);
+            parameters.Add("@employeeid", contact.UserID);
+            parameters.Add("@ID", contact.ContactID);
+            parameters.Add("@firstname", contact.FirstName);
+            parameters.Add("@middlename", contact.MiddleName);
+            parameters.Add("@lastname", contact.LastName);
+            parameters.Add("@email", contact.Email);
+            parameters.Add("@website", contact.Website);
+            parameters.Add("@phone", contact.Phone);               
+            parameters.Add("@jobtitle", contact.JobTitle);
+            parameters.Add("@jobOrg", contact.JobOrg);
+            parameters.Add("@address", contact.Address);
+            parameters.Add("@district", contact.District);
+            parameters.Add("@gender", contact.Gender);
+            parameters.Add("@image", imagename);
+            parameters.Add("@fb", contact.Fb);
+            parameters.Add("@source", contact.Source);
+            parameters.Add("@remarks", contact.Remarks);
+            parameters.Add("@branchID", contact.BranchID);
+            parameters.Add("@fiscalID", contact.FiscalID);
+            parameters.Add("@flag", "UpdateContact");
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
 
-                common.StatusCode = 200;
-                common.Message = "Success";
-                return common;
+            common.StatusCode = data.FirstOrDefault().StatusCode;
+            common.Message = data.FirstOrDefault().Message;
+            return common;
             
             
         }
@@ -113,7 +118,7 @@ namespace Easy.Services.Services
                 parameter.Add("@currentsystem", orgnization.CurrentSystem);
                 parameter.Add("@branchid", orgnization.BranchID);
                 parameter.Add("@fiscalid", orgnization.FiscalID);
-                parameter.Add("@AssignedTo", orgnization.AssignedTo);
+                parameter.Add("@AssignedTo", orgnization.StaffID);
                 parameter.Add("@flag", "createorg");
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameter);
                 res.StatusCode = data.FirstOrDefault().StatusCode;
@@ -122,9 +127,13 @@ namespace Easy.Services.Services
             return res;
         }
 
-        public async Task<CommonResponse> CreateContact(Contact contact)
+        public async Task<CommonResponse> CreateContact(ContactCreate contact)
         {
             var common = new CommonResponse();
+            var imageUrl = Convert.FromBase64String(contact.Image);
+            Image image = Image.FromStream(new MemoryStream(imageUrl));
+            var imgname = DateTime.Now.Ticks;
+            image.Save("Images/Contacts/" +imgname + ".jpg", ImageFormat.Jpeg);
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid",contact.ComID);
@@ -134,24 +143,24 @@ namespace Easy.Services.Services
             parameters.Add("@lastname",contact.LastName);
             parameters.Add("@email",contact.Email);
             parameters.Add("@website",contact.Website);
-            parameters.Add("@phone",contact.Phone);
-            
+            parameters.Add("@phone",contact.Phone);           
             parameters.Add("@jobtitle",contact.JobTitle);
             parameters.Add("@jobOrg",contact.JobOrg);
             parameters.Add("@address",contact.Address);
             parameters.Add("@district",contact.District);
             parameters.Add("@gender",contact.Gender);
-            parameters.Add("@image",contact.Image);
+            parameters.Add("@image",imgname + ".jpg");
             parameters.Add("@fb",contact.Fb);
             parameters.Add("@source",contact.Source);
             parameters.Add("@remarks",contact.Remarks);
-            parameters.Add("@branchID",contact.Branch);
-            parameters.Add("@fiscalID",contact.Fiscal);
+            parameters.Add("@branchID",contact.BranchID);
+            parameters.Add("@fiscalID",contact.FiscalID);
             parameters.Add("@flag", "Create");
             var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
 
-            common.StatusCode = 200;
-            common.Message = "Success";
+            common.StatusCode = data.FirstOrDefault().StatusCode;
+            common.Message = data.FirstOrDefault().Message;
+
             return common;
         }
 
@@ -250,5 +259,6 @@ namespace Easy.Services.Services
             data12.StatusCode = data.FirstOrDefault().StatusCode;
             return data12;
         }
+
     }
 }

@@ -39,7 +39,7 @@ namespace Easy.API.Controllers
         }
         [HttpPost]
         [Route("~/api/create-contact")]
-        public async Task<IActionResult> CreateContact(Contact contact)
+        public async Task<IActionResult> CreateContact(ContactCreate contact)
         {
             var data = await _unitOfWork.PostServices.CreateContact(contact);
             return Ok(data);
@@ -53,7 +53,7 @@ namespace Easy.API.Controllers
         }
         [HttpPost]
         [Route("~/api/update-contact")]
-        public async Task<IActionResult> UpdateContact(UpdateContect contect)
+        public async Task<IActionResult> UpdateContact(UpdateContact contect)
         {
             var data = await _unitOfWork.PostServices.ContactUpdate(contect);
             return Ok(data);
