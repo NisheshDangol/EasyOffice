@@ -1,0 +1,45 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_leave]    Script Date: 5/8/2022 4:39:08 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_leave](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[com_id] [nvarchar](150) NULL,
+	[user_id] [int] NULL,
+	[department_id] [int] NULL,
+	[sub_department_id] [int] NULL,
+	[designation_id] [int] NULL,
+	[title] [nvarchar](250) NULL,
+	[description] [nvarchar](500) NULL,
+	[leave_date] [date] NULL,
+	[leave_from] [date] NULL,
+	[leave_to] [date] NULL,
+	[total_days] [int] NULL,
+	[leave_type] [int] NULL,
+	[day_type] [int] NULL,
+	[leave_status] [int] NULL,
+	[leave_verified] [int] NULL,
+	[verified_by] [int] NULL,
+	[comment] [nvarchar](250) NULL,
+	[leave_assigned_to] [int] NULL,
+	[leave_assigned] [int] NULL,
+	[status] [int] NULL,
+	[branch_id] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[created_by] [int] NULL,
+	[updated_by] [int] NULL,
+	[created_date] [date] NULL,
+	[updated_date] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

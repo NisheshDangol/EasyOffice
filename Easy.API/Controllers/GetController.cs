@@ -147,7 +147,22 @@ namespace Easy.API.Controllers
 
         }
 
+        [HttpGet]
+        [Route("~/api/leave-type")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> GetLeaveType(string ComID, int BranchID)
+        {
+            var data = await _unitOfWork.GetServices.LeaveType(ComID,BranchID);
+            return Ok(data);
+        }
 
-
+        [HttpGet]
+        [Route("~/api/user-leave-type")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UserLeaveType(string ComID, int UserID)
+        {
+            var data = await _unitOfWork.GetServices.UserLeaveType(ComID,UserID);
+            return Ok(data);
+        }
     }
 }

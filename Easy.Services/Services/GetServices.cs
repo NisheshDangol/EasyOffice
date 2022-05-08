@@ -73,7 +73,7 @@ namespace Easy.Services.Services
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@employeeid", EmployeeId);
                 parameters.Add("@ID", ContactID);
-                parameters.Add("@flag", "ContactList");
+                parameters.Add("@flag", "ContactInfo");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
@@ -381,7 +381,7 @@ namespace Easy.Services.Services
                 DynamicParameters parameters = new DynamicParameters();
                 parameters.Add("@companyid", CompanyId);
                 parameters.Add("@employeeid", EmployeeId);
-                parameters.Add("@flag", "ContactInfo");
+                parameters.Add("@flag", "ContactList");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 if (data.Count() != 0 && data.FirstOrDefault().Message == null)
                 {
@@ -519,6 +519,61 @@ namespace Easy.Services.Services
                 }
             }
             return customersupport;
+        }
+
+
+        public async Task<LeaveTypeList> LeaveType(string ComID, int BranchID)
+        {
+            var typelist = new LeaveTypeList();
+            var sql = "sp_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag","leavetype");
+            parameters.Add("@ComID", ComID);
+            parameters.Add("@BranchID", BranchID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0)
+            {
+                typelist.StatusCode = 200;
+                typelist.Message = "Success";
+                typelist.LeaveList = data.ToList();
+            }
+            else
+            {
+                typelist.StatusCode = 400;
+                typelist.Message = "No data";
+                typelist.LeaveList = null;
+            }
+            return typelist;
+        }
+
+        public async Task<UserLeaveType> UserLeaveType(string ComID, int UserID)
+        {
+            var userleavetype = new UserLeaveType();
+            var sql = "sp_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "userleavetype");
+            parameters.Add("@ComID", ComID);
+            parameters.Add("@UserID", UserID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if(data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                userleavetype.LeaveType = data.ToList();
+                userleavetype.Message = "Success";
+                userleavetype.StatusCode = 200;
+            }
+            else if(data.Count()==1 && data.FirstOrDefault().Message != null)
+            {
+                userleavetype.LeaveType = null;
+                userleavetype.Message = data.FirstOrDefault().Message;
+                userleavetype.StatusCode = data.FirstOrDefault().StatusCode;
+            }
+            else
+            {
+                userleavetype.LeaveType = null;
+                userleavetype.Message = "No Data";
+                userleavetype.StatusCode = 400;
+            }
+            return userleavetype;
         }
     }
     

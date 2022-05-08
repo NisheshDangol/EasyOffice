@@ -24,8 +24,8 @@ namespace Easy.Services.Interface
 
         Task<NotificationListDto> NotificationList (string CompanyId, int EmployeeId);
         Task<CustomerSupportInfoDto> CustomerSupportInfo(string CompanyId, int EmployeeId, int CustomerSupportId);
-
-
+        Task<UserLeaveType> UserLeaveType(string ComID, int UserID);
+        Task<LeaveTypeList> LeaveType(string ComID, int BranchID);
         Task<CustomerSupportListDto> CustomersupportList(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate);
     }
 }

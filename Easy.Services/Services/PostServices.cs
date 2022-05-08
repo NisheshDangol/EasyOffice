@@ -67,7 +67,7 @@ namespace Easy.Services.Services
             parameters.Add("@address", contact.Address);
             parameters.Add("@district", contact.District);
             parameters.Add("@gender", contact.Gender);
-            parameters.Add("@image", imagename);
+            parameters.Add("@image", imagename+".jpg");
             parameters.Add("@fb", contact.Fb);
             parameters.Add("@source", contact.Source);
             parameters.Add("@remarks", contact.Remarks);
@@ -260,5 +260,30 @@ namespace Easy.Services.Services
             return data12;
         }
 
+        public async Task<CommonResponse> CreateLeave(Leave leave)
+        {
+            var res = new CommonResponse();
+            res.Message = "";
+            res.StatusCode = 400;
+            var sql = "sp_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "createleave");
+            parameters.Add("@ComID",leave.ComID);
+            parameters.Add("@UserID",leave.UserID);
+            parameters.Add("@LeaveTypeID", leave.LeaveTypeID);
+            parameters.Add("@DayTypeID", leave.DayTypeID);
+            parameters.Add("@Title",leave.Title);
+            parameters.Add("@Cause", leave.Cause);
+            parameters.Add("@FromDate", leave.FromDate);
+            parameters.Add("@ToDate", leave.ToDate);
+            parameters.Add("@IsFieldWork", leave.IsFieldWork);
+            parameters.Add("@LeaveAssignedTo", leave.LeaveAssignedTo);
+            parameters.Add("@FiscalID", leave.FiscalID);
+            parameters.Add("@BranchID", leave.BranchID);
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            res.Message = data.FirstOrDefault().Message;
+            res.StatusCode = data.FirstOrDefault().StatusCode;
+            return res;
+        }
     }
 }

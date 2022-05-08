@@ -65,5 +65,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CreateNotification(notifi);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/create-leave")]
+        public async Task<IActionResult> CreateLeave(Leave leave)
+        {
+            var data = await _unitOfWork.PostServices.CreateLeave(leave);
+            return Ok(data);
+        }
     }
 }

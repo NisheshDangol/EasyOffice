@@ -17,5 +17,6 @@ namespace Easy.Services.Interface
         Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport);
         Task<CommonResponse> ContactUpdate(UpdateContact contact);
         Task<CommonResponse> CreateNotification(Notification notifi);
+        Task<CommonResponse> CreateLeave(Leave leave);
     }
 }
