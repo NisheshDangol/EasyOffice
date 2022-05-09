@@ -3,12 +3,16 @@ using Easy.Connection;
 using Easy.Connection.Dapper;
 using Easy.Models.Models;
 using Easy.Services.Interface;
+using MailKit.Net.Smtp;
+using MimeKit;
+using Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +20,12 @@ namespace Easy.Services.Services
 {
     public class PostServices : IPostInterface
     {
+        private readonly SmtpSettings _settings;
+        public PostServices(SmtpSettings smtpSettings)
+        {
+            _settings= smtpSettings;
+        }
+
         public async Task<CommonResponse> CreateNotification(Notification notifi)
         {
             CommonResponse response = new CommonResponse();
@@ -280,9 +290,38 @@ namespace Easy.Services.Services
             parameters.Add("@LeaveAssignedTo", leave.LeaveAssignedTo);
             parameters.Add("@FiscalID", leave.FiscalID);
             parameters.Add("@BranchID", leave.BranchID);
-            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            parameters.Add("@Notifi", leave.Notify);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             res.Message = data.FirstOrDefault().Message;
             res.StatusCode = data.FirstOrDefault().StatusCode;
+            if (data.FirstOrDefault().email != null)
+            {
+                var message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(_settings.SenderEmail));
+                message.To.Add(MailboxAddress.Parse(data.FirstOrDefault().email));
+                message.Subject = "LEAVE";
+                message.Body = new TextPart("plain")
+                {
+                    Text = "Leave Email"
+                };
+                var client = new SmtpClient();
+
+                try
+                {
+                    client.Connect(_settings.Server, _settings.Port, true);
+                    client.Authenticate(new NetworkCredential(_settings.SenderEmail, _settings.Password));
+                    client.SendAsync(message);
+                    client.Disconnect(true);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    client.Dispose();
+                }
+            }            
             return res;
         }
     }

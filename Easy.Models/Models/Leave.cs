@@ -19,6 +19,7 @@ namespace Easy.Models.Models
         public string ToDate { get; set; }
         public int IsFieldWork { get; set; }
         public int LeaveAssignedTo { get; set; }
+        public int Notify { get; set; }
         public int FiscalID { get; set; }
         public int BranchID { get; set; }
     }

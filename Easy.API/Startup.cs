@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,9 +38,9 @@ namespace Easy.API
         public void ConfigureServices(IServiceCollection services)
         {
             DBCon.ConnectionString = Configuration.GetConnectionString("DefaultConnection");
-            
 
 
+            services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opts =>
                 {

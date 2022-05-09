@@ -4,6 +4,7 @@ using Easy.Services.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Models.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,13 @@ namespace Easy.Services
     {
         private readonly ITokenInterface _tokenInterface;
         private readonly FcmNotificationSetting _fcmNotificationSetting;
+        private readonly SmtpSettings _settings;
 
-        public UnitOfWork(ITokenInterface tokenInterface, IOptions<FcmNotificationSetting> settings)
+        public UnitOfWork(ITokenInterface tokenInterface, IOptions<FcmNotificationSetting> settings, IOptions<SmtpSettings> setting)
         {
             _tokenInterface = tokenInterface;
             _fcmNotificationSetting = settings.Value;
+            _settings = setting.Value;
         }
         public LoginService service => new LoginService(_tokenInterface);
 
@@ -30,7 +33,7 @@ namespace Easy.Services
 
         public GetServices GetServices => new GetServices();
 
-        public PostServices PostServices => new PostServices();
+        public PostServices PostServices => new PostServices(_settings);
 
         public SendNotificationService SendNotificationServices => new SendNotificationService(_fcmNotificationSetting);
     }

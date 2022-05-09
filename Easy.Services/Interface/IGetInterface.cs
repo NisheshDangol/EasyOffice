@@ -20,8 +20,6 @@ namespace Easy.Services.Interface
         Task<FollowupListDto> followuplist (string ComID, int EmpID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType);
         Task<ContactInfoList> ContactInfo (string CompanyId, int EmployeeId, int ContactID);
         Task<ContactListDto> ContactList (string CompanyId, int EmployeeId);
-
-
         Task<NotificationListDto> NotificationList (string CompanyId, int EmployeeId);
         Task<CustomerSupportInfoDto> CustomerSupportInfo(string CompanyId, int EmployeeId, int CustomerSupportId);
         Task<UserLeaveType> UserLeaveType(string ComID, int UserID);
