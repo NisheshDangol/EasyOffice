@@ -38,4 +38,12 @@ namespace Easy.Models.Models
     {
         public List<dynamic> Leave_Report { get; set; }
     }
+
+    public class UpdateLeaveStatus
+    {
+        public string ComID { get; set; }
+        public int UserID { get; set; }
+        public int LeaveID { get; set; }
+        public int Status { get; set; }
+    }
 }
