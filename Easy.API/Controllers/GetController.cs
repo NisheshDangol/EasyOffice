@@ -164,5 +164,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.UserLeaveType(ComID,UserID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/leave-report")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> LeaveReport(string ComID, int UserID, int LeaveTypeID)
+        {
+            var data = await _unitOfWork.GetServices.LeaveReport(ComID, UserID, LeaveTypeID);
+            return Ok(data);
+        }
     }
 }

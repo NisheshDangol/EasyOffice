@@ -72,5 +72,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CreateLeave(leave);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/leave-status")]
+        public async Task<IActionResult> UpdateLeaveStatus(string ComID, int UserID, int LeaveID, int Status)
+        {
+            var data = await _unitOfWork.PostServices.UpdateLeaveStatus(ComID, UserID, LeaveID, Status);
+            return Ok(data);
+        }
     }
 }

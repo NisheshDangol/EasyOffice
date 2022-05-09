@@ -575,6 +575,38 @@ namespace Easy.Services.Services
             }
             return userleavetype;
         }
+
+        public async Task<LeaveReport> LeaveReport(string ComID, int UserID, int LeaveTypeID)
+        {
+            var leave_rep = new LeaveReport();
+            var sql = "sp_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "leavereport");
+            parameters.Add("@ComID", ComID);
+            parameters.Add("@UserID", UserID);
+            parameters.Add("@LeaveTypeID", LeaveTypeID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if(data.Count()!=0 && data.FirstOrDefault().Message == null)
+            {
+                leave_rep.Leave_Report = data.ToList();
+                leave_rep.StatusCode = 200;
+                leave_rep.Message = "Success";
+            }
+            else if(data.Count()==1 && data.FirstOrDefault().Message != null)
+            {
+                leave_rep.Message= data.FirstOrDefault().Message;
+                leave_rep.StatusCode= data.FirstOrDefault().StatusCode;
+                leave_rep.Leave_Report = null;
+            }
+            else
+            {
+                leave_rep.Leave_Report = null;
+                leave_rep.StatusCode = 400;
+                leave_rep.Message = "No Data";
+            }
+            return leave_rep;
+        }
+
     }
     
 }

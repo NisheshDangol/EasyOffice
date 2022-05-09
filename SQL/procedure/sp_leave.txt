@@ -19,6 +19,9 @@ ALTER proc [dbo].[sp_leave] (
 @FiscalID int=null,
 @BranchID int=null,
 @Notifi int=null,
+@balance varchar(250)=null,
+@LeaveID int = null,
+@status int = null,
 @flag nvarchar(250)
 )
 as
@@ -31,22 +34,23 @@ begin
 		Select 203 StatusCode, 'EmployeeID does not exists' Message
 		return;
 	end
-	if((Select DATEDIFF(day,@FromDate,@ToDate))>(Select balance from tbl_leave_type where ID=@LeaveTypeID))
-	begin
-		Select 204 StatusCode, 'User not allowed to take leave for more than __ for Leave type' Message
+	set @balance = (select balance from tbl_leave_type where ID=@LeaveTypeID);
+	if((Select DATEDIFF(day,@FromDate,@ToDate))>@balance)
+	begin   	    
+		Select 204 StatusCode, ('User not allowed to take leave for more than '+@balance+' for Leave type') Message
 		return;
 	end
-	if(((Select sum(total_days) from tbl_leave where user_id=@UserID and leave_type=@LeaveTypeID)+DATEDIFF(day,@FromDate,@ToDate))>(Select balance from tbl_leave_type where ID=@LeaveTypeID))
+	if(((Select sum(total_days) from tbl_leave where user_id=@UserID and leave_type=@LeaveTypeID)+DATEDIFF(day,@FromDate,@ToDate))>(@balance))
 	begin
-		Select 204 StatusCode, 'User not allowed to take leave for more than __ for Leave type' Message
+		Select 204 StatusCode, ('User not allowed to take leave for more than '+@balance+' for Leave type') Message
 		return;
 	end
 	Insert into tbl_leave (com_id,user_id, title, description, leave_date,
 	leave_from, leave_to, total_days, leave_type, leave_status, leave_verified,
 	leave_assigned, status, branch_id, fiscal_id,
-	created_by, updated_by, created_date, updated_date, day_type) values
+	created_by, updated_by, created_date, updated_date, day_type,is_field_work) values
 	(@ComID,@UserID,@Title,@Cause,GETDATE(),@FromDate,@ToDate,DATEDIFF(DAY,@FromDate,@ToDate),
-	@LeaveTypeID,0,0,0,1,@BranchID,@FiscalID,@UserID,@UserID,GETDATE(),GETDATE(),@DayTypeID)
+	@LeaveTypeID,0,0,0,1,@BranchID,@FiscalID,@UserID,@UserID,GETDATE(),GETDATE(),@DayTypeID,@IsFieldWork)
 	if(@Notifi != 1)
 	begin
 		Select 200 StatusCode, 'Success' Message
@@ -89,10 +93,44 @@ begin
 
 end
 
+if(@flag='leavereport')
+begin
+	if not exists(Select 'm' from tbl_user where ID=@UserID)
+	begin
+		Select 202 StatusCode, 'User ID does not exists' Message
+		return;
+	end
+	if not exists (Select 'm' from tbl_leave_type where ID=@LeaveTypeID)
+	begin
+		Select 203 StatusCode, 'Leave Type ID does not exists' Message
+		return;
+	end
 
---if(@flag='notifi')
---begin
---	Select email from tbl_user where ID = @LeaveAssignedTo
---	return;
---end
+	Select l.ID LeaveID, title Title, description Cause, day_type DayType, leave_from FromDate,
+	leave_to ToDate, total_days TotalDays, is_field_work IsFielWork, concat(u.first_name+' ',u.middle_name+' ',u.last_name) AssignedTo,
+	leave_status LeaveStatus, leave_verified LeaveVerified, verified_by VerifiedBy
+	from tbl_leave l
+	left join tbl_user u on u.ID = l.user_id
+	where l.com_id=u.com_id and u.com_id=@ComID and l.user_id=@UserID and l.leave_type=@LeaveTypeID and l.status=1
+end
+
+
+if(@flag = 'updateleavestatus')
+begin
+	if not exists(Select 'm' from tbl_user where ID=@UserID)
+	begin
+		Select 202 StatusCode, 'User ID does not exists'Message
+		return;
+	end
+	if not exists(Select 'm' from tbl_leave where ID=@LeaveID)
+	begin
+		Select 202 StatusCode, 'Leave does not exists'Message
+		return;
+	end
+
+	Update tbl_leave set leave_status = @status where com_id=@ComID and user_id=@UserID and ID = @LeaveID
+	Select 200 StatusCode, 'Success' Message
+	return;
+end
+
 END

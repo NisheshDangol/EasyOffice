@@ -310,7 +310,7 @@ namespace Easy.Services.Services
                 {
                     client.Connect(_settings.Server, _settings.Port, true);
                     client.Authenticate(new NetworkCredential(_settings.SenderEmail, _settings.Password));
-                    client.SendAsync(message);
+                    client.Send(message);
                     client.Disconnect(true);
                 }
                 catch (Exception ex)
@@ -322,6 +322,22 @@ namespace Easy.Services.Services
                     client.Dispose();
                 }
             }            
+            return res;
+        }
+
+        public async Task<CommonResponse> UpdateLeaveStatus(string ComID, int UserID, int LeaveID, int Status)
+        {
+            string sql = "sp_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "updateleavestatus");
+            parameters.Add("@ComID", ComID);
+            parameters.Add("@UserID", UserID);
+            parameters.Add("@LeaveID", LeaveID);
+            parameters.Add("@status", Status);
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            var res = new CommonResponse();
+            res.Message = data.FirstOrDefault().Message;
+            res.StatusCode = data.FirstOrDefault().StatusCode;
             return res;
         }
     }
