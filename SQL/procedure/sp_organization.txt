@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/6/2022 2:17:30 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/9/2022 4:50:36 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,9 +121,9 @@ COUNT(f.Id) as FollowCount,COUNT(s.Id) as SupportCount
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID
 left join tbl_organizationtype as t on o.org_type=t.Id
-left join tbl_leads as l on l.com_id=o.Id
-left join tbl_follow_up as f on f.com_id=o.Id
-left join tbl_customer_support as s on s.com_id=o.Id
+left join tbl_leads as l on l.org_id=o.Id
+left join tbl_follow_up as f on f.contact_id=o.Id
+left join tbl_customer_support as s on s.org_id=o.Id
 where comp_id=@companyid and o.created_by=@userid
 group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 END
@@ -134,9 +134,9 @@ select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Addres
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID
 left join tbl_organizationtype as t on o.org_type=t.Id
-left join tbl_leads as l on l.com_id=o.Id
-left join tbl_follow_up as f on f.com_id=o.Id
-left join tbl_customer_support as s on s.com_id=o.Id
+left join tbl_leads as l on l.org_id=o.Id
+left join tbl_follow_up as f on f.contact_id=o.Id
+left join tbl_customer_support as s on s.org_id=o.Id
 where comp_id=@companyid and is_our_client=@isourclient and o.created_by=@userid
 group by o.Id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 

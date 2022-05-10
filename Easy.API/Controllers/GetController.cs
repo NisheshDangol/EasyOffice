@@ -173,5 +173,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.LeaveReport(ComID, UserID, LeaveTypeID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/attendance-report")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AttendanceReport(string ComID, int UserID, string Flag, string Value)
+        {
+            var data = await _unitOfWork.GetServices.AttendanceReport(ComID, UserID, Flag, Value);
+            return Ok(data);
+        }
     }
 }

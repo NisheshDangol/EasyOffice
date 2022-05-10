@@ -1,0 +1,37 @@
+/****** Object:  Table [dbo].[tbl_attendance]    Script Date: 5/9/2022 2:37:18 PM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_attendance](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[com_id] [nvarchar](150) NULL,
+	[user_id] [int] NULL,
+	[department_id] [int] NULL,
+	[sub_department_id] [int] NULL,
+	[designation_id] [int] NULL,
+	[attend_date] [date] NULL,
+	[attend_time] [date] NULL,
+	[attend_status] [int] NULL,
+	[attend_place] [int] NULL,
+	[attend_remarks] [int] NULL,
+	[attend_verified] [int] NULL,
+	[verified_by] [int] NULL,
+	[remarks] [nvarchar](250) NULL,
+	[status] [int] NULL,
+	[branch_id] [int] NULL,
+	[fiscal_id] [int] NULL,
+	[created_by] [int] NULL,
+	[updated_by] [int] NULL,
+	[created_date] [date] NULL,
+	[updated_date] [date] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+

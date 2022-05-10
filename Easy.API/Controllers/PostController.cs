@@ -79,5 +79,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.UpdateLeaveStatus(updateLeave.ComID, updateLeave.UserID, updateLeave.LeaveID, updateLeave.Status);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/create-attendance")]
+        public async Task<IActionResult> CreateAttendance(CreateAttendance attendance)
+        {
+            var data = await _unitOfWork.PostServices.CreateAttendance(attendance);
+            return Ok(data);
+        }
     }
 }

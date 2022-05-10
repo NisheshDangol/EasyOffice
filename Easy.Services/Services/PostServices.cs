@@ -340,5 +340,30 @@ namespace Easy.Services.Services
             res.StatusCode = data.FirstOrDefault().StatusCode;
             return res;
         }
+
+        public async Task<CommonResponse> CreateAttendance(CreateAttendance attendance)
+        {
+            string sql = "sp_attendance";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag","createattendance");
+            parameters.Add("@comid", attendance.ComID);
+            parameters.Add("@userid", attendance.UserID);
+            parameters.Add("@departmentid", attendance.DepartmentID);
+            parameters.Add("@subdepartmentid", attendance.SubDepartmentID);
+            parameters.Add("@designationid", attendance.DesignationID);
+            parameters.Add("@attendate", attendance.AttenDate);
+            parameters.Add("@attentime", attendance.AttenTime);
+            //parameters.Add("@attenstatus", attendance.AttenStatus);
+            parameters.Add("@attenplace", attendance.AttenPlace);
+            //parameters.Add("@attenremarks", attendance.AttenRemarks);
+            parameters.Add("@fiscalid", attendance.FiscalID);
+            parameters.Add("@branchid", attendance.BrachID);
+            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            return new CommonResponse()
+            {
+                StatusCode = data.FirstOrDefault().StatusCode,
+                Message = data.FirstOrDefault().Message
+            };
+        }
     }
 }
