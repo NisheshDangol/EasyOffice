@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 5/9/2022 10:51:03 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 5/13/2022 7:24:54 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,7 +83,7 @@ begin
 		return;
 	end
 
-		Select lt.ID LeaveTypeID, name Type, sum(l.total_days) TotalDays, balance TotalLeave  
+		Select lt.ID LeaveTypeID, name Type, sum(coalesce( l.total_days,0)) TotalDays, balance TotalLeave  
 		from tbl_leave_type lt
 		left join tbl_leave l on l.leave_type=lt.ID 
 		where l.status=1 and lt.status = 1 and user_id=@UserID and l.com_id=@ComID

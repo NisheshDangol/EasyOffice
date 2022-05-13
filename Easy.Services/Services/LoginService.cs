@@ -55,11 +55,11 @@ namespace Easy.Services.Services
             var logout = new ListOutPut();
             string sqluser = "sp_userinfo";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@com_id", Login.CompanyId);
+            parameters.Add("@com_id", Login.ComID);
             parameters.Add("@username", Login.UserName);
             parameters.Add("@password", Login.Password);
             parameters.Add("@notification_token", Login.NotificationToken);
-            parameters.Add("@device_id", Login.DeviceId);
+            parameters.Add("@device_id", Login.DeviceID);
             parameters.Add("@flag","Login");
             var common= await DBHelper.RunProc<dynamic>(sqluser, parameters);
             if (common.Count() == 0 || common.FirstOrDefault().StatusCode != null)

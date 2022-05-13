@@ -9,11 +9,11 @@ namespace Easy.Models.Models
 {
     public class Login
     {
-        public string CompanyId { get; set; }
+        public string ComID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
         public string NotificationToken { get; set; }
-        public string DeviceId { get; set; }
+        public string DeviceID { get; set; }
     }
     //public class LoginViewModel:CommonResponse
     //{
