@@ -17,13 +17,13 @@ namespace Easy.Services.Services
             var job = new JobReturn();
             if (ComId == "")
             {
-                job.Jobinfo = null;
+                job.JobInfo = null;
                 job.StatusCode = 400;
                 job.Message = "ComId is null";
             }
             else if (EmpId == 0)
             {
-                job.Jobinfo = null;
+                job.JobInfo = null;
                 job.StatusCode = 400;
                 job.Message = "EmpId is null";
             }
@@ -37,13 +37,13 @@ namespace Easy.Services.Services
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 if (data.Count() !=0 && data.FirstOrDefault().StatusCode ==null )
                 {
-                    job.Jobinfo = data.ToList();
+                    job.JobInfo = data.ToList();
                     job.StatusCode = 200;
                     job.Message = "success";
                 }
                 else
                 {
-                    job.Jobinfo = null;
+                    job.JobInfo = null;
                     job.StatusCode = data.FirstOrDefault().StatusCode;
                     job.Message = data.FirstOrDefault().Message;
                 }
