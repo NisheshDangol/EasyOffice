@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_customer_support]    Script Date: 4/28/2022 11:14:22 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_customer_support]    Script Date: 5/15/2022 11:33:41 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -10,11 +10,11 @@ ALTER Procedure [dbo].[sp_customer_support](
 @companyid nvarchar(250)=Null,
 @organizationid int=Null,
 @productid int=Null,
-
+@attachmenturl nvarchar(150) = null,
 @enquirytime date=Null,
 @enquirydate date=Null,
-
-
+@customersuppid int =NULL,
+@attach int = NULL,
 @supportmedium nvarchar(150)=Null,
 @supportstatus int=Null,
 @issue nvarchar(250)=Null,
@@ -52,11 +52,30 @@ Begin
 	end
 	else 
 	begin
+		if(@attach = 0)
+		begin
+		set @attachment=NEWID()
 		insert into tbl_customer_support(com_id,created_by,org_id,product_id,issue,issue_date,start_time,end_time,attachment_id,assigned_to,support_status,support_medium,client_comment,remarks,branch_id,fiscal_id,updated_date,created_date,updated_by,status)
 		values(@companyid,@createdby,@organizationid,@productid,@issue,@issuedate,@starttime,@endtime,@attachment,@assignedto,@supportstatus,@supportmedium,@clientcomment,@remarks,@branch,@fiscal,(select dbo.fndate()),(select dbo.fndate()),@createdby,1)
+		set @customersuppid= (select IDENT_CURRENT('tbl_customer_support'))
+		Select 200 StatusCode, 'Success.' Message, @attachment AttachmentUnique,@customersuppid CustomerSuppID
+		return;
+		end
+		else
+		begin
+			insert into tbl_customer_support(com_id,created_by,org_id,product_id,issue,issue_date,start_time,end_time,attachment_id,assigned_to,support_status,support_medium,client_comment,remarks,branch_id,fiscal_id,updated_date,created_date,updated_by,status)
+		values(@companyid,@createdby,@organizationid,@productid,@issue,@issuedate,@starttime,@endtime,0,@assignedto,@supportstatus,@supportmedium,@clientcomment,@remarks,@branch,@fiscal,(select dbo.fndate()),(select dbo.fndate()),@createdby,1)
+		
 		Select 200 StatusCode, 'Success.' Message
 		return;
+		end
 	end
+end
+
+if @flag = 'addattachment'
+begin
+	insert into tbl_attachment(unique_id,customersupp_id,attachment_name)
+	values(@attachment,@customersuppid,@attachmenturl)
 end
 
 if @flag ='CustomerSupportList'

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 5/6/2022 2:40:04 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 5/15/2022 4:20:57 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -12,7 +12,7 @@ ALTER Procedure [dbo].[sp_leads]
 @OrganizationId int=NULL,
 @ProductId int=NULL,
 @EnquiryDate date =NULL,
-@EnquiryTime nvarchar(250)=NULL,
+@EnquiryTime time=NULL,
 @LeadStatus int=NULL,
 @Assignedto int=NULL,
 @Remarks nvarchar(250)=NULL,
@@ -64,15 +64,14 @@ BEGIN
 	end
 	else
 	begin
-		select ls.ID SourceID, 
-		name SourceName,
-		Count(l.ID) LeadCount,
-		Count(o.Id) OrganizationCount
-		from tbl_lead_source ls
-		left join tbl_leads l on ls.ID=l.lead_source
-		left join tbl_organization o on o.ID=l.org_id
-		where ls.com_id=@CompanyId and ls.branch_id=@BranchId and ls.status=1 and l.status=1
-		group by ls.ID,name
+		
+		Select l.lead_source SourceID,ls.name SourceName, count(l.ID) LeadCount, 
+		(select Count(Id) from tbl_organization where comp_id= @CompanyId and status=1 and branch_id=@BranchId and ID=l.org_id) OrganizationCount
+		from tbl_leads l
+		left join tbl_lead_source ls on ls.ID=l.lead_source
+
+		where ls.com_id=@CompanyId and ls.branch_id=@BranchId and ls.status=1 
+		group by l.lead_source,ls.name, l.com_id,l.org_id
 		select 200 StatusCode , 'Success' Message
 	end
 	END

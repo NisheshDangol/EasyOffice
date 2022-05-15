@@ -140,10 +140,6 @@ namespace Easy.Services.Services
         public async Task<CommonResponse> CreateContact(ContactCreate contact)
         {
             var common = new CommonResponse();
-            var imageUrl = Convert.FromBase64String(contact.Image);
-            Image image = Image.FromStream(new MemoryStream(imageUrl));
-            var imgname = DateTime.Now.Ticks;
-            image.Save("Images/Contacts/" +imgname + ".jpg", ImageFormat.Jpeg);
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid",contact.ComID);
@@ -159,7 +155,15 @@ namespace Easy.Services.Services
             parameters.Add("@address",contact.Address);
             parameters.Add("@district",contact.District);
             parameters.Add("@gender",contact.Gender);
-            parameters.Add("@image",imgname + ".jpg");
+            if (!string.IsNullOrEmpty(contact.Image))
+            {
+                var imageUrl = Convert.FromBase64String(contact.Image);
+                Image image = Image.FromStream(new MemoryStream(imageUrl));
+                var imgname = DateTime.Now.Ticks;
+                image.Save("Images/Contacts/" + imgname + ".jpg", ImageFormat.Jpeg);
+                
+                parameters.Add("@image", imgname + ".jpg");
+            }           
             parameters.Add("@fb",contact.Fb);
             parameters.Add("@source",contact.Source);
             parameters.Add("@remarks",contact.Remarks);
@@ -190,7 +194,7 @@ namespace Easy.Services.Services
                 parameters.Add("@productid", followup.ProductID);
                 parameters.Add("@followdate", followup.FollowDate);
                 parameters.Add("@followtime", followup.FollowTime);
-                parameters.Add("@assignedto", followup.AssignedTo);
+                parameters.Add("@assignedto", followup.StaffID);
                 parameters.Add("@remarks", followup.Remarks);
                 parameters.Add("@followstatus", followup.FollowStatus);
                 parameters.Add("@followtype", followup.FollowType);
@@ -227,7 +231,7 @@ namespace Easy.Services.Services
                 parameters.Add("@ProductId", lead.ProductID);
                 parameters.Add("@EnquiryDate", lead.EnquiryDate);
                 parameters.Add("@EnquiryTime", lead.EnquiryTime);
-                parameters.Add("@Assignedto", lead.AssignedTo);
+                parameters.Add("@Assignedto", lead.StaffID);
                 parameters.Add("@Remarks", lead.Remarks);
                 parameters.Add("@LeadStatus", lead.LeadStatus);
                 parameters.Add("@BranchId", lead.BranchID);
@@ -254,8 +258,12 @@ namespace Easy.Services.Services
             parameters.Add("@issuedate",customerSupport.IssueDate);
             parameters.Add("@starttime",customerSupport.StartTime);
             parameters.Add("@endtime",customerSupport.EndTime);
-            parameters.Add("@attachment",customerSupport.Attachment);
-            parameters.Add("@assignedto",customerSupport.AssignedTo);
+            if (customerSupport.Attachment != null && customerSupport.Attachment.Count() != 0
+                && !string.IsNullOrEmpty(customerSupport.Attachment.FirstOrDefault().AttachmentUrl))
+            {
+                parameters.Add("@attach", 0);
+            }
+            parameters.Add("@assignedto",customerSupport.StaffID);
             parameters.Add("@supportstatus",customerSupport.SupportStatus);
             parameters.Add("@supportmedium",customerSupport.SupportMedium);
             parameters.Add("@clientcomment",customerSupport.ClientComment);
@@ -263,10 +271,28 @@ namespace Easy.Services.Services
             parameters.Add("@branch",customerSupport.BranchID);
             parameters.Add("@fiscal",customerSupport.FiscalID);
             parameters.Add("@flag","Create");
-
-            var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             data12.Message = data.FirstOrDefault().Message;
             data12.StatusCode = data.FirstOrDefault().StatusCode;
+
+            if (customerSupport.Attachment != null && customerSupport.Attachment.Count() != 0
+                && !string.IsNullOrEmpty(customerSupport.Attachment.FirstOrDefault().AttachmentUrl))
+            {
+                foreach (var imagedate in customerSupport.Attachment)
+                {
+
+                    var imageUrl = Convert.FromBase64String(imagedate.AttachmentUrl);
+                    Image image = Image.FromStream(new MemoryStream(imageUrl));
+                    var ImageName = DateTime.Now.Ticks;
+                    image.Save("Images/CustomerSupport/" + ImageName + ".jpg", ImageFormat.Jpeg);
+                    DynamicParameters param = new DynamicParameters();
+                    param.Add("@attachment", data.FirstOrDefault().AttachmentUnique);
+                    param.Add("@attachmenturl", ImageName + ".jpg");
+                    param.Add("@customersuppid", data.FirstOrDefault().CustomerSuppID);
+                    param.Add("@flag", "addattachment");
+                    await DBHelper.RunProc<dynamic>(sql, param);
+                }
+            }          
             return data12;
         }
 

@@ -16,7 +16,7 @@ namespace Easy.Models.Models
         public int ProductID { get; set; }
         public string FollowDate { get; set; }
         public string FollowTime { get; set; }
-        public int AssignedTo { get; set; }
+        public int StaffID { get; set; }
         public string Remarks { get; set; }
         public int FollowStatus { get; set; }
         public int FollowType { get; set; }

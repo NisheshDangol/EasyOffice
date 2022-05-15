@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 5/15/2022 11:08:01 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 5/15/2022 4:16:46 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -117,8 +117,8 @@ begin
 		return;
 	end
 
-	Select l.ID LeaveID, title Title, description Cause, day_type DayType, format(leave_from, 'yyyy:MM:dd') FromDate,
-	format(leave_to, 'yyyy:MM:dd') ToDate, total_days TotalDays, is_field_work IsFielWork, concat(u.first_name+' ',u.middle_name+' ',u.last_name) AssignedTo,
+	Select l.ID LeaveID, title Title, description Cause, day_type DayType, format(leave_from, 'yyyy-MM-dd') FromDate,
+	format(leave_to, 'yyyy-MM-dd') ToDate, total_days TotalDays, is_field_work IsFielWork, concat(u.first_name+' ',u.middle_name+' ',u.last_name) AssignedTo,
 	leave_status LeaveStatus, leave_verified LeaveVerified, verified_by VerifiedBy
 	from tbl_leave l
 	left join tbl_user u on u.ID = l.user_id

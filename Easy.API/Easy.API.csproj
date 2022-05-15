@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Images\Contacts\" />
+    <Folder Include="Images\CustomerSupport\" />
   </ItemGroup>
 
 </Project>

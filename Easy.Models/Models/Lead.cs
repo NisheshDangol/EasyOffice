@@ -12,9 +12,9 @@ namespace Easy.Models.Models
         public int UserID { get; set; }
         public int OrgID { get; set; }
         public int ProductID { get; set; }
-        public DateTime EnquiryDate { get; set; }
+        public string EnquiryDate { get; set; }
         public string EnquiryTime { get; set; }
-        public int AssignedTo { get; set; }
+        public int StaffID { get; set; }
         public string Remarks { get; set; }
         public int LeadStatus { get; set; }
         public int BranchID { get; set; }

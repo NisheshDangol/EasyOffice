@@ -14,17 +14,21 @@ namespace Easy.Models.Models
         public int OrgID { get; set; }
         public int ProductID { get; set; }
         public string Issue { get; set; }
-        public DateTime IssueDate { get; set; }
+        public string IssueDate { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public string Attachment { get; set; }
-        public int AssignedTo { get; set; }
+        public List<Attachment> Attachment { get; set; }
+        public int StaffID { get; set; }
         public int SupportStatus { get; set; }
         public int SupportMedium { get; set; }
         public string ClientComment { get; set; }
         public string Remarks { get; set; }
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
+    }
+    public class Attachment
+    {
+        public string AttachmentUrl { get; set; }
     }
 
     //public class CustomerSupportList

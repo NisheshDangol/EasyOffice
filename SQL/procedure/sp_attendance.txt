@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 5/12/2022 12:49:35 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 5/15/2022 12:50:42 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,7 +80,7 @@ BEGIN
 		end
 		if(@repflag='m')
 		begin
-			select distinct(format(attend_date, 'yyyy:MM:dd')) AttenDate, day (attend_date) AttenDay, 
+			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day (attend_date) AttenDay, 
 			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) CheckIn,
 			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) CheckOut,
 			status Status,case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) 
@@ -96,7 +96,7 @@ BEGIN
 		end
 		if(@repflag='d')
 		begin
-			select distinct(format(attend_date, 'yyyy:MM:dd')) AttenDate, day(attend_date) AttenDay, 
+			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day(attend_date) AttenDay, 
 			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) CheckIn,--day(attend_date)=day(@value) and month(attend_date)=month(@value) and year(attend_date)=year(@value)) CheckIn,
 			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) CheckOut,
 			status Status,case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) 
