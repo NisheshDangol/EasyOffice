@@ -141,7 +141,7 @@ namespace Easy.Services.Services
         {
             var followtype = new FollowUpTypeDto();
             followtype.StatusCode = 400;
-            followtype.Followuptype = null;
+            followtype.FollowupType = null;
 
             if (string.IsNullOrEmpty(CompanyId)) followtype.Message = "Input CompanyId";
             else if (BranchId == 0) followtype.Message = "Input BranchId";
@@ -157,13 +157,13 @@ namespace Easy.Services.Services
                 {
                     followtype.Message = "Success";
                     followtype.StatusCode = 200;
-                    followtype.Followuptype = data.ToList();
+                    followtype.FollowupType = data.ToList();
                 }
                 else
                 {
                     followtype.Message = "No Data Found.";
                     followtype.StatusCode = 400;
-                    followtype.Followuptype = null;
+                    followtype.FollowupType = null;
                 }
             }
             return followtype;
@@ -213,7 +213,7 @@ namespace Easy.Services.Services
             {
                 return new DocInfo
                 {
-                    docs = data.ToList(),
+                    Docs = data.ToList(),
                     Message = "Success.",
                     StatusCode = 200
                 };
@@ -222,7 +222,7 @@ namespace Easy.Services.Services
             {
                 return new DocInfo
                 {
-                    docs = null,
+                    Docs = null,
                     Message = data.FirstOrDefault().Message,
                     StatusCode = data.FirstOrDefault().StatusCode
                 };
@@ -336,7 +336,7 @@ namespace Easy.Services.Services
         {
             var org = new OrganizationTypeDto();
             org.StatusCode = 400;
-            org.organizationTypes = null;
+            org.OrganizationTypes = null;
 
             if (string.IsNullOrEmpty(CompanyId)) org.Message = "Input CompanyId";
             else if (BranchId == 0) org.Message = "BranchId is Empty";
@@ -352,13 +352,13 @@ namespace Easy.Services.Services
                 {
                     org.Message = "Success";
                     org.StatusCode = 200;
-                    org.organizationTypes = data.ToList();
+                    org.OrganizationTypes = data.ToList();
                 }
                 else
                 {
                     org.Message = "No Data Found.";
                     org.StatusCode = 400;
-                    org.organizationTypes = null;
+                    org.OrganizationTypes = null;
                 }
             }
             return org;
@@ -406,7 +406,7 @@ namespace Easy.Services.Services
         {
             var customersupport = new CustomerSupportListDto();
             customersupport.StatusCode = 400;
-            customersupport.customerlist = null;
+            customersupport.Customerlist = null;
 
             if (string.IsNullOrEmpty(CompanyId)) customersupport.Message = "Input CompanyId";
             else
@@ -427,19 +427,19 @@ namespace Easy.Services.Services
                 {
                     customersupport.Message = "Success";
                     customersupport.StatusCode = 200;
-                    customersupport.customerlist = data.ToList();
+                    customersupport.Customerlist = data.ToList();
                 }
                 else if(data.Count() != 0 && data.FirstOrDefault().StatusCode != null)
                 {
                     customersupport.Message = data.FirstOrDefault().Message;
                     customersupport.StatusCode = data.FirstOrDefault().StatusCode;
-                    customersupport.customerlist = null;
+                    customersupport.Customerlist = null;
                 }
                 else
                 {
                     customersupport.Message = "Nodata";
                     customersupport.StatusCode = 400;
-                    customersupport.customerlist = null;
+                    customersupport.Customerlist = null;
                 }
             }
             return customersupport;
@@ -588,7 +588,7 @@ namespace Easy.Services.Services
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if(data.Count()!=0 && data.FirstOrDefault().Message == null)
             {
-                leave_rep.Leave_Report = data.ToList();
+                leave_rep.LeaveReports = data.ToList();
                 leave_rep.StatusCode = 200;
                 leave_rep.Message = "Success";
             }
@@ -596,11 +596,11 @@ namespace Easy.Services.Services
             {
                 leave_rep.Message= data.FirstOrDefault().Message;
                 leave_rep.StatusCode= data.FirstOrDefault().StatusCode;
-                leave_rep.Leave_Report = null;
+                leave_rep.LeaveReports = null;
             }
             else
             {
-                leave_rep.Leave_Report = null;
+                leave_rep.LeaveReports = null;
                 leave_rep.StatusCode = 400;
                 leave_rep.Message = "No Data";
             }

@@ -55,7 +55,7 @@ namespace Easy.Models.Models
     //}
     public class OrganizationTypeDto:CommonResponse
     {
-        public List<dynamic> organizationTypes { get; set; }
+        public List<dynamic> OrganizationTypes { get; set; }
     }
 
 

@@ -36,7 +36,7 @@ namespace Easy.Models.Models
 
     public class LeaveReport : CommonResponse
     {
-        public List<dynamic> Leave_Report { get; set; }
+        public List<dynamic> LeaveReports { get; set; }
     }
 
     public class UpdateLeaveStatus

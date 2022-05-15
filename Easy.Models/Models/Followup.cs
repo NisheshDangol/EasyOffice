@@ -49,6 +49,6 @@ namespace Easy.Models.Models
     //}
     public class FollowUpTypeDto:CommonResponse
     {
-        public List<dynamic> Followuptype { get; set; }
+        public List<dynamic> FollowupType { get; set; }
     }
 }

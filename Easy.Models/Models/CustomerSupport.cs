@@ -45,7 +45,7 @@ namespace Easy.Models.Models
     //}
     public class CustomerSupportListDto:CommonResponse
     {
-        public List<dynamic> customerlist { get; set; }
+        public List<dynamic> Customerlist { get; set; }
 
     }
 

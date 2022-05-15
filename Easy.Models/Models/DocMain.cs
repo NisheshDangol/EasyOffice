@@ -15,6 +15,6 @@ namespace Easy.Models.Models
     //}
     public class DocInfo:CommonResponse
     {
-        public List<dynamic> docs { get; set; }
+        public List<dynamic> Docs { get; set; }
     }
 }
