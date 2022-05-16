@@ -156,3 +156,4 @@ C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\r
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\runtimes\win\lib\netcoreapp3.1\System.Drawing.Common.dll
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\MailKit.dll
 C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\MimeKit.dll
+C:\Users\NisAceDanGol\source\repos\easy-business-api\Easy.API\bin\Debug\net5.0\ServiceStack.Text.dll

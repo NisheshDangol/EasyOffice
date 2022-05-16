@@ -115,7 +115,7 @@
           "lib/net5.0/MailKit.dll": {}
         }
       },
-      "Microsoft.Bcl.AsyncInterfaces/1.0.0": {
+      "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
         "type": "package",
         "compile": {
           "ref/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {}
@@ -124,7 +124,7 @@
           "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll": {}
         }
       },
-      "Microsoft.CSharp/4.5.0": {
+      "Microsoft.CSharp/4.7.0": {
         "type": "package",
         "compile": {
           "ref/netcoreapp2.0/_._": {}
@@ -846,6 +846,21 @@
           }
         }
       },
+      "ServiceStack.Text/6.0.2": {
+        "type": "package",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
+          "Microsoft.CSharp": "4.7.0",
+          "System.Memory": "4.5.4",
+          "System.Runtime": "4.3.1"
+        },
+        "compile": {
+          "lib/netstandard2.0/ServiceStack.Text.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/ServiceStack.Text.dll": {}
+        }
+      },
       "System.AppContext/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -1337,6 +1352,15 @@
           "lib/netstandard1.6/System.Linq.Expressions.dll": {}
         }
       },
+      "System.Memory/4.5.4": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.1/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.1/_._": {}
+        }
+      },
       "System.Net.Http/4.3.0": {
         "type": "package",
         "dependencies": {
@@ -1608,11 +1632,11 @@
           "ref/netstandard1.0/System.Resources.ResourceManager.dll": {}
         }
       },
-      "System.Runtime/4.3.0": {
+      "System.Runtime/4.3.1": {
         "type": "package",
         "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0"
+          "Microsoft.NETCore.Platforms": "1.1.1",
+          "Microsoft.NETCore.Targets": "1.1.3"
         },
         "compile": {
           "ref/netstandard1.5/System.Runtime.dll": {}
@@ -2353,7 +2377,8 @@
         "type": "project",
         "framework": ".NETCoreApp,Version=v5.0",
         "dependencies": {
-          "Easy.Connection": "1.0.0"
+          "Easy.Connection": "1.0.0",
+          "ServiceStack.Text": "6.0.2"
         },
         "compile": {
           "bin/placeholder/Easy.Models.dll": {}
@@ -2556,13 +2581,14 @@
         "mailkit.nuspec"
       ]
     },
-    "Microsoft.Bcl.AsyncInterfaces/1.0.0": {
-      "sha512": "K63Y4hORbBcKLWH5wnKgzyn7TOfYzevIEwIedQHBIkmkEBA9SCqgvom+XTuE+fAFGvINGkhFItaZ2dvMGdT5iw==",
+    "Microsoft.Bcl.AsyncInterfaces/1.1.1": {
+      "sha512": "yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w==",
       "type": "package",
-      "path": "microsoft.bcl.asyncinterfaces/1.0.0",
+      "path": "microsoft.bcl.asyncinterfaces/1.1.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
+        "Icon.png",
         "LICENSE.TXT",
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net461/Microsoft.Bcl.AsyncInterfaces.dll",
@@ -2571,7 +2597,7 @@
         "lib/netstandard2.0/Microsoft.Bcl.AsyncInterfaces.xml",
         "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.dll",
         "lib/netstandard2.1/Microsoft.Bcl.AsyncInterfaces.xml",
-        "microsoft.bcl.asyncinterfaces.1.0.0.nupkg.sha512",
+        "microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
         "microsoft.bcl.asyncinterfaces.nuspec",
         "ref/net461/Microsoft.Bcl.AsyncInterfaces.dll",
         "ref/netstandard2.0/Microsoft.Bcl.AsyncInterfaces.dll",
@@ -2580,10 +2606,10 @@
         "version.txt"
       ]
     },
-    "Microsoft.CSharp/4.5.0": {
-      "sha512": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ==",
+    "Microsoft.CSharp/4.7.0": {
+      "sha512": "pTj+D3uJWyN3My70i2Hqo+OXixq3Os2D1nJ2x92FFo6sk8fYS1m1WLNTs0Dc1uPaViH0YvEEwvzddQ7y4rhXmA==",
       "type": "package",
-      "path": "microsoft.csharp/4.5.0",
+      "path": "microsoft.csharp/4.7.0",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2596,6 +2622,7 @@
         "lib/netcoreapp2.0/_._",
         "lib/netstandard1.3/Microsoft.CSharp.dll",
         "lib/netstandard2.0/Microsoft.CSharp.dll",
+        "lib/netstandard2.0/Microsoft.CSharp.xml",
         "lib/portable-net45+win8+wp8+wpa81/_._",
         "lib/uap10.0.16299/_._",
         "lib/win8/_._",
@@ -2605,7 +2632,7 @@
         "lib/xamarinmac20/_._",
         "lib/xamarintvos10/_._",
         "lib/xamarinwatchos10/_._",
-        "microsoft.csharp.4.5.0.nupkg.sha512",
+        "microsoft.csharp.4.7.0.nupkg.sha512",
         "microsoft.csharp.nuspec",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
@@ -3654,6 +3681,23 @@
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.4.3.0.nupkg.sha512",
         "runtime.ubuntu.16.10-x64.runtime.native.system.security.cryptography.openssl.nuspec",
         "runtimes/ubuntu.16.10-x64/native/System.Security.Cryptography.Native.OpenSsl.so"
+      ]
+    },
+    "ServiceStack.Text/6.0.2": {
+      "sha512": "KLt0Pgjv3wpFvtB3gzoqWNwoY+ToJW+rG4oIMY4Zk9dcbxsDC9sI0L4IPVI/b2ct/8iIw2ke5VHJvNfgjwf92w==",
+      "type": "package",
+      "path": "servicestack.text/6.0.2",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net472/ServiceStack.Text.dll",
+        "lib/net472/ServiceStack.Text.xml",
+        "lib/net6.0/ServiceStack.Text.dll",
+        "lib/net6.0/ServiceStack.Text.xml",
+        "lib/netstandard2.0/ServiceStack.Text.dll",
+        "lib/netstandard2.0/ServiceStack.Text.xml",
+        "servicestack.text.6.0.2.nupkg.sha512",
+        "servicestack.text.nuspec"
       ]
     },
     "System.AppContext/4.3.0": {
@@ -5231,6 +5275,29 @@
         "system.linq.expressions.nuspec"
       ]
     },
+    "System.Memory/4.5.4": {
+      "sha512": "1MbJTHS1lZ4bS4FmsJjnuGJOu88ZzTT2rLvrhW7Ygic+pC0NWA+3hgAen0HRdsocuQXCkUTdFn9yHJJhsijDXw==",
+      "type": "package",
+      "path": "system.memory/4.5.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Memory.dll",
+        "lib/net461/System.Memory.xml",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.1/System.Memory.dll",
+        "lib/netstandard1.1/System.Memory.xml",
+        "lib/netstandard2.0/System.Memory.dll",
+        "lib/netstandard2.0/System.Memory.xml",
+        "ref/netcoreapp2.1/_._",
+        "system.memory.4.5.4.nupkg.sha512",
+        "system.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
     "System.Net.Http/4.3.0": {
       "sha512": "sYg+FtILtRQuYWSIAuNOELwVuVsxVyJGWQyOnlAzhV4xvhyFnON1bAzYYC+jjRW8JREM45R0R5Dgi8MTC5sEwA==",
       "type": "package",
@@ -6004,10 +6071,10 @@
         "system.resources.resourcemanager.nuspec"
       ]
     },
-    "System.Runtime/4.3.0": {
-      "sha512": "JufQi0vPQ0xGnAczR13AUFglDyVYt4Kqnz1AZaiKZ5+GICq0/1MH/mO/eAJHt/mHW1zjKBJd7kV26SrxddAhiw==",
+    "System.Runtime/4.3.1": {
+      "sha512": "abhfv1dTK6NXOmu4bgHIONxHyEqFjW8HwXPmpY9gmll+ix9UNo4XDcmzJn6oLooftxNssVHdJC1pGT9jkSynQg==",
       "type": "package",
-      "path": "system.runtime/4.3.0",
+      "path": "system.runtime/4.3.1",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -6092,7 +6159,7 @@
         "ref/xamarinmac20/_._",
         "ref/xamarintvos10/_._",
         "ref/xamarinwatchos10/_._",
-        "system.runtime.4.3.0.nupkg.sha512",
+        "system.runtime.4.3.1.nupkg.sha512",
         "system.runtime.nuspec"
       ]
     },

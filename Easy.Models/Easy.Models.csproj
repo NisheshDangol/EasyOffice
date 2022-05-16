@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ServiceStack.Text" Version="6.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Easy.Connection\Easy.Connection.csproj" />
   </ItemGroup>
 

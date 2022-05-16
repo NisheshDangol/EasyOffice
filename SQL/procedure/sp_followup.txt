@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/6/2022 12:49:45 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/16/2022 10:23:36 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -235,9 +235,26 @@ END
 
 if @flag='followtype'
 BEGIN
-select ID FollowTypeID,name FollowTypeName,(select COUNT(*) from tbl_organization where tbl_organization.comp_id=tbl_follow_type.com_id) OrganizationCount,(select Count(*) from tbl_contact where tbl_contact.ID=tbl_follow_type.created_by) PersonCount from tbl_follow_type
-where com_id=@companyid and branch_id=@branchid and status=1
-group by ID,name,com_id,created_by
+--select ft.ID FollowTypeID,ft.name FollowTypeName,
+--(select COUNT(*) from tbl_organization where comp_id=@companyid and branch_id=@branchid and status=1 and ID=fu.contact_id and fu.to_type=1) OrganizationCount,
+--(select Count(*) from tbl_contact where tbl_contact.created_by=ft.created_by and branch_id=@branchid and com_id=@companyid and ID=fu.contact_id and fu.to_type=2) PersonCount 
+--from tbl_follow_type ft
+--left join tbl_follow_up fu on fu.follow_type = ft.ID and fu.branch_id=ft.branch_id and fu.com_id=ft.com_id 
+--left join tbl_organization o on o.Id=fu.contact_id and fu.to_type=1
+--where ft.com_id=@companyid and ft.branch_id=@branchid  and ft.status=1 and fu.status=1
+----group by ft.ID,ft.name,com_id,created_by
+
+Select  ft.ID FollowTypeID, ft.name FollowTypeName,
+count(o.Id) OrganizationCount,
+count(c.Id) PersonCount
+from tbl_follow_up fu
+left join tbl_follow_type ft on fu.follow_type=ft.ID and fu.com_id = ft.com_id and fu.branch_id=ft.branch_id
+left join tbl_organization o on fu.contact_id=o.Id and fu.to_type=1 and fu.com_id = o.comp_id and fu.branch_id= o.branch_id
+left join tbl_contact c on fu.contact_id=c.ID and fu.to_type=2 and fu.com_id = c.com_id and fu.branch_id=c.branch_id
+
+where fu.branch_id=@branchid and fu.com_id=@companyid
+
+group by fu.follow_type, ft.name,ft.ID
 END
 
 END

@@ -6,6 +6,7 @@ using Easy.Services.Interface;
 using MailKit.Net.Smtp;
 using MimeKit;
 using Models.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -57,10 +58,7 @@ namespace Easy.Services.Services
         public async Task<CommonResponse> ContactUpdate(UpdateContact contact)
         {
             var common = new CommonResponse();
-            var imageUrl = Convert.FromBase64String(contact.Image);
-            Image image = Image.FromStream(new MemoryStream(imageUrl));
-            var imagename = DateTime.Now.Ticks;
-            image.Save("Images/Contacts/"+imagename+"jpg",ImageFormat.Jpeg);
+                     
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid", contact.ComID);
@@ -77,7 +75,14 @@ namespace Easy.Services.Services
             parameters.Add("@address", contact.Address);
             parameters.Add("@district", contact.District);
             parameters.Add("@gender", contact.Gender);
-            parameters.Add("@image", imagename+".jpg");
+            if (!string.IsNullOrEmpty(contact.Image))
+            {
+                var imageUrl = Convert.FromBase64String(contact.Image);
+                Image image = Image.FromStream(new MemoryStream(imageUrl));
+                var imagename = DateTime.Now.Ticks;
+                image.Save("Images/Contacts/" + imagename + ".jpg", ImageFormat.Jpeg);
+                parameters.Add("@image", imagename + ".jpg");
+            }           
             parameters.Add("@fb", contact.Fb);
             parameters.Add("@source", contact.Source);
             parameters.Add("@remarks", contact.Remarks);
@@ -390,6 +395,43 @@ namespace Easy.Services.Services
                 StatusCode = data.FirstOrDefault().StatusCode,
                 Message = data.FirstOrDefault().Message
             };
+        }
+
+        public async Task<List<CommonResponse>> CreateBulkAttendance( BulkAttendance bulkatten) 
+        {
+            var parameter = bulkatten.Param.ToString().Replace("\"","'");
+            var param = JsonConvert.DeserializeObject<List<JSonParam>>(parameter);
+            List<CommonResponse> res = new List<CommonResponse>();
+            string sql = "sp_attendance";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "bulkattendance");
+            parameters.Add("@comid", bulkatten.ComID);           
+            //parameters.Add("@attenremarks", attendance.AttenRemarks);
+            parameters.Add("@fiscalid", bulkatten.FiscalID);
+            parameters.Add("@branchid", bulkatten.BranchID);
+            foreach(JSonParam para in param)
+            {
+                parameters.Add("@userid", para.UserID);
+                parameters.Add("@departmentid", para.DepartmentID);
+                parameters.Add("@subdepartmentid", para.SubDepartmentID);
+                parameters.Add("@designationid", para.DesignationID);
+                parameters.Add("@attendate", para.AttenDate);
+                parameters.Add("@attentime", para.AttenTime);
+                parameters.Add("@attenstatus", para.AttenStatus);
+                parameters.Add("@attenplace", para.AttenPlace);
+                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                res.Add(
+                    new CommonResponse
+                    {
+                        StatusCode = data.FirstOrDefault().StatusCode,
+                        Message = data.FirstOrDefault().Message,
+                    }
+                );
+                
+            }
+
+            return res;
+            
         }
     }
 }

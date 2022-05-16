@@ -86,5 +86,12 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.CreateAttendance(attendance);
             return Ok(data);
         }
+        [HttpPost]
+        [Route("~/api/bulk-attendance")]
+        public async Task<IActionResult> CreateBulkAttendance( BulkAttendance BulkAtten)
+        {
+            var data = await _unitOfWork.PostServices.CreateBulkAttendance(BulkAtten);
+            return Ok(data);
+        }
     }
 }

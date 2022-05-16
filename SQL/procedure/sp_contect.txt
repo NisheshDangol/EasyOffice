@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_contect]    Script Date: 5/8/2022 10:30:01 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_contect]    Script Date: 5/16/2022 12:44:10 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -61,8 +61,11 @@ BEGIN
 		Select 202 StatusCode, 'EmpID does not exists' Message
 		return;
 	end
-Select ID ContactId,(first_name+' '+middle_name+' '+last_name) FullName,phone Contact,email Email,address Address,
-district District from tbl_contact where com_id=@companyid and created_by=@employeeid and status =1 
+Select c.ID ContactId,(first_name+' '+middle_name+' '+last_name) FullName,phone Contact,email Email,address Address,
+d.district_name District 
+from tbl_contact c
+left join tbl_district d on d.ID=c.district
+where com_id=@companyid and created_by=@employeeid and c.status =1 and d.status=1
 return;
 END
 
@@ -75,8 +78,15 @@ begin
 end
 Select com_id ComID,created_by EmpID,first_name FirstName,middle_name MiddleName,last_name LastName,
 email Email,website Website,phone Phone,job_title JobTitle,job_org JobOrg,
-address Address,district Districe,gender Gender,('Images/Contacts/'+image) Image,fb FB,
-source Source,remarks Remarks from tbl_contact where status=1 and com_id=@companyid and created_by=@employeeid and ID = @ID
+address Address,d.district_name District,case gender 
+when 1 then 'male'
+when 2 then 'female'
+else 'others'
+end Gender,('Images/Contacts/'+image) Image,fb FB,
+source Source,remarks Remarks 
+from tbl_contact c 
+left join tbl_district d on d.ID=c.district
+where c.status=1 and d.status=1 and com_id=@companyid and c.created_by=@employeeid and c.ID = @ID
 return;
 END
 
@@ -92,15 +102,29 @@ BEGIN
 		Select 203 StatusCode, 'EmployeeID does not exists' Message
 		return;
 	end
+	if @image=null
+	begin
+		UPDATE tbl_contact set first_name=@firstname,middle_name=@middlename,last_name=@lastname,
+		email=@email,website=@website,phone=@phone,job_title=@jobtitle,job_org=@jobOrg,address=@address,district=@district,gender=@gender,
+		fb=@fb,source=@source,remarks=@remarks,branch_id=@branchID,
+		fiscal_id=@fiscalID
+		where com_id=@companyid and created_by=@employeeid and ID=@ID
 
-UPDATE tbl_contact set first_name=@firstname,middle_name=@middlename,last_name=@lastname,
-email=@email,website=@website,phone=@phone,job_title=@jobtitle,job_org=@jobOrg,address=@address,district=@district,gender=@gender,
-image=@image,fb=@fb,source=@source,remarks=@remarks,branch_id=@branchID,
-fiscal_id=@fiscalID
-where com_id=@companyid and created_by=@employeeid and ID=@ID
+		select 200 StatusCode, 'Success' Message
+		return;
+	end
+	else
+	begin
+		UPDATE tbl_contact set first_name=@firstname,middle_name=@middlename,last_name=@lastname,
+		email=@email,website=@website,phone=@phone,job_title=@jobtitle,job_org=@jobOrg,address=@address,district=@district,gender=@gender,
+		image=@image,fb=@fb,source=@source,remarks=@remarks,branch_id=@branchID,
+		fiscal_id=@fiscalID
+		where com_id=@companyid and created_by=@employeeid and ID=@ID
 
-select 200 StatusCode, 'Success' Message
-return;
+		select 200 StatusCode, 'Success' Message
+		return;
+	end
+
 END
 
 END
