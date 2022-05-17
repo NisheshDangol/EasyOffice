@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 5/15/2022 12:50:42 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 5/16/2022 2:17:20 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -21,6 +21,7 @@ ALTER proc [dbo].[sp_attendance]
 @tblshiftres datetime=null,
 @leftearly datetime=null,
 @repflag nvarchar(250)=null,
+@iflag nvarchar(50) = null,
 @value nvarchar(50)=null,
 @flag nvarchar(250)
 as
@@ -110,5 +111,63 @@ BEGIN
 			from tbl_attendance t
 			where com_id=@comid and user_id=@userid and attend_date=convert(datetime,@value) and status = 1
 		end
+	end
+
+	if(@flag = 'bulkattendance')
+	begin
+		if not exists(Select 'm' from tbl_user where ID = @userid)
+		begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		end		
+		
+		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift)
+		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift)
+		if (((convert(datetime,@attentime))<=@tblshiftres) and @attenstatus = 1)
+		begin
+			set @attenremarks = 1
+		end
+		else if(((convert(datetime,@attentime))>@tblshiftres) and @attenstatus = 1)
+		begin
+			set @attenremarks = 3
+		end
+		else if(((convert(datetime,@attentime))<@leftearly) and @attenstatus = 2)
+		begin
+			set @attenremarks = 4
+		end
+		else
+		begin
+			set @attenremarks = 2
+		end
+		if(@iflag = 1)
+		begin
+			Update tbl_attendance set attend_time=@attentime, attend_place=@attenplace, attend_status=@attenstatus, attend_remarks=@attenremarks
+			where user_id=@userid and com_id=@comid and attend_date=@attendate
+			Select 200 StatusCode, 'Success' Message
+			return;
+		end
+		else if(@iflag=2)
+		begin
+			if exists(Select 'm' from tbl_attendance where user_id = @userid and com_id=@comid and attend_date=@attendate and attend_status=2)
+			begin
+				Select 400 StatusCode, 'Attendance already completed' Message
+				return;
+			end
+			set @departmentid = (Select depart_id from tbl_user where ID= @userid) 
+			set @subdepartmentid = (Select sub_depart_id from tbl_user where ID=@userid)
+			set @designationid = (Select design_id from tbl_user where ID=@userid)
+			Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
+			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date)
+			values(@comid,@userid,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
+			@fiscalid,@branchid,1,0,@userid,@userid,GETDATE(),GETDATE())
+			Select 200 StatusCode, 'Success' Message
+			return;
+		end
+		else
+		begin
+			Select 400 StatusCode, 'Invalid Flag'Message
+			return;
+		end
+		
 	end
 END
