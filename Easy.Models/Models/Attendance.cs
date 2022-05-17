@@ -43,7 +43,8 @@ namespace Easy.Models.Models
         //public int AttenStatus { get; set; }
         //public int AttenPlace { get; set; }
         
-        public JObject Param { get; set; }
+        public List<JSonParam> Param { get; set; }
+        public int Flag { get; set; }
         public int FiscalID { get; set; }
         public int BranchID { get; set; }
 
@@ -51,10 +52,7 @@ namespace Easy.Models.Models
 
     public class JSonParam
     {
-        public int UserID { get; set; }
-        public int DepartmentID { get; set; }
-        public int SubDepartmentID { get; set; }
-        public int DesignationID { get; set; }
+        public int UserID { get; set; }        
         public string AttenDate { get; set; }
         public string AttenTime { get; set; }
         public int AttenStatus { get; set; }

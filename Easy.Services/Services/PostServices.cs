@@ -7,6 +7,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using Models.Model;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -397,11 +398,10 @@ namespace Easy.Services.Services
             };
         }
 
-        public async Task<List<CommonResponse>> CreateBulkAttendance( BulkAttendance bulkatten) 
+        public async Task<CommonResponse> CreateBulkAttendance( BulkAttendance bulkatten) 
         {
-            var parameter = bulkatten.Param.ToString().Replace("\"","'");
-            var param = JsonConvert.DeserializeObject<List<JSonParam>>(parameter);
-            List<CommonResponse> res = new List<CommonResponse>();
+            var param = bulkatten.Param;            
+            CommonResponse res = new CommonResponse();
             string sql = "sp_attendance";
             var parameters = new DynamicParameters();
             parameters.Add("@flag", "bulkattendance");
@@ -409,29 +409,19 @@ namespace Easy.Services.Services
             //parameters.Add("@attenremarks", attendance.AttenRemarks);
             parameters.Add("@fiscalid", bulkatten.FiscalID);
             parameters.Add("@branchid", bulkatten.BranchID);
+            parameters.Add("@iflag", bulkatten.Flag);
             foreach(JSonParam para in param)
             {
                 parameters.Add("@userid", para.UserID);
-                parameters.Add("@departmentid", para.DepartmentID);
-                parameters.Add("@subdepartmentid", para.SubDepartmentID);
-                parameters.Add("@designationid", para.DesignationID);
                 parameters.Add("@attendate", para.AttenDate);
                 parameters.Add("@attentime", para.AttenTime);
                 parameters.Add("@attenstatus", para.AttenStatus);
                 parameters.Add("@attenplace", para.AttenPlace);
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
-                res.Add(
-                    new CommonResponse
-                    {
-                        StatusCode = data.FirstOrDefault().StatusCode,
-                        Message = data.FirstOrDefault().Message,
-                    }
-                );
-                
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;                               
             }
-
-            return res;
-            
+            return res;           
         }
     }
 }

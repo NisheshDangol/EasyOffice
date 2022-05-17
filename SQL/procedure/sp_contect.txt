@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_contect]    Script Date: 5/16/2022 12:44:10 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_contect]    Script Date: 5/17/2022 11:04:29 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -64,8 +64,8 @@ BEGIN
 Select c.ID ContactId,(first_name+' '+middle_name+' '+last_name) FullName,phone Contact,email Email,address Address,
 d.district_name District 
 from tbl_contact c
-left join tbl_district d on d.ID=c.district
-where com_id=@companyid and created_by=@employeeid and c.status =1 and d.status=1
+left join tbl_district d on d.ID=c.district and d.status=1
+where c.com_id=@companyid and c.created_by=@employeeid and c.status =1 
 return;
 END
 
@@ -85,8 +85,8 @@ else 'others'
 end Gender,('Images/Contacts/'+image) Image,fb FB,
 source Source,remarks Remarks 
 from tbl_contact c 
-left join tbl_district d on d.ID=c.district
-where c.status=1 and d.status=1 and com_id=@companyid and c.created_by=@employeeid and c.ID = @ID
+left join tbl_district d on d.ID=c.district and d.status=1
+where c.status=1 and com_id=@companyid and c.created_by=@employeeid and c.ID = @ID
 return;
 END
 

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/15/2022 1:01:54 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/17/2022 11:33:20 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -121,12 +121,12 @@ o.assigned_to StaffID,u.user_name as StaffName,
 (select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
 (select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 from tbl_organization as o 
-left join tbl_user as u on o.assigned_to=u.ID
-left join tbl_organizationtype as t on o.org_type=t.Id
+left join tbl_user as u on o.assigned_to=u.ID and u.com_id=comp_id 
+left join tbl_organizationtype as t on o.org_type=t.Id and t.status=1 and t.companyid=comp_id 
 --left join tbl_leads as l on l.org_id=o.Id
 --left join tbl_follow_up as f on f.contact_id=o.Id
 --left join tbl_customer_support as s on s.org_id=o.Id
-where comp_id=@companyid and o.created_by=@userid and u.com_id=comp_id and t.companyid=comp_id 
+where comp_id=@companyid and o.created_by=@userid  
 and
 t.createdby = o.created_by and o.status=1 and t.status=1 
 group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
@@ -139,13 +139,13 @@ select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Addres
 (select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
 (select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 from tbl_organization as o 
-left join tbl_user as u on o.assigned_to=u.ID
-left join tbl_organizationtype as t on o.org_type=t.Id
+left join tbl_user as u on o.assigned_to=u.ID and u.com_id=comp_id 
+left join tbl_organizationtype as t on o.org_type=t.Id and t.status=1 and t.companyid=comp_id 
 --left join tbl_leads as l on l.org_id=o.Id
 --left join tbl_follow_up as f on f.contact_id=o.Id
 --left join tbl_customer_support as s on s.org_id=o.Id
-where comp_id=@companyid and o.created_by=@userid and u.com_id=comp_id and t.companyid=comp_id 
-and is_our_client=@isourclient and o.created_by=@userid and o.status=1 and t.status=1 
+where comp_id=@companyid and o.created_by=@userid 
+and is_our_client=@isourclient and o.created_by=@userid and o.status=1 
 group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 
 END
@@ -202,16 +202,16 @@ BEGIN
 select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
 join tbl_department on tbl_user.depart_id=tbl_department.ID
 join tbl_designation on tbl_user.design_id = tbl_designation.ID
-join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
+--join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
 where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
 tbl_department.ID=@DepartmentId;
 END
 ELSE
 BEGIN
 select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
-join tbl_department on tbl_user.depart_id=tbl_department.ID
-join tbl_designation on tbl_user.design_id = tbl_designation.ID
-join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
+join tbl_department on tbl_user.depart_id=tbl_department.ID and tbl_department.com_id=@companyid
+join tbl_designation on tbl_user.design_id = tbl_designation.ID and tbl_designation.com_id=@companyid
+join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id and tbl_sub_department.com_id=@companyid
 where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
 tbl_department.ID=@DepartmentId and tbl_sub_department.Id=@SubDepartmentId;
 END
@@ -220,8 +220,8 @@ end
 if @flag='orgtype'
 BEGIN
 select tbl_organizationtype.Id as OrgTypeID,tbl_organizationtype.name as OrgTypeName,COUNT(tbl_organization.Id) as OrgCount from tbl_organizationtype
-left join tbl_organization on tbl_organizationtype.Id=tbl_organization.org_type
-where comp_id=@companyid and companyid=@companyid and tbl_organization.branch_id=@branchid and tbl_organization.status=1 and tbl_organizationtype.status=1
+left join tbl_organization on tbl_organizationtype.Id=tbl_organization.org_type and comp_id=@companyid and tbl_organization.branch_id=@branchid and tbl_organization.status=1
+where  tbl_organizationtype.status=1 and companyid=@companyid 
 group by tbl_organizationtype.Id ,tbl_organizationtype.name
 END
 
