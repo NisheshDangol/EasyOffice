@@ -410,16 +410,16 @@ namespace Easy.Services.Services
             parameters.Add("@fiscalid", bulkatten.FiscalID);
             parameters.Add("@branchid", bulkatten.BranchID);
             parameters.Add("@iflag", bulkatten.Flag);
-            foreach(JSonParam para in param)
+            parameters.Add("@attenplace", bulkatten.AttenPlace);
+            foreach (JSonParam para in param)
             {
                 parameters.Add("@userid", para.UserID);
                 parameters.Add("@attendate", para.AttenDate);
-                parameters.Add("@attentime", para.AttenTime);
-                parameters.Add("@attenstatus", para.AttenStatus);
-                parameters.Add("@attenplace", para.AttenPlace);
+                parameters.Add("@attentime", para.AttenTime);               
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
                 res.StatusCode = data.FirstOrDefault().StatusCode;
-                res.Message = data.FirstOrDefault().Message;                               
+                res.Message = data.FirstOrDefault().Message;
+                parameters.Add("@iflag", 2);
             }
             return res;           
         }

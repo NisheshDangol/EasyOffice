@@ -45,6 +45,7 @@ namespace Easy.Models.Models
         
         public List<JSonParam> Param { get; set; }
         public int Flag { get; set; }
+        public int AttenPlace { get; set; }
         public int FiscalID { get; set; }
         public int BranchID { get; set; }
 
@@ -55,8 +56,7 @@ namespace Easy.Models.Models
         public int UserID { get; set; }        
         public string AttenDate { get; set; }
         public string AttenTime { get; set; }
-        public int AttenStatus { get; set; }
-        public int AttenPlace { get; set; }
+        
     }
      
 
