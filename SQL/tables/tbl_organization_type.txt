@@ -8,7 +8,7 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE TABLE [dbo].[tbl_organizationtype](
+CREATE TABLE [dbo].[tbl_organization_type](
 	[Id] [int] IDENTITY(1,1) NOT NULL,
 	[companyid] [nvarchar](50) NULL,
 	[name] [nvarchar](250) NULL,

@@ -419,7 +419,7 @@ namespace Easy.Services.Services
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
                 res.StatusCode = data.FirstOrDefault().StatusCode;
                 res.Message = data.FirstOrDefault().Message;
-                parameters.Add("@iflag", 2);
+                //parameters.Add("@iflag", 2);
             }
             return res;           
         }

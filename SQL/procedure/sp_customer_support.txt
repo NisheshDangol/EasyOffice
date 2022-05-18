@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_customer_support]    Script Date: 5/15/2022 11:33:41 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_customer_support]    Script Date: 5/17/2022 2:17:48 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -93,8 +93,8 @@ Begin
 	if(@supportstatus = -1)
 	begin
 		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
-		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
-		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,('Images/CustomerSupport/'+a.attachment_name) Attachment, 
+		u.user_name StaffName,c.assigned_to StaffID,
 		case c.support_status
 		when 1 then 'Pending'
 		when 2 then 'Success'
@@ -104,12 +104,13 @@ Begin
 		when '1' then 'Online'
 		else 'Ofline'
 		end SupportMedium,
-		c.created_date AddedDate 
+		format(c.created_date,'yyyy-MM-dd') AddedDate 
 
 		from tbl_customer_support c
 		left join tbl_organization o on c.org_id=o.Id
 		left join tbl_product p on p.ID=c.product_id
 		left join tbl_user u on u.ID=c.assigned_to
+		left join tbl_attachment a on a.unique_id = c.attachment_id
 
 		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
 		and c.support_medium=@supportmedium and c.issue_date>=@fromdate
@@ -119,8 +120,8 @@ Begin
 	if(@supportmedium=-1)
 	begin
 		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
-		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
-		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,('Images/CustomerSupport/'+a.attachment_name) Attachment, 
+		u.user_name StaffName,c.assigned_to StaffID,
 		case c.support_status
 		when 1 then 'Pending'
 		when 2 then 'Success'
@@ -130,12 +131,13 @@ Begin
 		when '1' then 'Online'
 		else 'Ofline'
 		end SupportMedium,
-		c.created_date AddedDate 
+		format(c.created_date,'yyyy-MM-dd') AddedDate 
 
 		from tbl_customer_support c
 		left join tbl_organization o on c.org_id=o.Id
 		left join tbl_product p on p.ID=c.product_id
 		left join tbl_user u on u.ID=c.assigned_to
+		left join tbl_attachment a on a.unique_id = c.attachment_id
 
 		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
 		and c.support_status=@supportstatus
@@ -145,8 +147,8 @@ Begin
 	if(@supportmedium=-1 and @supportstatus = -1)
 	begin
 		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
-		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
-		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,('Images/CustomerSupport/'+a.attachment_name) Attachment, 
+		u.user_name StaffName,c.assigned_to StaffID,
 		case c.support_status
 		when 1 then 'Pending'
 		when 2 then 'Success'
@@ -156,12 +158,13 @@ Begin
 		when '1' then 'Online'
 		else 'Ofline'
 		end SupportMedium,
-		c.created_date AddedDate 
+		format(c.created_date,'yyyy-MM-dd') AddedDate 
 
 		from tbl_customer_support c
 		left join tbl_organization o on c.org_id=o.Id
 		left join tbl_product p on p.ID=c.product_id
 		left join tbl_user u on u.ID=c.assigned_to
+		left join tbl_attachment a on a.unique_id = c.attachment_id
 
 		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
 		and c.issue_date>=@fromdate
@@ -170,8 +173,8 @@ Begin
 	else
 	begin
 		select c.Id CustomerSupportID,o.org_name OrganizationName,p.prod_name as ProductName,c.issue Issue
-		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,attachment_id Attachment, 
-		u.user_name AssignedTo,c.assigned_to AssignedToId,
+		,c.issue_date as IssueDate,start_time as StartTime,end_time EndTime,('Images/CustomerSupport/'+a.attachment_name) Attachment, 
+		u.user_name StaffName,c.assigned_to StaffID,
 		case c.support_status
 		when 1 then 'Pending'
 		when 2 then 'Success'
@@ -181,12 +184,13 @@ Begin
 		when '1' then 'Online'
 		else 'Ofline'
 		end SupportMedium,
-		c.created_date AddedDate 
+		format(c.created_date,'yyyy-MM-dd') AddedDate 
 
 		from tbl_customer_support c
 		left join tbl_organization o on c.org_id=o.Id
 		left join tbl_product p on p.ID=c.product_id
 		left join tbl_user u on u.ID=c.assigned_to
+		left join tbl_attachment a on a.unique_id = c.attachment_id
 
 		where c.com_id=@companyid and c.created_by=@createdby and c.org_id=@organizationid 
 		and c.support_status=@supportstatus
@@ -209,9 +213,9 @@ Begin
 	end
 	else
 	begin
-		select c.org_id OrgID,o.org_name OrganizationName,product_id ProductID,p.prod_name ProductName,c.issue
-		,c.issue_date IssueDate,c.start_time StartTime,c.end_time EndTime,c.attachment_id Attachment,c.assigned_to AssignedtoID 
-		,u.user_name AssignedTo,c.support_status SupportStatusID,
+		select c.org_id OrgID,o.org_name OrganizationName,product_id ProductID,p.prod_name ProductName,c.issue Issue
+		,c.issue_date IssueDate,c.start_time StartTime,c.end_time EndTime,('Images/CustomerSupport/'+a.attachment_name) Attachment,c.assigned_to StaffID 
+		,u.user_name StaffName,c.support_status SupportStatusID,
 		case c.support_status
 		when 1 then 'Pending'
 		when 2 then 'Success'
@@ -225,11 +229,12 @@ Begin
 
 		c.client_comment ClientComment,
 		c.remarks Remarks,
-		c.created_date AddedDate
+		format(c.created_date,'yyyy-MM-dd') AddedDate
 		from tbl_customer_support c
 		left join tbl_organization o on o.Id=c.org_id
 		left join tbl_product p on p.ID=c.product_id
 		left join tbl_user u on u.ID=c.assigned_to
+		left join tbl_attachment a on a.unique_id = c.attachment_id
 
 		where c.com_id=@companyid and c.created_by=@createdby and c.Id=@id and c.status=1
 	end
