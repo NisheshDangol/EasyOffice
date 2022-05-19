@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 5/16/2022 10:18:05 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leads]    Script Date: 5/19/2022 7:44:31 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -66,9 +66,9 @@ BEGIN
 	begin
 		
 		Select ls.ID SourceID,ls.name SourceName, 
-		(select count(ID) from tbl_leads where com_id='es25' and lead_source=ls.ID
+		(select count(ID) from tbl_leads where com_id=ls.com_id and lead_source=ls.ID
 		and status=1 ) LeadCount, 
-		(select count(ID) from tbl_organization where comp_id='es25' and source=ls.ID
+		(select count(ID) from tbl_organization where comp_id=ls.com_id and source=ls.ID
 		and status=1 ) OrganizationCount
 		from tbl_lead_source ls 
 		where ls.com_id=@CompanyId and ls.branch_id=@BranchId and ls.status=1 

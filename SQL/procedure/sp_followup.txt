@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/16/2022 10:23:36 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/19/2022 10:14:52 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -168,13 +168,13 @@ begin
 	,f.follow_date as FollowDate,f.follow_time as FollowTime,f.assigned_to StaffID,u.user_name as StaffName ,
 	f.added_date CreatedDate
 	from tbl_follow_up as f
-	left join tbl_organization as o on o.Id=f.contact_id
-	left join tbl_follow_type as ft on f.follow_type=ft.ID
-	left join tbl_product as p on p.ID=f.product_id
-	left join tbl_user as u on u.ID=f.assigned_to
+	left join tbl_organization as o on o.Id=f.contact_id and o.status=1  and f.to_type=1
+	left join tbl_follow_type as ft on f.follow_type=ft.ID and ft.status=1 
+	left join tbl_product as p on p.ID=f.product_id and p.status=1
+	left join tbl_user as u on u.ID=f.assigned_to 
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
-	and p.status=1 and f.to_type = @totype and o.is_our_client=@isourclient and f.follow_status=@followstatus
+	 and f.follow_type=@followtype and f.status=1  and o.is_our_client=@isourclient and o.org_type=@OrgType
+	 and f.to_type = @totype and f.follow_status=@followstatus
 	return;
 end
 end

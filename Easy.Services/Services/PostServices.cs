@@ -113,7 +113,7 @@ namespace Easy.Services.Services
                 string sql = "sp_organization";
 
                 var parameter = new DynamicParameters();
-                parameter.Add("@companyid", orgnization.ComID);
+                parameter.Add("@com_id", orgnization.ComID);
                 parameter.Add("@createdby", orgnization.UserID);
                 parameter.Add("@organizationname", orgnization.OrgName);
                 parameter.Add("@organizationtype", orgnization.OrgType);
@@ -148,7 +148,7 @@ namespace Easy.Services.Services
             var common = new CommonResponse();
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
-            parameters.Add("@companyid",contact.ComID);
+            parameters.Add("@companyid", contact.ComID);
             parameters.Add("@employeeid",contact.UserID);
             parameters.Add("@firstname",contact.FirstName);
             parameters.Add("@middlename",contact.MiddleName);
@@ -256,7 +256,7 @@ namespace Easy.Services.Services
             var data12 = new CommonResponse();
             string sql = "sp_customer_support";
             DynamicParameters parameters=new DynamicParameters();
-            parameters.Add("@companyid",customerSupport.ComID);
+            parameters.Add("@companyid", customerSupport.ComID);
             parameters.Add("@createdby",customerSupport.UserID);
             parameters.Add("@organizationid",customerSupport.OrgID);
             parameters.Add("@productid",customerSupport.ProductID);
@@ -402,25 +402,30 @@ namespace Easy.Services.Services
         {
             var param = bulkatten.Param;            
             CommonResponse res = new CommonResponse();
-            string sql = "sp_attendance";
+            string jsonstring = JsonConvert.SerializeObject(bulkatten.Param);
+            string sql = "sp_bulkatten";
             var parameters = new DynamicParameters();
-            parameters.Add("@flag", "bulkattendance");
+            //parameters.Add("@flag", "bulkattendance");
             parameters.Add("@comid", bulkatten.ComID);           
             //parameters.Add("@attenremarks", attendance.AttenRemarks);
             parameters.Add("@fiscalid", bulkatten.FiscalID);
             parameters.Add("@branchid", bulkatten.BranchID);
-            parameters.Add("@iflag", bulkatten.Flag);
+            //parameters.Add("@iflag", bulkatten.Flag);
             parameters.Add("@attenplace", bulkatten.AttenPlace);
-            foreach (JSonParam para in param)
-            {
-                parameters.Add("@userid", para.UserID);
-                parameters.Add("@attendate", para.AttenDate);
-                parameters.Add("@attentime", para.AttenTime);               
-                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
-                res.StatusCode = data.FirstOrDefault().StatusCode;
-                res.Message = data.FirstOrDefault().Message;
-                //parameters.Add("@iflag", 2);
-            }
+            //foreach (JSonParam para in param)
+            //{
+            //    parameters.Add("@userid", para.UserID);
+            //    parameters.Add("@attendate", para.AttenDate);
+            //    parameters.Add("@attentime", para.AttenTime);               
+            //    var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+            //    res.StatusCode = data.FirstOrDefault().StatusCode;
+            //    res.Message = data.FirstOrDefault().Message;
+            //    //parameters.Add("@iflag", 2);
+            //}
+            parameters.Add("@jsonstring", jsonstring);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            res.StatusCode = data.FirstOrDefault().StatusCode;
+            res.Message = data.FirstOrDefault().Message;
             return res;           
         }
     }

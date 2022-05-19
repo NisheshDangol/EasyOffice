@@ -35,7 +35,7 @@ namespace Easy.Services.Services
                 parameters.Add("@EmpId", EmpId);
                 parameters.Add("@flag", "jobinfo");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-                if (data.Count() !=0 && data.FirstOrDefault().StatusCode ==null )
+                if (data.Count() !=0  && data.FirstOrDefault().Message == null)
                 {
                     job.JobInfo = data.ToList();
                     job.StatusCode = 200;

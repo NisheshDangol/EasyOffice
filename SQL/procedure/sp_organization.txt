@@ -1,13 +1,13 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/18/2022 10:32:52 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/18/2022 3:11:50 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER Procedure [dbo].[sp_organization](
 @Id int=NULL,
-@companyid nvarchar(250) =NULL,
+@com_id nvarchar(250) =NULL,
 @organizationname nvarchar(250)=NULL,
 @organizationtype int=null,
 @address nvarchar(250)=NULL,
@@ -45,10 +45,10 @@ AS
 BEGIN
 if @flag='createorg'
 BEGIN
-	--if not exists( select 'm' from tbl_organization where comp_id=@companyid)
+	--if not exists( select 'm' from tbl_organization where comp_id=@com_id)
 	--BEGIN
 	--	Select 201 StatusCode,
-	--	'CompanyId does Not Exist' Message
+	--	'com_id does Not Exist' Message
 	--	return;
 	--END
 	--if @organizationtype=''
@@ -94,7 +94,7 @@ BEGIN
 		) 
 		values 
 		  (
-			@companyid, @createdby, @organizationname, 
+			@com_id, @createdby, @organizationname, 
 			@organizationtype, @address, @district, 
 			@landline, @phoneno, @cpersonname, 
 			@cpersoncontact, @email, @pan, @website, 
@@ -112,39 +112,38 @@ END
 
 if @flag='orglist'
 BEGIN
-if @isourclient=-1
+if @isourclient=-1 or @isourclient=0
 BEGIN
 select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
 o.district as District,o.phone_no as Phone,o.cperson_contact as ContectPerson,
 o.assigned_to StaffID,u.user_name as StaffName,
-(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID and u.com_id=comp_id 
-left join tbl_organization_type as t on o.org_type=t.Id and t.status=1 and t.companyid=comp_id 
+left join tbl_organization_type as t on o.org_type=t.Id and t.status=1 and t.com_id=comp_id and t.created_by = o.created_by
 --left join tbl_leads as l on l.org_id=o.Id
 --left join tbl_follow_up as f on f.contact_id=o.Id
 --left join tbl_customer_support as s on s.org_id=o.Id
-where comp_id=@companyid and o.created_by=@userid  
-and
-t.createdby = o.created_by and o.status=1 and t.status=1 
+where comp_id=@com_id and o.created_by=@userid  
+ and o.status=1 
 group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 END
 Else
 BEGIN
 select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,o.district as District,o.phone_no as Phone
 ,o.assigned_to StaffID,u.user_name as StaffName,o.cperson_contact as ContactPerson,
-(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 from tbl_organization as o 
 left join tbl_user as u on o.assigned_to=u.ID and u.com_id=comp_id 
-left join tbl_organization_type as t on o.org_type=t.Id and t.status=1 and t.companyid=comp_id 
+left join tbl_organization_type as t on o.org_type=t.Id and t.status=1 and t.com_id=comp_id 
 --left join tbl_leads as l on l.org_id=o.Id
 --left join tbl_follow_up as f on f.contact_id=o.Id
 --left join tbl_customer_support as s on s.org_id=o.Id
-where comp_id=@companyid and o.created_by=@userid 
+where comp_id=@com_id and o.created_by=@userid 
 and is_our_client=@isourclient and o.created_by=@userid and o.status=1 
 group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
 
@@ -164,7 +163,7 @@ left join tbl_product as p on o.comp_id=p.com_id
 left join tbl_leads as l on l.product_id=p.ID
 left join tbl_user as u on u.ID = o.assigned_to
 left join tbl_organization_type as ot on ot.ID = o.org_type
-where o.comp_id=@companyid and o.created_by=@createdby and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
+where o.comp_id=@com_id and o.created_by=@createdby and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
 group by o.Id,o.org_name,ot.name,o.address,o.district
 ,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
 END
@@ -177,7 +176,7 @@ left join tbl_follow_up as f on f.com_id=o.Id
 left join tbl_leads as l on l.com_id=o.Id
 left join tbl_user as u on u.ID = o.assigned_to
 left join tbl_organization_type as ot on ot.ID = o.org_type
-where o.comp_id=@companyid and o.created_by=@createdby and o.is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
+where o.comp_id=@com_id and o.created_by=@createdby and o.is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.status=1
 group by o.Id,o.org_name,ot.name,o.address,o.district
 ,o.source,o.email,o.phone_no,o.website,u.first_name,u.last_name
 END
@@ -202,16 +201,16 @@ select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.de
 join tbl_department on tbl_user.depart_id=tbl_department.ID
 join tbl_designation on tbl_user.design_id = tbl_designation.ID
 --join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
-where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
+where tbl_user.com_id=@com_id and tbl_user.branch=@branchid and
 tbl_department.ID=@DepartmentId;
 END
 ELSE
 BEGIN
 select tbl_user.Id as StaffID,tbl_user.user_name as staffName,tbl_designation.desig_name as DesignationName from tbl_user
-join tbl_department on tbl_user.depart_id=tbl_department.ID and tbl_department.com_id=@companyid
-join tbl_designation on tbl_user.design_id = tbl_designation.ID and tbl_designation.com_id=@companyid
-join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id and tbl_sub_department.com_id=@companyid
-where tbl_user.com_id=@companyid and tbl_user.branch=@branchid and
+join tbl_department on tbl_user.depart_id=tbl_department.ID and tbl_department.com_id=@com_id
+join tbl_designation on tbl_user.design_id = tbl_designation.ID and tbl_designation.com_id=@com_id
+join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id and tbl_sub_department.com_id=@com_id
+where tbl_user.com_id=@com_id and tbl_user.branch=@branchid and
 tbl_department.ID=@DepartmentId and tbl_sub_department.Id=@SubDepartmentId;
 END
 end
@@ -219,10 +218,10 @@ end
 if @flag='orgtype'
 BEGIN
 select tbl_organization_type.Id as OrgTypeID,tbl_organization_type.name as OrgTypeName,
-(select COUNT(Id) from tbl_organization where org_type=tbl_organization_type.Id and comp_id=companyid and branch_id=@branchid) as OrgCount 
+(select COUNT(Id) from tbl_organization where org_type=tbl_organization_type.Id and comp_id=com_id and branch_id=@branchid) as OrgCount 
 from tbl_organization_type
 --left join tbl_organization on tbl_organization_type.Id=tbl_organization.org_type and comp_id='es25' and tbl_organization.status=1 --and tbl_organization.branch_id=1 
-where  tbl_organization_type.status=1 and companyid=@companyid 
+where  tbl_organization_type.status=1 and com_id=@com_id 
 --group by tbl_organization_type.Id ,tbl_organization_type.name
 END
 

@@ -1,0 +1,121 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_bulkatten]    Script Date: 5/19/2022 2:23:58 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- ================================================
+-- Template generated from Template Explorer using:
+-- Create Procedure (New Menu).SQL
+--
+-- Use the Specify Values for Template Parameters 
+-- command (Ctrl-Shift-M) to fill in the parameter 
+-- values below.
+--
+-- This block of comments will not be included in
+-- the definition of the procedure.
+-- ================================================
+ALTER proc [dbo].[sp_bulkatten] (
+@jsonstring nvarchar(max)=null,
+@comid nvarchar(250)=null,
+@fiscalid int=null,
+@userid int=null,
+@departmentid int=null,
+@subdepartmentid int=null,
+@designationid int=null,
+@attendate date=null,
+@attentime nvarchar(50)=null,
+@attenstatus int=null,
+@attenplace int=null,
+@branchid int=null,
+@attenremarks int=null,
+@tblshiftres datetime=null,
+@leftearly datetime=null,
+@i int =1,
+@uid int = null,
+@count int=null
+)
+as
+
+BEGIN
+	set @count = 
+	(SELECT count(*) FROM OpenJson(@jsonstring)
+	with(
+		user_id INT ' $.UserID',
+		AttenDate datetime '$.AttenDate',
+		AttenTime datetime '$.AttenTime'		
+	));
+
+	declare @temp_atten TABLE(ID int identity(1,1),user_id int ,attend_time datetime,attend_date datetime,attendstatus int)
+	Insert into @temp_atten(user_id,attend_date,attend_time,attendstatus) Select *,(Rank() over (partition by user_id,AttenDate order by user_id,AttenDate,AttenTime ) ) 
+ as AttenStatus from OpenJson(@jsonstring)
+	with(
+		user_id INT ' $.UserID',
+		AttenDate datetime '$.AttenDate',
+		AttenTime datetime '$.AttenTime'		
+	)
+
+	--select *,@count from @temp_atten
+	--select * from tbl_attendance a inner join @temp_atten t on t.user_id=a.user_id and t.attend_date=a.attend_date 
+	--and t.attendstatus=a.attend_status
+	--return;
+	while(@count!=0)
+	begin
+		set @attentime=(select format(attend_time,'hh:mm tt') from @temp_atten where ID=@i)
+		set @attendate=(Select attend_date from @temp_atten where ID=@i)
+		set @userid=(Select user_id from @temp_atten where ID=@i)
+		set @attenstatus=(select attendstatus from @temp_atten where ID=@i)
+		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift)
+		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift)
+		if (((convert(datetime,@attentime))<=@tblshiftres) and @attenstatus = 1)
+		begin
+			set @attenremarks = 1
+		end
+		else if(((convert(datetime,@attentime))>@tblshiftres) and @attenstatus = 1)
+		begin
+			set @attenremarks = 3
+		end
+		else if(((convert(datetime,@attentime))<@leftearly) and @attenstatus = 2)
+		begin
+			set @attenremarks = 4
+		end
+		else if(((convert(datetime,@attentime))>=@leftearly) and @attenstatus = 2)
+		begin
+			set @attenremarks = 1
+		end
+		else
+		begin
+			set @attenremarks = 2
+		end
+		--set @uid = (select user_id from @temp_atten. where ID=@i)
+		if exists(select 'm' from tbl_attendance a inner join @temp_atten t on t.user_id=a.user_id and t.attend_date=a.attend_date and t.attendstatus=a.attend_status and t.ID=@i )
+		begin			
+			update tbl_attendance set attend_time=@attentime, attend_remarks=@attenremarks where attend_date=@attendate and user_id=@userid and attend_status=@attenstatus 
+			and com_id=@comid
+			Select 200 StatusCode, 'Success' Message
+			
+		end
+		else 
+		begin
+			set @departmentid = (Select depart_id from tbl_user where ID= @userid) 
+			set @subdepartmentid = (Select sub_depart_id from tbl_user where ID=@userid)
+			set @designationid = (Select design_id from tbl_user where ID=@userid)
+			Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
+			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date)
+			values(@comid,@userid,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
+			@fiscalid,@branchid,1,0,@userid,@userid,GETDATE(),GETDATE())
+			Select 200 StatusCode, 'Success' Message
+			
+		end
+		set @count=@count-1
+		set @i = @i+1
+		
+		
+		
+	end
+
+
+
+
+END

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/18/2022 10:28:46 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/18/2022 3:03:48 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -34,7 +34,7 @@ BEGIN
 			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
-			left join tbl_organizationtype as t on o.org_type=t.Id
+			left join tbl_organization_type as t on o.org_type=t.Id
 			--left join tbl_leads as l on l.org_id=o.Id
 			--left join tbl_follow_up as f on f.contact_id=o.Id
 			--left join tbl_customer_support as s on s.org_id=o.Id
@@ -53,7 +53,7 @@ BEGIN
 
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
-			left join tbl_organizationtype as t on o.org_type=t.Id
+			left join tbl_organization_type as t on o.org_type=t.Id
 			--left join tbl_leads as l on l.org_id=o.Id
 			--left join tbl_follow_up as f on f.contact_id=o.Id
 			--left join tbl_customer_support as s on s.org_id=o.Id
@@ -71,7 +71,7 @@ BEGIN
 			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
-			left join tbl_organizationtype as t on o.org_type=t.Id
+			left join tbl_organization_type as t on o.org_type=t.Id
 			--left join tbl_leads as l on l.org_id=o.Id
 			--left join tbl_follow_up as f on f.contact_id=o.Id
 			--left join tbl_customer_support as s on s.org_id=o.Id
@@ -89,7 +89,7 @@ BEGIN
 			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
-			left join tbl_organizationtype as t on o.org_type=t.Id
+			left join tbl_organization_type as t on o.org_type=t.Id
 			--left join tbl_leads as l on l.org_id=o.Id
 			--left join tbl_follow_up as f on f.contact_id=o.Id
 			--left join tbl_customer_support as s on s.org_id=o.Id 
@@ -111,7 +111,7 @@ BEGIN
 		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
-		left join tbl_organizationtype as t on o.org_type=t.Id
+		left join tbl_organization_type as t on o.org_type=t.Id
 		--left join tbl_leads as l on l.org_id=o.Id
 		--left join tbl_follow_up as f on f.contact_id=o.Id
 		--left join tbl_customer_support as s on s.org_id=o.Id
@@ -129,7 +129,7 @@ BEGIN
 		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
-		left join tbl_organizationtype as t on o.org_type=t.Id
+		left join tbl_organization_type as t on o.org_type=t.Id
 		--left join tbl_leads as l on l.org_id=o.Id
 		--left join tbl_follow_up as f on f.contact_id=o.Id
 		--left join tbl_customer_support as s on s.org_id=o.Id
@@ -147,7 +147,7 @@ BEGIN
 		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
-		left join tbl_organizationtype as t on o.org_type=t.Id
+		left join tbl_organization_type as t on o.org_type=t.Id
 		--left join tbl_leads as l on l.org_id=o.Id
 		--left join tbl_follow_up as f on f.contact_id=o.Id
 		--left join tbl_customer_support as s on s.org_id=o.Id
@@ -165,7 +165,7 @@ BEGIN
 		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
-		left join tbl_organizationtype as t on o.org_type=t.Id
+		left join tbl_organization_type as t on o.org_type=t.Id
 		--left join tbl_leads as l on l.org_id=o.Id
 		--left join tbl_follow_up as f on f.contact_id=o.Id
 		--left join tbl_customer_support as s on s.org_id=o.Id and o.org_type=@orgtype 

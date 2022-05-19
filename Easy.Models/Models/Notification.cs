@@ -13,7 +13,7 @@ namespace Easy.Models.Models
         public string Title { get; set; }
         public string Description { get; set; }
         public string Image { get; set; }
-        public DateTime PublishedDate { get; set; }
+        public string PublishedDate { get; set; }
         public int UserID { get; set; }
         public string AcBtn { get; set; }
         public string RedUrl { get; set; }

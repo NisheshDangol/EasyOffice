@@ -27,7 +27,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_all_org_list";
                 var parameters = new DynamicParameters();
-                parameters.Add("@companyid", ComID);
+                parameters.Add("@com_id", ComID);
                 parameters.Add("@userid", UserID);
                 parameters.Add("@FromDate", FromDate);
                 parameters.Add("@ToDate", ToDate);
@@ -181,7 +181,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_leads";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@CompanyId", CompanyId);
                 parameters.Add("@branchid", BranchId);
                 parameters.Add("@flag", "leadsource");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
@@ -244,7 +244,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", ComID);
+                parameters.Add("@com_id", ComID);
                 parameters.Add("@isourclient", IsOurClient);
                 parameters.Add("@userid", UserID);
                 parameters.Add("@flag", "orglist");
@@ -277,7 +277,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", ComID);
+                parameters.Add("@com_id", ComID);
                 parameters.Add("@branchid", BranchID);
                 parameters.Add("@flag", "orgproduct");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
@@ -310,7 +310,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyID);
+                parameters.Add("@com_id", CompanyID);
                 parameters.Add("@branchid", BranchID);
                 parameters.Add("@DepartmentId", DepartmentID);
                 parameters.Add("@SubDepartmentId", SubDepartmentID);
@@ -344,7 +344,7 @@ namespace Easy.Services.Services
             {
                 string sql = "sp_organization";
                 DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
+                parameters.Add("@com_id", CompanyId);
                 parameters.Add("@branchid", BranchId);
                 parameters.Add("@flag", "orgtype");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
@@ -373,7 +373,7 @@ namespace Easy.Services.Services
             contlist.ContactListInfo = null;
             if (string.IsNullOrEmpty(CompanyId))
             {
-                contlist.Message = "Input CompanyId";
+                contlist.Message = "Input com_id";
             }
             else
             {
@@ -419,7 +419,7 @@ namespace Easy.Services.Services
                 parameters.Add("@supportstatus", Supportstatus);
                 parameters.Add("@supportmedium", Supportmedium);
                 parameters.Add("@fromdate", Fromdate);
-                parameters.Add("@supportmedium", Supportmedium);
+                //parameters.Add("@supportmedium", Supportmedium);
                 parameters.Add("@todate", Todate);
                 parameters.Add("@flag", "CustomerSupportList");
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
