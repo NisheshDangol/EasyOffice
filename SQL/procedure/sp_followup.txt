@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/19/2022 10:14:52 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/22/2022 3:34:27 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -83,7 +83,7 @@ if(@totype= 1)
 begin
 if @isourclient = -1 and @followstatus=-1
 begin
-	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	select f.ID as FollowID, f.contact_id as ContactID,o.org_name as ContactName,case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
 	end as ContactType,
@@ -107,7 +107,7 @@ begin
 end
 else if @isourclient = -1
 begin
-	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	select f.ID as FollowID,f.contact_id as ContactID,o.org_name as ContactName,case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
 	end as ContactType,
@@ -131,7 +131,7 @@ begin
 end
 else if @followstatus = -1
 begin
-	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	select f.ID as FollowID,f.contact_id as ContactID,o.org_name as ContactName,case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
 	end as ContactType,
@@ -155,7 +155,7 @@ begin
 end
 else
 begin
-	select f.contact_id as ContactID,o.org_name as ContactName,case @totype 
+	select f.ID as FollowID,f.contact_id as ContactID,o.org_name as ContactName,case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
 	end as ContactType,
@@ -182,7 +182,7 @@ if (@totype=2)
 begin
 if @followstatus=-1
 begin
-	select f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
+	select f.ID as FollowID,f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
 	case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
@@ -207,7 +207,7 @@ begin
 end
 else
 begin
-		select f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
+		select f.ID as FollowID,f.contact_id as ContactID,(c.first_name+' '+c.middle_name+' '+c.last_name) as ContactName,
 	case @totype 
 	when 1 then 'Organizaton'
 	when 2 then 'Individual'
