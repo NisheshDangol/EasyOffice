@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_bulkatten]    Script Date: 5/19/2022 2:23:58 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_bulkatten]    Script Date: 5/22/2022 3:37:58 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
