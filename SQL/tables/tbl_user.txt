@@ -1,7 +1,7 @@
 USE [ES25]
 GO
 
-/****** Object:  Table [dbo].[tbl_user]    Script Date: 4/22/2022 2:56:47 PM ******/
+/****** Object:  Table [dbo].[tbl_user]    Script Date: 5/31/2022 8:16:02 PM ******/
 SET ANSI_NULLS ON
 GO
 
@@ -52,6 +52,7 @@ CREATE TABLE [dbo].[tbl_user](
 	[updated_date] [date] NULL,
 	[added_by] [int] NULL,
 	[updated_by] [int] NULL,
+	[user_type] [int] NULL,
  CONSTRAINT [PK_tbl_user] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
@@ -124,4 +125,5 @@ GO
 
 ALTER TABLE [dbo].[tbl_user] ADD  CONSTRAINT [DF_tbl_user_fb]  DEFAULT (N'-') FOR [working_day]
 GO
+
 

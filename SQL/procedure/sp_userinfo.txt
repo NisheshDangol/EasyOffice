@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 5/3/2022 12:31:01 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 5/24/2022 3:33:41 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -209,7 +209,7 @@ Begin
 	begin
 		select 
 		  u.ID as UID,
-		  u.user_id as UserId,
+		  u.user_id as UserID,
 		  u.device_code as DeviceCode,
 		  u.first_name as FirstName,
 		  u.middle_name as MiddleName,
@@ -259,7 +259,7 @@ Begin
 		  u.image as Image,  
 		  u.is_manager as IsManager,
 		  y.fiscal_year as FiscalYear,
-		  u.fiscal_id as FiscalId,		 
+		  u.fiscal_id as FiscalID,		 
 		  s.shift_name as ShiftName, 
 		  s.shift_start as ShiftStart, 
 		  s.shift_end as ShiftEnd, 
@@ -267,9 +267,9 @@ Begin
 		  s.allowed_early_out as AllowedEarlyOut, 
 		  s.launch_start as LaunchStart, 
 		  s.launch_end as LaunchEnd, 
-		  u.shift_type_id as ShiftTypeId, 
-		  b.name as Branch,
-		  u.branch as BranchId,
+		  u.shift_type_id as ShiftID, 
+		  b.name as BranchName,
+		  u.branch as BranchID,
 		  u.shift_id as ShiftID, 
 		  u.grade_id as GradeID, 
 		  g.grade_name as GradeName,
@@ -279,7 +279,7 @@ Begin
 		  d.depart_name as DepartmentName,
 		  de.desig_name as DesignationName, 
 		  u.sub_depart_id as SubDepartmentID,
-		  sd.sub_dep_name as subDepartmentName,
+		  sd.sub_dep_name as SubDepartmentName,
 		  case u.job_type
 		  when 1 then 'Full Time'
 		  when 2 then 'Part Time'

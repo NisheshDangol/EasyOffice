@@ -1,0 +1,627 @@
+USE ES25
+GO
+/****** Object:  StoredProcedure [dbo].[sp_blog]    Script Date: 5/31/2022 8:09:46 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+create proc [dbo].[sp_blog](
+@flag nvarchar(150)=null,
+@categoryid nvarchar(250)=null,
+@count int=null,
+@isvideofeat int=null,
+@via int=null,
+@tagid int=null,
+@blogid nvarchar(250)=null,
+@userid int=null,
+@category nvarchar(150)=null,
+@primary int= null,
+@slug nvarchar(250)=null,
+@icon nvarchar(250)=null,
+@status int=null,
+@postid int=null,
+@posttagid int=null,
+@tag nvarchar(250)=null,
+@isprimary int=null,
+@title nvarchar(250)=null,
+@post nvarchar(max)=null,
+@featimg nvarchar(250)=null,
+@excerpt nvarchar(250)=null,
+@meta nvarchar(250)=null,
+@ispublished int=null,
+@istrending int=null
+)
+as
+BEGIN
+
+	If (@flag='blogcategory')
+	Begin
+		if(@primary=-1)
+		begin
+			Select ID CategoryID, category_name Category, slug Slug, ('Images/Blog'+category_icon) Image, is_primary IsPrimary
+			from tbl_blog_category where status=1
+			return;
+		end
+		else
+		begin
+			Select ID CategoryID, category_name Category, slug Slug, ('Images/Blog'+category_icon) Image, is_primary IsPrimary
+			from tbl_blog_category where is_primary=@primary and status=1
+			return; 
+		end
+	End
+
+	If(@flag='catwiseblog')
+	Begin
+		if(@via=1)
+		Begin
+			if not exists(Select 'm' from tbl_blog_category where ID=@categoryid)
+			begin
+				Select 201 StatusCode, 'Category does not exists' Message
+				return;
+			end
+			if(@isvideofeat=-1)
+			begin
+				Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+				is_video_feat IsVideoFeat, post_view PostView, created_date CreatedDate, 
+				bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+				from tbl_blog_post bp
+				left join tbl_user u on bp.created_by=u.ID 
+				where bp.status=1 and bp.is_published=1 and bp.category_id=@categoryid
+				return;
+			end
+			Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+			is_video_feat IsVideoFeat, post_view PostView, created_date CreatedDate, bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID 
+			where bp.status=1 and bp.is_published=1 and bp.category_id=@categoryid and bp.is_video_feat=@isvideofeat
+			return;
+		End
+		if(@via=2)
+		Begin
+			if not exists(Select 'm' from tbl_blog_category where slug=@categoryid)
+			begin
+				Select 201 StatusCode, 'Category does not exists' Message
+				return;
+			end
+			if(@isvideofeat=-1)
+			begin
+				Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+				is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+				from tbl_blog_post bp
+				left join tbl_user u on bp.created_by=u.ID 
+				left join tbl_blog_category bc on bc.ID=bp.category_id and bc.slug=@categoryid
+				where bp.status=1 and bp.is_published=1
+				return;
+			end
+			Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+			is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID 
+			left join tbl_blog_category bc on bc.ID=bp.category_id and bc.slug=@categoryid
+			where bp.status=1 and bp.is_published=1 and bp.is_video_feat=@isvideofeat
+			return;
+		End
+	End
+
+	
+	If(@flag='tagwiseblog')
+	Begin
+		if(@via=1)
+		Begin
+			if not exists(Select 'm' from tbl_blog_tags where ID=@tagid)
+			begin
+				Select 201 StatusCode, 'Tag does not exists' Message
+				return;
+			end
+			if(@isvideofeat=-1)
+			begin
+				Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+				is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
+				bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+				from tbl_blog_post_tags bt
+				left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
+				left join tbl_user u on bp.created_by=u.ID 
+				where bt.status=1 and bt.tag_id=@tagid
+				return;
+			end
+			Select  top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+			is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
+			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post_tags bt
+			left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
+			left join tbl_user u on bp.created_by=u.ID 
+			where bt.status=1 and bt.tag_id=@tagid
+			return;
+		End
+		if(@via=2)
+		Begin
+			if not exists(Select 'm' from tbl_blog_tags where slug=@tagid)
+			begin
+				Select 201 StatusCode, 'Tag does not exists' Message
+				return;
+			end
+			if(@isvideofeat=-1)
+			begin
+				Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+				is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
+				bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+				from tbl_blog_post_tags bt
+				left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
+				left join tbl_user u on bp.created_by=u.ID 
+				left join tbl_blog_tags bts on bts.ID=bt.tag_id and bts.slug=@tagid
+				where bt.status=1 
+				return;
+			end
+			Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+			is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
+			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post_tags bt
+			left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
+			left join tbl_user u on bp.created_by=u.ID 
+			left join tbl_blog_tags bts on bts.ID=bt.tag_id and bts.slug=@tagid
+			where bt.status=1 
+			return;
+		End
+	End
+
+
+	If(@flag='latestblog')
+	Begin
+		if(@isvideofeat=-1)
+		Begin
+			Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg,
+			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, created_date CreateDate,
+			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID 
+			where bp.status=1 and bp.is_published=1
+		End
+		else 
+		Begin
+			Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg,
+			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, created_date CreateDate,
+			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID 
+			where bp.status=1 and bp.is_published=1 and bp.is_video_feat=@isvideofeat
+		End
+		
+	End
+
+
+	If(@flag='blogtag')
+	Begin		
+		if(@via='1')
+		begin
+			if not exists(Select 'm' from tbl_blog_post_tags where ID=@blogid)
+			begin
+				Select 201 StatusCode, 'Blog does not exists' Message
+				return;
+			end
+			Select tag_id TagID, tag_name Tag, slug Slug, is_trending IsTrending 
+			from tbl_blog_post_tags bpt
+			left join tbl_blog_tags bt on bt.ID=bpt.tag_id and bt.status=1
+			where bpt.status=1 and bpt.post_id=@blogid
+			return;
+		end
+		if(@via='2')
+		begin		
+			set @postid=(select ID from tbl_blog_post where slug=@blogid);
+			if not exists(Select 'm' from tbl_blog_post where slug=@blogid)
+			begin
+				Select 201 StatusCode, 'Blog does not exists' Message				
+				return;
+			end
+			Select tag_id TagID, tag_name Tag, slug Slug, is_trending IsTrending 
+			from tbl_blog_post_tags bpt
+			left join tbl_blog_tags bt on bt.ID=bpt.tag_id and bt.status=1
+			where bpt.status=1 and bpt.post_id=@postid
+		end
+	End
+
+
+	If(@flag='bloginfo')
+	Begin
+		if(@via = 1)
+		Begin
+			if not exists(Select 'm' from tbl_blog_post where ID=@blogid)
+			begin
+				Select 201 StatusCode, 'Blog does not exists' Message
+				return;
+			end
+			Select ID BlogID, category_id CategoryID, title Title, slug Slug, post Post,
+			('Images/Blog/'+feat_img) Image, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
+			(post_view + 1) PostView
+			from tbl_blog_post
+			where status=1 and is_published=1 and ID=@blogid 
+			update tbl_blog_post set post_view=isnull(post_view,0)+1
+			where status=1 and is_published=1 and ID=@blogid 
+			return;
+		End
+		if(@via = 2)
+		Begin
+			if not exists(Select 'm' from tbl_blog_post where slug=@blogid)
+			begin
+				Select 201 StatusCode, 'Blog does not exists' Message
+				return;
+			end
+			Select ID BlogID, category_id CategoryID, title Title, slug Slug, post Post,
+			('Images/Blog/'+feat_img) Image, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
+			(post_view + 1) PostView
+			from tbl_blog_post
+			where status=1 and is_published=1 and slug=@blogid 
+			update tbl_blog_post set post_view=isnull(post_view,0)+1
+			where status=1 and is_published=1 and slug=@blogid 
+			return;
+		End
+		
+	End
+
+
+	If(@flag = 'createblogcat')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_blog_category where slug=@slug and status=1)
+		begin
+			Select 202 StatusCode, 'Category already exists' Message
+			return;
+		end
+		Insert into tbl_blog_category(category_name,slug,category_icon,is_primary,status,created_by,updated_by,created_date,updated_date)
+		values (@category,@slug,@icon,@isprimary,1,@userid,@userid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag = 'updateblogcat')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_category where ID=@categoryid and status=1)
+		begin
+			Select 202 StatusCode, 'Category does not exists' Message
+			return;
+		end
+		if exists(Select 'm' from tbl_blog_category where slug=@slug and status=1)
+		begin
+			Select 203 StatusCode, 'Category already exists' Message
+			return;
+		end
+		Update tbl_blog_category set category_name=@category, slug=@slug, category_icon=@icon, 
+		is_primary=@isprimary, updated_by=@userid, updated_date=GETDATE() where ID=@categoryid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If (@flag='updateblogcatstatus')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_category where ID=@categoryid )
+		begin
+			Select 202 StatusCode, 'Category does not exists' Message
+			return;
+		end
+		Update tbl_blog_category set status=@status, updated_by=@userid, updated_date=GETDATE() where ID=@categoryid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	If(@flag='blogcatlist')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		Select ID CategoryID, category_name CategoryName, slug Slug, ('Images/Blog/'+category_icon) Image,
+		is_primary IsPrimary, status Status
+		from tbl_blog_category where created_by=@userid
+		return;
+	End
+
+
+	If(@flag = 'createblogtag')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_blog_tags where slug=@slug)
+		begin
+			Select 202 StatusCode, 'Tags already exists' Message
+			return;
+		end
+		Insert into tbl_blog_tags(tag_name,slug,is_trending,status,created_by,updated_by,created_date,updated_date)
+		values (@tag,@slug,@istrending,1,@userid,@userid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag = 'updateblogtag')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_tags where ID=@tagid and status=1)
+		begin
+			Select 202 StatusCode, 'Tags does not exists' Message
+			return;
+		end
+		if exists(Select 'm' from tbl_blog_tags where slug=@slug and status=1)
+		begin
+			Select 203 StatusCode, 'Tags already exists' Message
+			return;
+		end
+		Update tbl_blog_tags set tag_name=@tag, slug=@slug, is_trending=@istrending, updated_by=@userid, updated_date=GETDATE()
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	
+
+	If (@flag='updateblogtagstatus')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_tags where ID=@tagid )
+		begin
+			Select 202 StatusCode, 'Tags does not exists' Message
+			return;
+		end
+		Update tbl_blog_tags set status=@status, updated_by=@userid, updated_date=GETDATE() where ID=@tagid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	If(@flag='blogtaglist')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		Select ID TagID, tag_name Tags, slug Slug, 
+		is_trending IsTrending, status Status
+		from tbl_blog_tags where created_by=@userid
+		return;
+	End
+
+
+	If(@flag = 'createposttag')
+	Begin
+		if not exists (Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists (Select 'm' from tbl_blog_post where ID=@postid)
+		Begin
+			Select 202 StatusCode, 'Post does not exists' Message
+			return;
+		End
+		if not exists (Select 'm' from tbl_blog_tags where ID=@tagid)
+		Begin
+			Select 202 StatusCode, 'Tags does not exists' Message
+			return;
+		End
+		Insert into tbl_blog_post_tags(post_id,tag_id,status,created_by,updated_by,created_date,updated_date)
+		values (@postid,@tagid,1,@userid,@userid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag = 'updateblogposttag')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists (Select 'm' from tbl_blog_post where ID=@postid)
+		Begin
+			Select 202 StatusCode, 'Post does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_tags where ID=@tagid and status=1)
+		begin
+			Select 203 StatusCode, 'Tags does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_blog_post where ID=@posttagid)
+		begin
+			Select 204 StatusCode, 'Post''s tags does not exists' Message
+			return;
+		end
+		Update tbl_blog_post_tags set post_id=@postid,tag_id=@tagid,updated_by=@userid,updated_date=GETDATE()
+		where ID=@posttagid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If (@flag='updateposttagstatus')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		Begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_blog_post where ID=@posttagid)
+		begin
+			Select 204 StatusCode, 'Post''s tags does not exists' Message
+			return;
+		end
+		Update tbl_blog_post_tags set status=@status, updated_by=@userid, updated_date=GETDATE() where ID=@posttagid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	If(@flag='posttaglist')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_blog_post where ID=@postid)
+		begin
+			Select 202 StatusCode, 'Posts does not exists' Message
+			return;
+		end
+		Select bpt.tag_id TagsID, tag_name Tags, slug Slug, 
+		is_trending IsTrending, bpt.status Status
+		from tbl_blog_post_tags bpt
+		left join tbl_blog_tags bt on bt.ID=bpt.tag_id 
+		where bpt.created_by=@userid and bpt.post_id=@postid
+		return;
+	End
+
+
+	If(@flag='createpost')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_blog_category where ID=@categoryid)
+		begin
+			Select 202 StatusCode,'Category does not exists' Message
+			return;
+		end
+		if exists (Select 'm' from tbl_blog_post where title=@title)
+		begin
+			Select 203 StatusCode,'Title already exists' Message
+			return;
+		end
+		Insert into tbl_blog_post (category_id,title,slug,post,feat_img,excerpt,meta,is_video_feat,
+		is_published,status,created_by,updated_by,created_date,updated_date)
+		values (@categoryid,@title,@slug,@post,@featimg,@excerpt,@meta,@isvideofeat,
+		@ispublished,1,@userid,@userid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='updatepost')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_blog_category where ID=@categoryid)
+		begin
+			Select 202 StatusCode,'Category does not exists' Message
+			return;
+		end
+		if exists (Select 'm' from tbl_blog_post where title=@title)
+		begin
+			Select 203 StatusCode,'Title already exists' Message
+			return;
+		end
+		if not exists (Select 'm' from tbl_blog_post where ID=@blogid)
+		begin
+			Select 204 StatusCode, 'Blog does not exists' Message
+			return;
+		end
+		Update tbl_blog_post set updated_by=@userid, category_id=@categoryid,title=@title,
+		slug=@slug,post=@post,feat_img=@featimg,excerpt=@excerpt,meta=@meta,is_video_feat=@isvideofeat,
+		is_published=@ispublished,updated_date=GETDATE() where ID=@blogid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	if(@flag='bloginfoadmin')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if(@via=1)
+		begin
+			if not exists (Select 'm' from tbl_blog_post where ID=@blogid)
+			begin
+				Select 204 StatusCode, 'Blog does not exists' Message
+				return;
+			end
+			Select category_id CategoryID, bp.ID BlogID, title Title, slug Slug, post Post,
+			('Images/Blog/'+feat_img) FeatImg, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
+			is_published IsPublished, post_view PostView, bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage			
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID
+			where bp.ID=@blogid
+		end
+		if(@via=2)
+		begin
+			if not exists (Select 'm' from tbl_blog_post where slug=@blogid)
+			begin
+				Select 204 StatusCode, 'Blog does not exists' Message
+				return;
+			end
+			Select category_id CategoryID, bp.ID BlogID, title Title, slug Slug, post Post,
+			('Images/Blog/'+feat_img) FeatImg, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
+			is_published IsPublished, post_view PostView, bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage			
+			from tbl_blog_post bp
+			left join tbl_user u on bp.created_by=u.ID
+			where bp.slug=@blogid
+		end			
+	End
+
+
+	if(@flag='bloglist')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		Select ID BlogID, title Title, slug Slug, excerpt Excerpt, is_video_feat IsVideoFeat,
+		is_published IsPublished, post_view PostView, status Status
+		from tbl_blog_post
+		return;
+
+	End
+
+
+	if(@flag='updatepoststatus')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@userid and user_type=2)
+		begin
+			Select 201 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if not exists (Select 'm' from tbl_blog_post where ID=@blogid)
+		begin
+			Select 204 StatusCode, 'Blog does not exists' Message
+			return;
+		end
+		Update tbl_blog_post set status = @status, updated_by=@userid, updated_date=GETDATE()
+		where ID=@blogid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END
