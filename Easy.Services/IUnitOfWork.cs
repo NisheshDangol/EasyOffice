@@ -1,4 +1,5 @@
 ﻿using Easy.Services.Services;
+using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,5 +16,6 @@ namespace Easy.Services
         GetServices GetServices { get; }
         PostServices PostServices { get; }  
         SendNotificationService SendNotificationServices { get; }
+        BlogService blogservice { get; }
     }
 }

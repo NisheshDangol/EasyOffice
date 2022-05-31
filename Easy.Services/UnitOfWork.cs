@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Models.Model;
+using Service.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,5 +37,7 @@ namespace Easy.Services
         public PostServices PostServices => new PostServices(_settings);
 
         public SendNotificationService SendNotificationServices => new SendNotificationService(_fcmNotificationSetting);
+
+        public BlogService blogservice => new BlogService();
     }
 }
