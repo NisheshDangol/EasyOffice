@@ -28,12 +28,12 @@ namespace TravelSolution.Controllers
         [HttpGet, Route("~/api/blogs")]
         public async Task<IActionResult> Blog(string CategoryID, string TagID, int Count, int IsVideoFeat, int Via, string Flag)
         {
-            if (Flag.Equals("c"))
+            if (Flag.Equals("c", System.StringComparison.OrdinalIgnoreCase))
             {
                 var data = await _unitOfWork.blogservice.CategoryWiseBlog(CategoryID, Count, IsVideoFeat, Via);
                 return Ok(data);
             }
-            else if (Flag.Equals("c"))
+            else if (Flag.Equals("t", System.StringComparison.OrdinalIgnoreCase))
             {
                 var data = await _unitOfWork.blogservice.TagWiseBlog(TagID, Count, IsVideoFeat, Via);
                 return Ok(data);
