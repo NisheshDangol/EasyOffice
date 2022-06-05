@@ -1,11 +1,11 @@
-USE ES25
+USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_blog]    Script Date: 5/31/2022 8:09:46 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_blog]    Script Date: 6/5/2022 10:37:14 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-create proc [dbo].[sp_blog](
+ALTER proc [dbo].[sp_blog](
 @flag nvarchar(150)=null,
 @categoryid nvarchar(250)=null,
 @count int=null,
@@ -115,21 +115,23 @@ BEGIN
 			end
 			if(@isvideofeat=-1)
 			begin
-				Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+				Select top(@count) bp.ID BlogID, title Title, bp.category_id CategoryID, c.category_name CategoryName, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
 				is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
 				bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 				from tbl_blog_post_tags bt
 				left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
 				left join tbl_user u on bp.created_by=u.ID 
+				left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 				where bt.status=1 and bt.tag_id=@tagid
 				return;
 			end
-			Select  top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg, excerpt Excerpt,
+			Select  top(@count) bp.ID BlogID, title Title, bp.category_id CategoryID, c.category_name CategoryName, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
 			is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
 			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 			from tbl_blog_post_tags bt
 			left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
 			left join tbl_user u on bp.created_by=u.ID 
+			left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 			where bt.status=1 and bt.tag_id=@tagid
 			return;
 		End
@@ -142,23 +144,25 @@ BEGIN
 			end
 			if(@isvideofeat=-1)
 			begin
-				Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+				Select top(@count) bp.ID BlogID, title Title, bp.category_id CategoryID, c.category_name CategoryName, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
 				is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
 				bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 				from tbl_blog_post_tags bt
 				left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
 				left join tbl_user u on bp.created_by=u.ID 
 				left join tbl_blog_tags bts on bts.ID=bt.tag_id and bts.slug=@tagid
+				left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 				where bt.status=1 
 				return;
 			end
-			Select top(@count) bp.ID BlogID, title Title, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
+			Select top(@count) bp.ID BlogID, title Title, bp.category_id CategoryID, c.category_name CategoryName, bp.slug Slug, feat_img FeatImg, excerpt Excerpt,
 			is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreatedDate, 
 			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 			from tbl_blog_post_tags bt
 			left join tbl_blog_post bp on bp.ID=bt.post_id and bp.status=1 and bp.is_published=1
 			left join tbl_user u on bp.created_by=u.ID 
 			left join tbl_blog_tags bts on bts.ID=bt.tag_id and bts.slug=@tagid
+			left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 			where bt.status=1 
 			return;
 		End
@@ -169,20 +173,22 @@ BEGIN
 	Begin
 		if(@isvideofeat=-1)
 		Begin
-			Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg,
-			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, created_date CreateDate,
+			Select top(@count) bp.ID BlogID,category_id CategoryID, c.category_name CategoryName , title Title, bp.slug Slug, feat_img FeatImg,
+			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreateDate,
 			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 			from tbl_blog_post bp
 			left join tbl_user u on bp.created_by=u.ID 
+			left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 			where bp.status=1 and bp.is_published=1
 		End
 		else 
 		Begin
-			Select top(@count) bp.ID BlogID, title Title, slug Slug, feat_img FeatImg,
-			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, created_date CreateDate,
+			Select top(@count) bp.ID BlogID, category_id CategoryID, c.category_name CategoryName ,title Title, bp.slug Slug, feat_img FeatImg,
+			excerpt Excerpt, is_video_feat IsVideoFeat, post_view PostView, bp.created_date CreateDate,
 			bp.created_by CreatedUser, ('Images/UserProfile/'+u.image) CreatedUserImage
 			from tbl_blog_post bp
-			left join tbl_user u on bp.created_by=u.ID 
+			left join tbl_user u on bp.created_by=u.ID
+			left join tbl_blog_category c on bp.category_id=c.ID and c.status=1
 			where bp.status=1 and bp.is_published=1 and bp.is_video_feat=@isvideofeat
 		End
 		
@@ -229,11 +235,13 @@ BEGIN
 				Select 201 StatusCode, 'Blog does not exists' Message
 				return;
 			end
-			Select ID BlogID, category_id CategoryID, title Title, slug Slug, post Post,
+			Select bp.ID BlogID, category_id CategoryID, c.category_name CategoryName, title Title, bp.slug Slug, post Post,
 			('Images/Blog/'+feat_img) Image, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
 			(post_view + 1) PostView
-			from tbl_blog_post
-			where status=1 and is_published=1 and ID=@blogid 
+			from tbl_blog_post bp
+			left join tbl_blog_category c on c.ID=bp.category_id and c.status=1
+			where bp.status=1 and is_published=1 and bp.ID=@blogid 
+
 			update tbl_blog_post set post_view=isnull(post_view,0)+1
 			where status=1 and is_published=1 and ID=@blogid 
 			return;
@@ -245,11 +253,14 @@ BEGIN
 				Select 201 StatusCode, 'Blog does not exists' Message
 				return;
 			end
-			Select ID BlogID, category_id CategoryID, title Title, slug Slug, post Post,
+			Select bp.ID BlogID, category_id CategoryID,c.category_name CategoryName, title Title, bp.slug Slug, post Post,
 			('Images/Blog/'+feat_img) Image, excerpt Excerpt, meta Meta, is_video_feat IsVideoFeat, 
 			(post_view + 1) PostView
-			from tbl_blog_post
-			where status=1 and is_published=1 and slug=@blogid 
+			from tbl_blog_post bp
+			left join tbl_blog_category c on c.ID=bp.category_id and c.status=1
+			where bp.status=1 and is_published=1 and bp. slug=@blogid 
+
+
 			update tbl_blog_post set post_view=isnull(post_view,0)+1
 			where status=1 and is_published=1 and slug=@blogid 
 			return;
