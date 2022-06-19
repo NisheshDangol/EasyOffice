@@ -8541,9 +8541,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.API\\Easy.API.csproj",
-      "projectName": "Easy.API",
-      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.API\\Easy.API.csproj",
+      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.API\\EasyOfficeApi.csproj",
+      "projectName": "EasyOfficeApi",
+      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.API\\EasyOfficeApi.csproj",
       "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.API\\obj\\",
       "projectStyle": "PackageReference",
