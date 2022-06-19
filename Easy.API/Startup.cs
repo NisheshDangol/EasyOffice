@@ -87,10 +87,12 @@ namespace Easy.API
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Easy.API v1"));
             }
-            app.UseCors("CorsPolicy");
+            
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("CorsPolicy");
 
             app.UseAuthorization();
 
