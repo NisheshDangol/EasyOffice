@@ -40,7 +40,7 @@ namespace Easy.Services.Services
                 dynamic data = new
                 {
                     // if you want to test for single device
-                    to = "/topics/"+topic,
+                    to = "/topics/"+topic.Topic,
 
                     // registration_ids = singlebatch, // this is for multiple user 
 
@@ -108,7 +108,7 @@ namespace Easy.Services.Services
                 dynamic data = new
                 {
                     // if you want to test for single device
-                    to = DeviceID,
+                    to = DeviceID.DeviceID,
 
                     // registration_ids = singlebatch, // this is for multiple user 
 

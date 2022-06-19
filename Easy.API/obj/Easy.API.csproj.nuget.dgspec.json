@@ -47,10 +47,6 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
-            "CorePush": {
-              "target": "Package",
-              "version": "[3.0.10, )"
-            },
             "FirebaseAdmin": {
               "target": "Package",
               "version": "[2.3.0, )"
@@ -58,6 +54,10 @@
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[5.0.14, )"
+            },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

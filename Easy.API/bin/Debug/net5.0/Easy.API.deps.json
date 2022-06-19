@@ -33,7 +33,6 @@
     ".NETCoreApp,Version=v5.0": {
       "Easy.API/1.0.0": {
         "dependencies": {
-          "CorePush": "3.0.10",
           "Easy.Connection": "1.0.0",
           "Easy.Services": "1.0.0",
           "FirebaseAdmin": "2.3.0",
