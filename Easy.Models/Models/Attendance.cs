@@ -42,7 +42,7 @@ namespace Easy.Models.Models
         //public string AttenTime { get; set; }
         //public int AttenStatus { get; set; }
         //public int AttenPlace { get; set; }
-        
+        public int StaffID { get; set; }
         public List<JSonParam> Param { get; set; }
         //public int Flag { get; set; }
         public int AttenPlace { get; set; }

@@ -407,7 +407,7 @@ namespace Easy.Services.Services
             var parameters = new DynamicParameters();
             //parameters.Add("@flag", "bulkattendance");
             parameters.Add("@comid", bulkatten.ComID);           
-            //parameters.Add("@attenremarks", attendance.AttenRemarks);
+            parameters.Add("@staffid", bulkatten.StaffID);
             parameters.Add("@fiscalid", bulkatten.FiscalID);
             parameters.Add("@branchid", bulkatten.BranchID);
             //parameters.Add("@iflag", bulkatten.Flag);

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_bulkatten]    Script Date: 5/22/2022 3:37:58 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_bulkatten]    Script Date: 6/20/2022 12:14:43 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -34,7 +34,9 @@ ALTER proc [dbo].[sp_bulkatten] (
 @leftearly datetime=null,
 @i int =1,
 @uid int = null,
-@count int=null
+@user_id int =null,
+@count int=null,
+@staffid int = null
 )
 as
 
@@ -89,32 +91,35 @@ BEGIN
 			set @attenremarks = 2
 		end
 		--set @uid = (select user_id from @temp_atten. where ID=@i)
-		if exists(select 'm' from tbl_attendance a inner join @temp_atten t on t.user_id=a.user_id and t.attend_date=a.attend_date and t.attendstatus=a.attend_status and t.ID=@i )
-		begin			
-			update tbl_attendance set attend_time=@attentime, attend_remarks=@attenremarks where attend_date=@attendate and user_id=@userid and attend_status=@attenstatus 
-			and com_id=@comid
-			Select 200 StatusCode, 'Success' Message
+		--if exists(select 'm' from tbl_attendance a inner join @temp_atten t on t.user_id=a.user_id and t.attend_date=a.attend_date and t.attendstatus=a.attend_status and t.ID=@i )
+		--begin			
+		--	update tbl_attendance set attend_time=@attentime, attend_remarks=@attenremarks, updated_by=@staffid where attend_date=@attendate and device_code=@userid and attend_status=@attenstatus 
+		--	and com_id=@comid
+		--	Select 200 StatusCode, 'Success' Message
 			
-		end
-		else 
-		begin
-			set @departmentid = (Select depart_id from tbl_user where ID= @userid) 
-			set @subdepartmentid = (Select sub_depart_id from tbl_user where ID=@userid)
-			set @designationid = (Select design_id from tbl_user where ID=@userid)
-			Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
-			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date)
-			values(@comid,@userid,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
-			@fiscalid,@branchid,1,0,@userid,@userid,GETDATE(),GETDATE())
-			Select 200 StatusCode, 'Success' Message
+		--end
+		--else 
+		--begin
+			set @departmentid = (Select depart_id from tbl_user where device_code= @userid) 
+			set @subdepartmentid = (Select sub_depart_id from tbl_user where device_code=@userid)
+			set @designationid = (Select design_id from tbl_user where device_code=@userid)
+			set @user_id = (Select ID from tbl_user where device_code=@userid)
 			
-		end
+			if exists(Select ID from tbl_user where device_code=@userid)
+			begin
+				Insert into tbl_attendance(com_id,device_code,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
+				attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date)
+				values(@comid,@userid,@user_id,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
+				@fiscalid,@branchid,1,0,@staffid,@staffid,GETDATE(),GETDATE())
+				Select @userid StatusCode, 'Success' Message
+			end
+		--end
 		set @count=@count-1
-		set @i = @i+1
-		
+		set @i = @i+1		
 		
 		
 	end
-
+	Select @user_id StatusCode, 'Success' Message
 
 
 

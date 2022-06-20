@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj": {}
+    "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj": {}
   },
   "projects": {
-    "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj": {
+    "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+        "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj",
         "projectName": "Easy.Connection",
-        "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+        "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj",
         "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\obj\\",
+        "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\NisAceDanGol\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -68,14 +68,14 @@
         }
       }
     },
-    "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj": {
+    "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj",
+        "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj",
         "projectName": "Easy.Models",
-        "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj",
+        "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj",
         "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\obj\\",
+        "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\NisAceDanGol\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -92,8 +92,8 @@
           "net5.0": {
             "targetAlias": "net5.0",
             "projectReferences": {
-              "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj": {
-                "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj"
+              "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj": {
+                "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj"
               }
             }
           }

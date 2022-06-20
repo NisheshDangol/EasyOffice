@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SZ3g6j1+8lucIDifk2Q4W3nKBL6HeZ2t7ugmfXcDf6obK8Q9NYyqSPmGhCLy6VLyktbQGLF7LX+wawn6eTeBnQ==",
+  "dgSpecHash": "bdeBXFS9oU07w1GZtKzP4bhtd/adG1WCA2t9NwXRCSopAqmAgx+bI6/r0iWjcUVbpBByiT8DfylRIZxg931nbQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

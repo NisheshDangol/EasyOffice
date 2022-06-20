@@ -5734,11 +5734,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj",
       "projectName": "Easy.Connection",
-      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj",
+      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj",
       "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\obj\\",
+      "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\NisAceDanGol\\AppData\\Roaming\\NuGet\\NuGet.Config",

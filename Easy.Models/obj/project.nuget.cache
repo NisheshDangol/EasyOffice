@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Plh+9jO5GgkTBrmddgMEe/ZjkiDdLEf/8GjPzfVJCX+sPWP4blygxU18Or8ras5Dl62JI38UtTvlOIEC38/blg==",
+  "dgSpecHash": "GaDIfE/P7KNsG94mQEweRxe/ffxFmzFSUCR0NT2LGq+fKSlJ5UoOTC0T/NBtLcigeYLGbI+4O+s0rnuayey/8w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj",
+  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",

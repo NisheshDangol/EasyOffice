@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7z+nCfa8+ntXfZAM7M+MLoDu/09vQdeiDG+DR27/CUH4WbmyCSFz8iCTGUPEeD17hx55E6BbVBV9BnHN6QTzlA==",
+  "dgSpecHash": "OyfqHC2VdI8GvH3VLrF9zxr+AxY1Xtheevji3cZ2l7Fkgh75mm7MQ8oSVFWDHce81D1rakVq1Nb3JjhPmsyv2g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Services\\Easy.Services.csproj",
+  "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Services\\Easy.Services.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\corepush\\3.0.10\\corepush.3.0.10.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\dapper\\2.0.123\\dapper.2.0.123.nupkg.sha512",

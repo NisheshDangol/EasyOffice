@@ -8122,11 +8122,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Services\\Easy.Services.csproj",
+      "projectUniqueName": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Services\\Easy.Services.csproj",
       "projectName": "Easy.Services",
-      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Services\\Easy.Services.csproj",
+      "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Services\\Easy.Services.csproj",
       "packagesPath": "C:\\Users\\NisAceDanGol\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Services\\obj\\",
+      "outputPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Services\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\NisAceDanGol\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -8143,11 +8143,11 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj": {
-              "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Connection\\Easy.Connection.csproj"
+            "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj": {
+              "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Connection\\Easy.Connection.csproj"
             },
-            "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj": {
-              "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\easy-business-api\\Easy.Models\\Easy.Models.csproj"
+            "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj": {
+              "projectPath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.Models\\Easy.Models.csproj"
             }
           }
         }
