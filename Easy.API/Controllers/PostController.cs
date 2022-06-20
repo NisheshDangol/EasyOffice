@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Easy.API.Controllers
 {
@@ -94,8 +95,9 @@ namespace Easy.API.Controllers
         [Route("~/api/bulk-attendance")]
         public async Task<IActionResult> CreateBulkAttendance( BulkAttendance BulkAtten)
         {
-            var data = await _unitOfWork.PostServices.CreateBulkAttendance(BulkAtten);
+            var data = await _unitOfWork.PostServices.CreateBulkAttendance(BulkAtten);            
             return Ok(data);
+            
         }
     }
 }

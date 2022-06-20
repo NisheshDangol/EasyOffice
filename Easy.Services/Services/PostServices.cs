@@ -17,6 +17,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace Easy.Services.Services
 {
@@ -402,31 +403,33 @@ namespace Easy.Services.Services
         {
             var param = bulkatten.Param;            
             CommonResponse res = new CommonResponse();
-            string jsonstring = JsonConvert.SerializeObject(bulkatten.Param);
-            string sql = "sp_bulkatten";
+            List<dynamic> data = new List<dynamic>();
+            //string jsonstring = JsonConvert.SerializeObject(bulkatten.Param);
+            //XmlNode xmlNode = JsonConvert.DeserializeXmlNode(jsonstring);
+            string sql = "sp_bulkattenxml";
             var parameters = new DynamicParameters();
-            //parameters.Add("@flag", "bulkattendance");
-            parameters.Add("@comid", bulkatten.ComID);           
-            parameters.Add("@staffid", bulkatten.StaffID);
+            parameters.Add("@flag", "createattendance");
+            parameters.Add("@comid", bulkatten.ComID);
+            //parameters.Add("@attenstatus", attendance.AttenStatus);
+            parameters.Add("@attenplace", bulkatten.AttenPlace);
+            //parameters.Add("@attenremarks", attendance.AttenRemarks);
             parameters.Add("@fiscalid", bulkatten.FiscalID);
             parameters.Add("@branchid", bulkatten.BranchID);
-            //parameters.Add("@iflag", bulkatten.Flag);
-            parameters.Add("@attenplace", bulkatten.AttenPlace);
-            //foreach (JSonParam para in param)
-            //{
-            //    parameters.Add("@userid", para.UserID);
-            //    parameters.Add("@attendate", para.AttenDate);
-            //    parameters.Add("@attentime", para.AttenTime);               
-            //    var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
-            //    res.StatusCode = data.FirstOrDefault().StatusCode;
-            //    res.Message = data.FirstOrDefault().Message;
-            //    //parameters.Add("@iflag", 2);
-            //}
-            parameters.Add("@jsonstring", jsonstring);
-            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-            res.StatusCode = data.FirstOrDefault().StatusCode;
-            res.Message = data.FirstOrDefault().Message;
-            return res;           
+            foreach (JSonParam jSon in bulkatten.Param)
+            {
+                parameters.Add("@userid", jSon.UserID);
+                parameters.Add("@attendate", jSon.AttenDate);
+                parameters.Add("@attentime", jSon.AttenTime);
+                data = (List<dynamic>)await DBHelper.RunProc<dynamic>(sql, parameters);
+            }                                
+            return new CommonResponse()
+            {
+                StatusCode = data.FirstOrDefault().StatusCode,
+                Message = data.FirstOrDefault().Message
+            };
+            //res.StatusCode = data.FirstOrDefault().StatusCode;
+            //res.Message = data.FirstOrDefault().Message;
+            //return res;           
         }
     }
 }
