@@ -1,10 +1,11 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/20/2022 2:58:40 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/21/2022 10:22:53 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
+
 ALTER proc [dbo].[sp_attendance]
 @comid nvarchar(250)=null,
 @userid int=null,
@@ -24,6 +25,8 @@ ALTER proc [dbo].[sp_attendance]
 @iflag nvarchar(50) = null,
 @value nvarchar(50)=null,
 @jsonstring nvarchar(max)=null,
+@datecount int =null,
+@presentcount int=null,
 @flag nvarchar(250)
 as
 BEGIN
@@ -87,22 +90,22 @@ BEGIN
 		if(@repflag='m')
 		begin
 			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day (attend_date) AttenDay, 
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) CheckIn,
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) CheckOut,
+			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) CheckIn,
+			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) CheckOut,
 			case status
 			when 1 then 'Check In'
 			when 2 then 'Check Out'
 			end Status,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value) 
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) 
 			when 1 then 'Present'
 			when 3 then 'Late'
 			end InRemarks,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and month(attend_date)=@value)
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value)
 			when 4 then 'left early'
 			end OutRemarks,
 			attend_place Via, attend_verified IsVerified, verified_by VerifiedBy
 			from tbl_attendance t
-			where com_id=@comid and user_id=@userid and month(attend_date)=@value and status = 1
+			where com_id=@comid and user_id=@userid and format(attend_date, 'yyyy-MM')=@value and status = 1
 		end
 		if(@repflag='d')
 		begin
@@ -125,4 +128,57 @@ BEGIN
 			where com_id=@comid and user_id=@userid and attend_date=convert(datetime,@value) and status = 1
 		end
 	end
+
+
+	IF(@flag='attendancesummary')
+	Begin
+		if not exists (Select 'm' from tbl_user where ID=@userid)
+		begin
+			Select 202 StatusCode, 'User does not exists' Message
+			return;
+		end
+		if not (@repflag='m' or @repflag='y')
+		begin
+			Select 203 StatusCode, 'Flag does not exists' Message
+			return;
+		End
+		if(@repflag='m')
+		begin
+			--set @datecount = (Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value);
+			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
+			Select distinct(month(attend_date)) ID ,
+			case month(attend_date)
+			when 01 then 'January'
+			when 02 then 'Febuary'
+			when 03 then 'March'
+			when 04 then 'April'
+			when 05 then 'May'
+			when 06 then 'June'
+			when 07 then 'July'
+			when 08 then 'August'
+			when 09 then 'September'
+			when 10 then 'October'
+			when 11 then 'November'
+			when 12 then 'December'
+			end Name,
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value and MONTH(attend_date)=month(a.attend_date) and status=1) TotalPresent,
+			((Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value and MONTH(attend_date)=month(a.attend_date) and status=1)-
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value and MONTH(attend_date)=month(a.attend_date) and status=1)) TotalAbsent
+			from tbl_attendance a
+			where user_id=@userid and com_id=@comid and year(attend_date)=@value and status=1
+		end
+
+		if(@repflag='y')
+		begin
+			--set @datecount = (Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value);
+			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
+			Select distinct(year(a.attend_date)) ID,
+			year(a.attend_date) Name,
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1) TotalPresent,
+			((Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=year(a.attend_date) and status=1)-
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1)) TotalAbsent
+			from tbl_attendance a
+			where user_id=@userid and com_id=@comid and status=1
+		end
+	End
 END

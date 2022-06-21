@@ -182,5 +182,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.AttendanceReport(ComID, UserID, Flag, Value);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/atten-summary")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> AttendanceSummary(string ComID, int UserID, string Flag,string Values)
+        {
+            var data = await _unitOfWork.GetServices.AttendanceSummary(ComID, UserID, Flag, Values);
+            return Ok(data);
+        }
     }
 }

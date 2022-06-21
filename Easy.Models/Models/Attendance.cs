@@ -59,5 +59,8 @@ namespace Easy.Models.Models
         
     }
      
-
+    public class AttendanceSummary:CommonResponse
+    {
+        public List<dynamic> AttenSummary { get; set; }
+    }
 }

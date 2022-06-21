@@ -20,5 +20,6 @@ namespace Easy.Services.Interface
         Task<CommonResponse> CreateLeave(Leave leave);
         Task<CommonResponse> UpdateLeaveStatus(string ComID, int UserID, int LeaveID, int Status);
         Task<CommonResponse> CreateAttendance(CreateAttendance attendance);
+        
     }
 }

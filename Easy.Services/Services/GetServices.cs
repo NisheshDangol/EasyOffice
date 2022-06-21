@@ -638,6 +638,37 @@ namespace Easy.Services.Services
             return leaveRep;
         }
 
+        public async Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Values)
+        {
+            var sql = "sp_attendance";
+            var leaveRep = new AttendanceSummary();
+            leaveRep.AttenSummary = null;
+            leaveRep.StatusCode = 400;
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", "attendancesummary");
+            parameters.Add("@comid", ComID);
+            parameters.Add("@userid", UserID);
+            parameters.Add("@repflag", Flag);
+            parameters.Add("@value", Values);
+            
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                leaveRep.StatusCode = 200;
+                leaveRep.Message = "Success";
+                leaveRep.AttenSummary = data.ToList();
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                leaveRep.StatusCode = data.FirstOrDefault().StatusCode;
+                leaveRep.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                leaveRep.Message = "NO data";
+            }
+            return leaveRep;
+        }
     }
     
 }
