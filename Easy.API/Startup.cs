@@ -98,7 +98,7 @@ namespace Easy.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllers().RequireCors("CorsPolicy");
             });
         }
     }

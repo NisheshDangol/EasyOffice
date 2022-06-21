@@ -1,5 +1,6 @@
 ﻿using Easy.Connection;
 using Easy.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Model.Models;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 namespace TravelSolution.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("CorsPolicy")]
     [ApiController]
     public class BlogController : ControllerBase
     {

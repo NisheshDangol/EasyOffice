@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using CorePush.Google;
+using Microsoft.AspNetCore.Cors;
 
 namespace Easy.API.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("CorsPolicy")]
     [ApiController]
     public class NotificationController : ControllerBase
     {

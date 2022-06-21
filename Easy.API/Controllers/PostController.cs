@@ -1,5 +1,6 @@
 ﻿using Easy.Models.Models;
 using Easy.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -12,6 +13,7 @@ using System.Xml;
 namespace Easy.API.Controllers
 {
     [Route("api/[controller]")]
+    [EnableCors("CorsPolicy")]
     [ApiController]
     public class PostController : ControllerBase
     {

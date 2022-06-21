@@ -88,24 +88,28 @@ BEGIN
 			return;
 		end
 		if(@repflag='m')
-		begin
-			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day (attend_date) AttenDay, 
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) CheckIn,
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) CheckOut,
-			case status
-			when 1 then 'Check In'
-			when 2 then 'Check Out'
-			end Status,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value) 
+		begin			
+		
+			Select distinct(attend_date) into #workdate from tbl_attendance 
+			-----------------
+			select distinct(format(d.attend_date, 'yyyy-MM-dd')) AttenDate, day (d.attend_date) AttenDay, 
+			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'-') CheckIn,
+			isnull((Select attend_time from tbl_attendance where user_id=2 and com_id='es25' and attend_status=2 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'-')  CheckOut,
+
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value) 
 			when 1 then 'Present'
 			when 3 then 'Late'
+			else '-'
 			end InRemarks,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(t.attend_date) and format(attend_date, 'yyyy-MM')=@value)
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value)
 			when 4 then 'left early'
+			else '-'
 			end OutRemarks,
-			attend_place Via, attend_verified IsVerified, verified_by VerifiedBy
-			from tbl_attendance t
-			where com_id=@comid and user_id=@userid and format(attend_date, 'yyyy-MM')=@value and status = 1
+			isnull(attend_place,'-') Via, isnull(attend_verified,'-') IsVerified, isnull(verified_by,'-') VerifiedBy
+			from #workdate d
+			left join tbl_attendance t on t.attend_date=d.attend_date and format(d.attend_date, 'yyyy-MM')=@value and com_id=@comid and user_id=@userid and status = 1
+			----------
+			drop table #workdate
 		end
 		if(@repflag='d')
 		begin
@@ -174,11 +178,12 @@ BEGIN
 			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
 			Select distinct(year(a.attend_date)) ID,
 			year(a.attend_date) Name,
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1) TotalPresent,
-			((Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=year(a.attend_date) and status=1)-
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1)) TotalAbsent
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 group by attend_date) TotalPresent,
+			((Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=year(a.attend_date) and attend_status=2 and status=1 group by attend_date)-
+			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 group by attend_date)) TotalAbsent
 			from tbl_attendance a
 			where user_id=@userid and com_id=@comid and status=1
 		end
+			
 	End
 END

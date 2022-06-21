@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 5/15/2022 4:16:46 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 6/21/2022 1:42:38 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -117,11 +117,12 @@ begin
 		return;
 	end
 
-	Select l.ID LeaveID, title Title, description Cause, day_type DayType, format(leave_from, 'yyyy-MM-dd') FromDate,
+	Select l.ID LeaveID, title Title, l.description Cause, case day_type when 1 then 'Half Day' when 2 then 'Full Day' end DayType, lt.name LeaveType,format(leave_from, 'yyyy-MM-dd') FromDate,
 	format(leave_to, 'yyyy-MM-dd') ToDate, total_days TotalDays, is_field_work IsFielWork, concat(u.first_name+' ',u.middle_name+' ',u.last_name) AssignedTo,
 	leave_status LeaveStatus, leave_verified LeaveVerified, verified_by VerifiedBy
 	from tbl_leave l
 	left join tbl_user u on u.ID = l.user_id
+	left join tbl_leave_type lt on lt.ID = l.leave_type
 	where l.com_id=u.com_id and u.com_id=@ComID and l.user_id=@UserID and l.leave_type=@LeaveTypeID and l.status=1
 end 
 
