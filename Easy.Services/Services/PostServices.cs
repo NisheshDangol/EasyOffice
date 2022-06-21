@@ -420,12 +420,12 @@ namespace Easy.Services.Services
                 parameters.Add("@userid", jSon.UserID);
                 parameters.Add("@attendate", jSon.AttenDate);
                 parameters.Add("@attentime", jSon.AttenTime);
-                data = (List<dynamic>)await DBHelper.RunProc<dynamic>(sql, parameters);
+                await DBHelper.RunProc<dynamic>(sql, parameters);
             }                                
             return new CommonResponse()
             {
-                StatusCode = data.FirstOrDefault().StatusCode,
-                Message = data.FirstOrDefault().Message
+                StatusCode = 200,
+                Message = "Success"
             };
             //res.StatusCode = data.FirstOrDefault().StatusCode;
             //res.Message = data.FirstOrDefault().Message;
