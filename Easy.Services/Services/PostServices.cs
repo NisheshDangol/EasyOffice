@@ -399,7 +399,7 @@ namespace Easy.Services.Services
             };
         }
 
-        public async Task<dynamic> CreateBulkAttendance( BulkAttendance bulkatten) 
+        public async Task<CommonResponse> CreateBulkAttendance( BulkAttendance bulkatten) 
         {
             try
             {
@@ -432,7 +432,11 @@ namespace Easy.Services.Services
             }
             catch(Exception ex)
             {
-                return ex.Message;
+                return new CommonResponse()
+                {
+                    StatusCode = 200,
+                    Message = ex.Message
+                };
             }
             
             //res.StatusCode = data.FirstOrDefault().StatusCode;
