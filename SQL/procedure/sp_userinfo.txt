@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 5/24/2022 3:33:41 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/21/2022 4:50:32 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -106,7 +106,7 @@ Begin
 		  u.sub_depart_id as SubDepartmentID, 
 		  u.address as Address, 
 		  u.district as District, 
-		  u.image as Image, 
+		  ('https://esnep.com/office/assets/images/user/'+u.image) as UserImage, 
 		  u.is_manager as IsManager, 
 		  y.fiscal_year as FiscalYear,
 		  u.fiscal_id as FiscalId,
@@ -256,7 +256,7 @@ Begin
 		  u.sub_depart_id as SubDepartmentID, 
 		  u.address as  Address, 
 		  u.district as District, 
-		  u.image as Image,  
+		  ('https://esnep.com/office/assets/images/user/'+u.image) as UserImage,  
 		  u.is_manager as IsManager,
 		  y.fiscal_year as FiscalYear,
 		  u.fiscal_id as FiscalID,		 

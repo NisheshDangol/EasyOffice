@@ -399,34 +399,42 @@ namespace Easy.Services.Services
             };
         }
 
-        public async Task<CommonResponse> CreateBulkAttendance( BulkAttendance bulkatten) 
+        public async Task<dynamic> CreateBulkAttendance( BulkAttendance bulkatten) 
         {
-            var param = bulkatten.Param;            
-            CommonResponse res = new CommonResponse();
-            List<dynamic> data = new List<dynamic>();
-            //string jsonstring = JsonConvert.SerializeObject(bulkatten.Param);
-            //XmlNode xmlNode = JsonConvert.DeserializeXmlNode(jsonstring);
-            string sql = "sp_bulkattenxml";
-            var parameters = new DynamicParameters();
-            parameters.Add("@flag", "createattendance");
-            parameters.Add("@comid", bulkatten.ComID);
-            //parameters.Add("@attenstatus", attendance.AttenStatus);
-            parameters.Add("@attenplace", bulkatten.AttenPlace);
-            //parameters.Add("@attenremarks", attendance.AttenRemarks);
-            parameters.Add("@fiscalid", bulkatten.FiscalID);
-            parameters.Add("@branchid", bulkatten.BranchID);
-            foreach (JSonParam jSon in bulkatten.Param)
+            try
             {
-                parameters.Add("@userid", jSon.UserID);
-                parameters.Add("@attendate", jSon.AttenDate);
-                parameters.Add("@attentime", jSon.AttenTime);
-                await DBHelper.RunProc<dynamic>(sql, parameters);
-            }                                
-            return new CommonResponse()
+                var param = bulkatten.Param;
+                CommonResponse res = new CommonResponse();
+                List<dynamic> data = new List<dynamic>();
+                //string jsonstring = JsonConvert.SerializeObject(bulkatten.Param);
+                //XmlNode xmlNode = JsonConvert.DeserializeXmlNode(jsonstring);
+                string sql = "sp_bulkattenxml";
+                var parameters = new DynamicParameters();
+                parameters.Add("@flag", "createattendance");
+                parameters.Add("@comid", bulkatten.ComID);
+                //parameters.Add("@attenstatus", attendance.AttenStatus);
+                parameters.Add("@attenplace", bulkatten.AttenPlace);
+                //parameters.Add("@attenremarks", attendance.AttenRemarks);
+                parameters.Add("@fiscalid", bulkatten.FiscalID);
+                parameters.Add("@branchid", bulkatten.BranchID);
+                foreach (JSonParam jSon in bulkatten.Param)
+                {
+                    parameters.Add("@userid", jSon.UserID);
+                    parameters.Add("@attendate", jSon.AttenDate);
+                    parameters.Add("@attentime", jSon.AttenTime);
+                    await DBHelper.RunProc<dynamic>(sql, parameters);
+                }
+                return new CommonResponse()
+                {
+                    StatusCode = 200,
+                    Message = "Success"
+                };
+            }
+            catch(Exception ex)
             {
-                StatusCode = 200,
-                Message = "Success"
-            };
+                return ex.Message;
+            }
+            
             //res.StatusCode = data.FirstOrDefault().StatusCode;
             //res.Message = data.FirstOrDefault().Message;
             //return res;           
