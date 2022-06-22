@@ -41,11 +41,17 @@ namespace Easy.Services.Services
                     job.StatusCode = 200;
                     job.Message = "success";
                 }
-                else
+                else if (data.Count()==1 && data.FirstOrDefault().Message != null)
                 {
                     job.JobInfo = null;
                     job.StatusCode = data.FirstOrDefault().StatusCode;
                     job.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    job.JobInfo = null;
+                    job.StatusCode = 200;
+                    job.Message = "No data";
                 }
                 
             }
