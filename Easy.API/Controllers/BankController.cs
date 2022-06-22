@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
 
+
 namespace Easy.API.Controllers
 {
     [Route("api/[controller]")]

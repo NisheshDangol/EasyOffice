@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/21/2022 10:22:53 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/22/2022 10:34:17 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -37,7 +37,11 @@ BEGIN
 			Select 203 StatusCode, 'User does not exists' Message
 			return;
 		end
-		if exists(Select 'm' from tbl_attendance where user_id = @userid and com_id=@comid and attend_date=@attendate and attend_status=1)
+		if exists(Select 'm' from tbl_attendance where device_code = @userid and com_id=@comid and attend_date=@attendate and attend_status=2 and status=1)
+		begin
+			return;
+		end
+		if exists(Select 'm' from tbl_attendance where device_code = @userid and com_id=@comid and attend_date=@attendate and attend_status=1 and status=1)
 		begin
 			set @attenstatus = 2
 		end
@@ -45,14 +49,18 @@ BEGIN
 		begin
 			set @attenstatus = 1
 		end
-		if exists(Select 'm' from tbl_attendance where user_id = @userid and com_id=@comid and attend_date=@attendate and attend_status=2)
+		
+		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift s 
+		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
+		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift s 
+		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
+			
+		if (((convert(datetime,@attentime))<=@tblshiftres and (convert(datetime,@attentime))>=(select convert(datetime,shift_start) from tbl_shift s 
+		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
 		begin
-			Select 400 StatusCode, 'Attendance already completed' Message
-			return;
+			set @attenremarks = 2
 		end
-		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift)
-		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift)
-		if (((convert(datetime,@attentime))<=@tblshiftres) and @attenstatus = 1)
+		else if (((convert(datetime,@attentime))<(select convert(datetime,shift_start) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
 		begin
 			set @attenremarks = 1
 		end
@@ -64,7 +72,11 @@ BEGIN
 		begin
 			set @attenremarks = 4
 		end
-		else if(((convert(datetime,@attentime))>=@leftearly) and @attenstatus = 2)
+		else if(((convert(datetime,@attentime))>@leftearly) and ((convert(datetime,@attentime))<=(select convert(datetime,shift_end) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
+		begin
+			set @attenremarks = 2
+		end
+		else if(((convert(datetime,@attentime))>(Select convert(datetime,shift_end) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
 		begin
 			set @attenremarks = 5
 		end
@@ -93,16 +105,20 @@ BEGIN
 			Select distinct(attend_date) into #workdate from tbl_attendance where format(attend_date, 'yyyy-MM')=@value
 			-----------------
 			select distinct(format(d.attend_date, 'yyyy-MM-dd')) AttenDate, day (d.attend_date) AttenDay, 
-			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'No Checkin') CheckIn,
-			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id='es25' and attend_status=2 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'No Checkout')  CheckOut,
+			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'No Checkin') CheckIn,
+			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id='es25' and attend_status=2 
+			and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value),'No Checkout')  CheckOut,
 
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value) 
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value) 
 			when 1 then 'Early In'
 			when 2 then 'On Time'
 			when 3 then 'Late'
-			when null then 'No Checkin'
+			else 'No Checkin'
 			end InRemarks,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value)
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 
+			and day(attend_date)=day(d.attend_date) and format(attend_date, 'yyyy-MM')=@value)
 			when 2 then 'On Time'
 			when 4 then 'left early'
 			when 5 then 'after office'
@@ -118,17 +134,18 @@ BEGIN
 		begin
 			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day(attend_date) AttenDay, 
 			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) CheckIn,--day(attend_date)=day(@value) and month(attend_date)=month(@value) and year(attend_date)=year(@value)) CheckIn,
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) CheckOut,
-			case status
-			when 1 then 'Check In'
-			when 2 then 'Check Out'
-			end Status,
+			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) CheckOut,			
 			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) 
-			when 1 then 'Present'
-			when 3 then 'Late'
+			when 2 then 'On Time'
+			when 4 then 'left early'
+			when 5 then 'after office'
+			else 'No Checkout'
 			end InRemarks,
 			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) 
-			when 4 then 'Left early'
+			when 2 then 'On Time'
+			when 4 then 'left early'
+			when 5 then 'after office'
+			else 'No Checkout'
 			end OutRemarks,
 			attend_place Via, attend_verified IsVerified, verified_by VerifiedBy
 			from tbl_attendance t

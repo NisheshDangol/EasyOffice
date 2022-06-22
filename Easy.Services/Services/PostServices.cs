@@ -414,7 +414,7 @@ namespace Easy.Services.Services
                 parameters.Add("@comid", bulkatten.ComID);
                 //parameters.Add("@attenstatus", attendance.AttenStatus);
                 parameters.Add("@attenplace", bulkatten.AttenPlace);
-                //parameters.Add("@attenremarks", attendance.AttenRemarks);
+                parameters.Add("@staffid", bulkatten.StaffID);
                 parameters.Add("@fiscalid", bulkatten.FiscalID);
                 parameters.Add("@branchid", bulkatten.BranchID);
                 foreach (JSonParam jSon in bulkatten.Param)
