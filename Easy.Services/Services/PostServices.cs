@@ -386,7 +386,7 @@ namespace Easy.Services.Services
             parameters.Add("@designationid", attendance.DesignationID);
             parameters.Add("@attendate", attendance.AttenDate);
             parameters.Add("@attentime", attendance.AttenTime);
-            //parameters.Add("@attenstatus", attendance.AttenStatus);
+            parameters.Add("@attenstatus", attendance.AttenStatus);
             parameters.Add("@attenplace", attendance.AttenPlace);
             //parameters.Add("@attenremarks", attendance.AttenRemarks);
             parameters.Add("@fiscalid", attendance.FiscalID);
@@ -443,5 +443,41 @@ namespace Easy.Services.Services
             //res.Message = data.FirstOrDefault().Message;
             //return res;           
         }
+
+        public async Task<AdminDepartmentRes> AdminDepartment(AdminDepartmentReq req)
+        {
+            AdminDepartmentRes res = new AdminDepartmentRes();
+            res.list = null;
+            var sql = "sp_admin_department";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@department", req.Department);
+            parameters.Add("@depheadid", req.DepHeadID);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@departmentid", req.DepartmentID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@comid", req.ComID);
+            var data = await DBHelper.RunProc<dynamic>(sql,parameters);
+            if(data.Count()!=0 && data.FirstOrDefault().Message == null)
+            {
+                res.list = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if(data.Count()==1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
     }
 }

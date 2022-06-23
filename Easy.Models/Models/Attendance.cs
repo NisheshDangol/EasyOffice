@@ -19,7 +19,7 @@ namespace Easy.Models.Models
         public int DesignationID { get; set; }
         public string AttenDate { get; set; }
         public string AttenTime { get; set; }
-        //public int AttenStatus { get; set; }
+        public int AttenStatus { get; set; }
         public int AttenPlace { get; set; }
         //public int AttenRemarks { get; set; }
         public int FiscalID { get; set; }
@@ -63,4 +63,6 @@ namespace Easy.Models.Models
     {
         public List<dynamic> AttenSummary { get; set; }
     }
+
+    //public class Attendance
 }

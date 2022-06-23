@@ -1,0 +1,113 @@
+alter proc sp_admin_department(
+	@comid nvarchar(150)=null,
+	@staffid int=null,
+	@department nvarchar(250)=null,
+	@depheadid int=null,
+	@branchid int=null,
+	@flag nvarchar(50) =null,
+	@fiscalid int=null,
+	@status int=null,
+	@departmentid int=null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	if(@flag='i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid )
+		begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_user where ID=@depheadid)
+		Begin
+			Select 205 StatusCode, 'Department Head ID does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_department where head_id=@depheadid and status=1)
+		begin
+			Select 204 StatusCode, 'Department Head already exists' Message
+			return;
+		end
+		if exists(Select 'm' from tbl_department where depart_name=@department)
+		begin
+			Select 203 StatusCode, 'Department already exists' Message
+			return;
+		end
+		Insert into tbl_department (com_id,created_by,updated_by,depart_name,head_id,
+		branch_id,fiscal_id,status,created_date,updated_date)values
+		(@comid,@staffid,@staffid,@department,@depheadid,@branchid,@fiscalid,1,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	if(@flag='s')
+	Begin
+		Select d.ID DepartmentID, depart_name Department, head_id DepartHeadID,(u.first_name+''+u.last_name) DepartHead,
+		count(s.ID) NoOfSubDepart,count(ds.ID) NoOfDesign, 
+		(Select count(ID) from tbl_user where dep_id=d.ID) NoOfStaff
+		from tbl_department d
+		left join tbl_user u on u.depart_id=d.ID and u.com_id=@comid and u.ID=d.head_id
+		left join tbl_sub_department s on s.dep_id=d.ID and s.com_id=@comid
+		left join tbl_designation ds on u.design_id=ds.ID and ds.com_id=@comid
+		where case when @staffid=-1 then '1' else u.ID end = case when @staffid=-1 then '1' else @staffid end
+		and d.com_id=@comid
+		group by d.ID,depart_name,head_id,u.first_name,u.last_name,s.dep_id
+	End
+
+	if(@flag='u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid )
+		begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_user where ID=@depheadid)
+		Begin
+			Select 207 StatusCode, 'Department Head ID does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_department where head_id=@depheadid and status=1)
+		begin
+			Select 204 StatusCode, 'Department Head already exists' Message
+			return;
+		end
+		if exists(Select 'm' from tbl_department where depart_name=@department and ID<>@departmentid)
+		begin
+			Select 203 StatusCode, 'DepartmentName already exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_department where ID=@departmentid)
+		Begin
+			Select 206 StatusCode, 'Department does not exists' Message
+			return;
+		End
+		Update tbl_department set depart_name=@department,head_id=@depheadid,branch_id=@branchid,
+		fiscal_id=@fiscalid,updated_by=@staffid,updated_date=GETDATE() where ID=@departmentid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	if(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid )
+		begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		end
+		if not exists(Select 'm' from tbl_department where ID=@departmentid)
+		Begin
+			Select 203 StatusCode, 'Department does not exists' Message
+			return;
+		End
+		update tbl_department set status=@status, updated_by=@staffid,updated_date=GETDATE(),
+		branch_id=@branchid, fiscal_id=@fiscalid
+		where ID=@departmentid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

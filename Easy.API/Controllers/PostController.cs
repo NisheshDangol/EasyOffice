@@ -101,5 +101,14 @@ namespace Easy.API.Controllers
             return Ok(data);
             
         }
+
+        [HttpPost]
+        [Route("~/api/admin/department")]
+        public async Task<IActionResult> AdminDepartment(AdminDepartmentReq req)
+        {
+            var data = await _unitOfWork.PostServices.AdminDepartment(req);
+            return Ok(data);
+
+        }
     }
 }

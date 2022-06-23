@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/22/2022 10:34:17 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/23/2022 10:25:51 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,10 +80,10 @@ BEGIN
 		begin
 			set @attenremarks = 5
 		end
-		else
-		begin
-			set @attenremarks = 2
-		end
+		--else
+		--begin
+		--	set @attenremarks = 2
+		--end
 		Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
 		attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date)
 		values(@comid,@userid,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
@@ -124,32 +124,43 @@ BEGIN
 			when 5 then 'after office'
 			else 'No Checkout'
 			end OutRemarks,
-			isnull(attend_place,'-') Via, isnull(attend_verified,'-') IsVerified, isnull(verified_by,'-') VerifiedBy
+			case  when l.ID is not null then l.ID else 0 end LeaveID ,
+			isnull(attend_place,'-') Via, isnull(attend_verified,'-') IsVerified, isnull(t.verified_by,'-') VerifiedBy
 			from #workdate d
 			left join tbl_attendance t on t.attend_date=d.attend_date and format(d.attend_date, 'yyyy-MM')=@value and com_id=@comid and user_id=@userid and status = 1
+			left join tbl_leave l on l.user_id=@userid and l.leave_from>= d.attend_date and l.leave_to<=d.attend_date  and l.status=1
 			----------
 			drop table #workdate
 		end
 		if(@repflag='d')
 		begin
-			select distinct(format(attend_date, 'yyyy-MM-dd')) AttenDate, day(attend_date) AttenDay, 
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) CheckIn,--day(attend_date)=day(@value) and month(attend_date)=month(@value) and year(attend_date)=year(@value)) CheckIn,
-			(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) CheckOut,			
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=convert(datetime,@value)) 
+			Select distinct(attend_date) into #workdate2 from tbl_attendance where format(attend_date, 'yyyy-MM-dd')=@value
+			--------------------
+			select distinct(format(d.attend_date, 'yyyy-MM-dd')) AttenDate, day(d.attend_date) AttenDay, 
+			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid 
+			and attend_status=1 and attend_date=d.attend_date),'No Check In') CheckIn,
+			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid 
+			and attend_status=2 and attend_date=d.attend_date),'No Check Out') CheckOut,			
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=d.attend_date) 
 			when 2 then 'On Time'
 			when 4 then 'left early'
 			when 5 then 'after office'
 			else 'No Checkout'
 			end InRemarks,
-			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=convert(datetime,@value)) 
+			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 and attend_date=d.attend_date) 
 			when 2 then 'On Time'
 			when 4 then 'left early'
 			when 5 then 'after office'
 			else 'No Checkout'
 			end OutRemarks,
-			attend_place Via, attend_verified IsVerified, verified_by VerifiedBy
-			from tbl_attendance t
-			where com_id=@comid and user_id=@userid and attend_date=convert(datetime,@value) and status = 1
+			case  when l.ID is not null then l.ID else 0 end LeaveID ,
+			attend_place Via, attend_verified IsVerified, t.verified_by VerifiedBy
+			from #workdate2 d
+			left join tbl_attendance t on t.attend_date=d.attend_date  and com_id=@comid and user_id=@userid and status = 1
+			left join tbl_leave l on l.user_id=@userid and l.leave_from>=convert(datetime,@value)  and l.leave_to<=convert(datetime,@value) and l.status=1
+			where format(d.attend_date, 'yyyy-MM-dd')=convert(datetime,@value)
+			----------
+			drop table #workdate2
 		end
 	end
 
@@ -168,6 +179,7 @@ BEGIN
 		End
 		if(@repflag='m')
 		begin
+			
 			--set @datecount = (Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value);
 			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
 			Select distinct(month(attend_date)) ID ,
@@ -190,19 +202,24 @@ BEGIN
 			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value and MONTH(attend_date)=month(a.attend_date) and status=1)) TotalAbsent
 			from tbl_attendance a
 			where user_id=@userid and com_id=@comid and year(attend_date)=@value and status=1
+
+
 		end
 
 		if(@repflag='y')
 		begin
-			--set @datecount = (Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value);
+			Select distinct(attend_date) into #workdate3 from tbl_attendance 
+			
 			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
 			Select distinct(year(a.attend_date)) ID,
 			year(a.attend_date) Name,
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 group by attend_date) TotalPresent,
-			((Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=year(a.attend_date) and attend_status=2 and status=1 group by attend_date)-
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 group by attend_date)) TotalAbsent
+			(Select count(1) from tbl_attendance where  user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 ) TotalPresent,
+			((Select count(attend_date) from #workdate3 where year(attend_date)=year(a.attend_date))-
+			(Select count(1) from tbl_attendance where user_id=@userid and com_id=@comid and year(attend_date)=year(a.attend_date) and status=1 and attend_status=2 )) TotalAbsent
 			from tbl_attendance a
 			where user_id=@userid and com_id=@comid and status=1
+
+			drop table #workdate3
 		end
 			
 	End
