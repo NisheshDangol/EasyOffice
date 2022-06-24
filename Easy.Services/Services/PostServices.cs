@@ -384,7 +384,9 @@ namespace Easy.Services.Services
             parameters.Add("@departmentid", attendance.DepartmentID);
             parameters.Add("@subdepartmentid", attendance.SubDepartmentID);
             parameters.Add("@designationid", attendance.DesignationID);
+            var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(attendance.AttenDate).Year, DateTime.Parse(attendance.AttenDate).Month, DateTime.Parse(attendance.AttenDate).Day);
             parameters.Add("@attendate", attendance.AttenDate);
+            parameters.Add("@attendatenepali", attendate);
             parameters.Add("@attentime", attendance.AttenTime);
             parameters.Add("@attenstatus", attendance.AttenStatus);
             parameters.Add("@attenplace", attendance.AttenPlace);

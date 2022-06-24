@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "e/EPyuHdu4j0vDZNVyro/BHmXpfw4OInTWbDTyqyQM5VNbxSRIYqM/YcLVFmm5jrIHTy4+aESb7MqLdjl8K1OQ==",
+  "dgSpecHash": "jGGx2pXXGQr/7f0ZsI4JOBZ9AnT99mOFsVkpbujKyKcr6Ah5Wa/1CzWWXiSXOirLcGYQm3yAgUSCKJiAdFtURA==",
   "success": true,
   "projectFilePath": "C:\\Users\\NisAceDanGol\\source\\repos\\EasyOfficeApi\\Easy.API\\EasyOfficeApi.csproj",
   "expectedPackageFiles": [
@@ -56,6 +56,7 @@
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\microsoft.win32.systemevents\\6.0.0\\microsoft.win32.systemevents.6.0.0.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\mimekit\\3.2.0\\mimekit.3.2.0.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\nancy\\2.0.0\\nancy.2.0.0.nupkg.sha512",
+    "C:\\Users\\NisAceDanGol\\.nuget\\packages\\nepalidateconverter.netcore\\1.0.1\\nepalidateconverter.netcore.1.0.1.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\NisAceDanGol\\.nuget\\packages\\portable.bouncycastle\\1.9.0\\portable.bouncycastle.1.9.0.nupkg.sha512",

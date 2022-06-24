@@ -1,0 +1,12 @@
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\bin\Release\net5.0\Easy.Connection.deps.json
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\bin\Release\net5.0\Easy.Connection.dll
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\bin\Release\net5.0\Easy.Connection.pdb
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.csproj.AssemblyReference.cache
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.AssemblyInfoInputs.cache
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.AssemblyInfo.cs
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.csproj.CoreCompileInputs.cache
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.dll
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\refint\Easy.Connection.dll
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\Easy.Connection.pdb
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.Connection\obj\Release\net5.0\ref\Easy.Connection.dll
