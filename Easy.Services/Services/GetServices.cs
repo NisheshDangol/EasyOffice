@@ -618,6 +618,13 @@ namespace Easy.Services.Services
             parameters.Add("@comid", ComID);
             parameters.Add("@userid", UserID);
             parameters.Add("@repflag", Flag);
+            if (DFlag.Equals("n", StringComparison.OrdinalIgnoreCase) && Flag.Equals("d", StringComparison.OrdinalIgnoreCase))
+            {
+                var fromdate = NepaliDateConverter.DateConverter.ConvertToEnglish(DateTime.Parse(From).Year, DateTime.Parse(From).Month, DateTime.Parse(From).Day);
+                var todate = NepaliDateConverter.DateConverter.ConvertToEnglish(DateTime.Parse(To).Year, DateTime.Parse(To).Month, DateTime.Parse(To).Day);
+                From = fromdate.Year +"-"+fromdate.Month+"-"+fromdate.Day;
+                To = todate.Year+"-"+todate.Month+"-"+todate.Day;
+            }            
             parameters.Add("@value", Value);
             parameters.Add("@fromdate", From);
             parameters.Add("@todate", To);

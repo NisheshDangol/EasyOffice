@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_bulkattenxml]    Script Date: 6/22/2022 10:49:50 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_bulkattenxml]    Script Date: 6/24/2022 3:21:22 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -38,6 +38,7 @@ ALTER proc [dbo].[sp_bulkattenxml] (
 @count int=null,
 @staffid int = null,
 @earlyin datetime=null,
+@attendatenepali date=null,
 @flag nvarchar(150)
 )
 as
@@ -102,9 +103,9 @@ BEGIN
 		if exists(Select ID from tbl_user where device_code=@userid ) and not exists(Select 'm' from tbl_attendance where device_code=@userid and attend_date=@attendate and attend_status=2)
 		begin
 			Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
-			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date,device_code)
+			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date,device_code,atten_nep_date)
 			values(@comid,@user_id,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
-			@fiscalid,@branchid,1,0,@staffid,@staffid,GETDATE(),GETDATE(),@userid)
+			@fiscalid,@branchid,1,1,@staffid,@staffid,GETDATE(),GETDATE(),@userid,@attendatenepali)
 			Select 200 StatusCode, 'Success' Message
 			return;
 		end	
