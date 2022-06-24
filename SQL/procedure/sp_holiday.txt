@@ -1,0 +1,11 @@
+create proc sp_holiday(
+	@comid nvarchar(250)=null,
+	@branchid int=null
+)
+AS
+BEGIN
+	SELECT holiday Holiday,
+	english_date EnglishDate,
+	nepali_date NepaliDate
+	from tbl_holiday where status=1 and english_date>=getdate() and com_id=@comid and branch_id=@branchid
+END

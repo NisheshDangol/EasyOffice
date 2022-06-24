@@ -194,6 +194,13 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
 
-
+        [HttpGet]
+        [Route("~/api/holiday")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Holiday(string ComID, int BranchID)
+        {
+            var data = await _unitOfWork.GetServices.GetHoliday(ComID, BranchID);
+            return Ok(data);
+        }
     }
 }

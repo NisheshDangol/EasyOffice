@@ -674,6 +674,35 @@ namespace Easy.Services.Services
             }
             return leaveRep;
         }
+
+        public async Task<Holiday> GetHoliday(string ComID, int BranchID)
+        {
+            var sql = "sp_holiday";
+            var res = new Holiday();
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", ComID);
+            parameters.Add("@branchid", BranchID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if(data.Count()!=0 && data.FirstOrDefault().Message == null)
+            {
+                res.StatusCode = 200;
+                res.Message = "Success";
+                res.Holidays = data.ToList();
+            }
+            else if(data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+                res.Holidays = data.ToList();
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+                res.Holidays = null;
+            }
+            return res;
+        }
     }
     
 }
