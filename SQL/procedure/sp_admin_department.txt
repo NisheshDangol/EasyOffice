@@ -1,4 +1,11 @@
-alter proc sp_admin_department(
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_department]    Script Date: 6/24/2022 12:36:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_department](
 	@comid nvarchar(150)=null,
 	@staffid int=null,
 	@department nvarchar(250)=null,
@@ -54,7 +61,7 @@ BEGIN
 		left join tbl_user u on u.depart_id=d.ID and u.com_id=@comid and u.ID=d.head_id
 		left join tbl_sub_department s on s.dep_id=d.ID and s.com_id=@comid
 		left join tbl_designation ds on u.design_id=ds.ID and ds.com_id=@comid
-		where case when @staffid=-1 then '1' else u.ID end = case when @staffid=-1 then '1' else @staffid end
+		where case when @staffid=-1 then '1' else d.created_by end = case when @staffid=-1 then '1' else @staffid end
 		and d.com_id=@comid
 		group by d.ID,depart_name,head_id,u.first_name,u.last_name,s.dep_id
 	End

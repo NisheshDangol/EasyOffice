@@ -607,7 +607,7 @@ namespace Easy.Services.Services
             return leave_rep;
         }
 
-        public async Task<AttendanceReportMonth> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To)
+        public async Task<AttendanceReportMonth> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To, string DFlag)
         {
             var sql = "sp_attendance";
             var leaveRep = new AttendanceReportMonth();
@@ -621,6 +621,8 @@ namespace Easy.Services.Services
             parameters.Add("@value", Value);
             parameters.Add("@fromdate", From);
             parameters.Add("@todate", To);
+            parameters.Add("@dflag", DFlag);
+
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if(data.Count()!=0 && data.FirstOrDefault().Message == null)
             {
@@ -640,7 +642,7 @@ namespace Easy.Services.Services
             return leaveRep;
         }
 
-        public async Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Value)
+        public async Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Value,string DFlag)
         {
             var sql = "sp_attendance";
             var leaveRep = new AttendanceSummary();
@@ -652,7 +654,7 @@ namespace Easy.Services.Services
             parameters.Add("@userid", UserID);
             parameters.Add("@repflag", Flag);
             parameters.Add("@value", Value);
-            
+            parameters.Add("@dflag", DFlag);            
                         
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)

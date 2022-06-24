@@ -965,6 +965,17 @@
           "lib/netstandard2.0/Nancy.dll": {}
         }
       },
+      "NepaliDateConverter.NETCORE/1.0.1": {
+        "runtime": {
+          "lib/netcoreapp2.2/NepaliDateConverter.dll": {
+            "assemblyVersion": "1.0.0.1",
+            "fileVersion": "1.0.0.1"
+          }
+        },
+        "compile": {
+          "lib/netcoreapp2.2/NepaliDateConverter.dll": {}
+        }
+      },
       "NETStandard.Library/1.6.1": {
         "dependencies": {
           "Microsoft.NETCore.Platforms": "3.1.0",
@@ -2074,6 +2085,7 @@
           "Microsoft.IdentityModel.Tokens": "6.16.0",
           "MimeKit": "3.2.0",
           "Nancy": "2.0.0",
+          "NepaliDateConverter.NETCORE": "1.0.1",
           "System.Drawing.Common": "6.0.0",
           "System.IdentityModel.Tokens.Jwt": "6.16.0"
         },
@@ -4123,6 +4135,13 @@
       "sha512": "sha512-z2GMxQFbDbxqzCfkomyeqLNXW4G2NdvU727HBaP+QQ0/hm1jw9PTqHyzoB2M9aKeC5AKYmQmt9GvwR5CHL/ReA==",
       "path": "nancy/2.0.0",
       "hashPath": "nancy.2.0.0.nupkg.sha512"
+    },
+    "NepaliDateConverter.NETCORE/1.0.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-ExGdl4Z7QVmslkCWeRPFQinZpG2pFVQJAbsBFM90Zj+MJg7NzuoeKDO6ocwCSQBAayB5TCXZ5lPk7AY07wLEUw==",
+      "path": "nepalidateconverter.netcore/1.0.1",
+      "hashPath": "nepalidateconverter.netcore.1.0.1.nupkg.sha512"
     },
     "NETStandard.Library/1.6.1": {
       "type": "package",

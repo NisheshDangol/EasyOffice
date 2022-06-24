@@ -89,3 +89,4 @@ C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.API\obj\Debug\net5.0\refin
 C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.API\obj\Debug\net5.0\EasyOfficeApi.pdb
 C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.API\obj\Debug\net5.0\EasyOfficeApi.genruntimeconfig.cache
 C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.API\obj\Debug\net5.0\ref\EasyOfficeApi.dll
+C:\Users\NisAceDanGol\source\repos\EasyOfficeApi\Easy.API\bin\Debug\net5.0\NepaliDateConverter.dll

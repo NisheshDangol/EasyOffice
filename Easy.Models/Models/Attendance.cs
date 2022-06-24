@@ -21,7 +21,7 @@ namespace Easy.Models.Models
         public string AttenTime { get; set; }
         public int AttenStatus { get; set; }
         public int AttenPlace { get; set; }
-        //public int AttenRemarks { get; set; }
+        public int AttenVia { get; set; }
         public int FiscalID { get; set; }
         public int BrachID { get; set; }
     }

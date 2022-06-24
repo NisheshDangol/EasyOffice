@@ -90,7 +90,7 @@ namespace Easy.API.Controllers
         [Route("~/api/create-attendance")]
         public async Task<IActionResult> CreateAttendance(CreateAttendance attendance)
         {
-            var data = await _unitOfWork.PostServices.CreateAttendance(attendance);
+            var data = await _unitOfWork.PostServices.CreateAttendance(attendance);            
             return Ok(data);
         }
         [HttpPost]

@@ -386,11 +386,11 @@ namespace Easy.Services.Services
             parameters.Add("@designationid", attendance.DesignationID);
             var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(attendance.AttenDate).Year, DateTime.Parse(attendance.AttenDate).Month, DateTime.Parse(attendance.AttenDate).Day);
             parameters.Add("@attendate", attendance.AttenDate);
-            parameters.Add("@attendatenepali", attendate);
+            parameters.Add("@attendatenepali", attendate.Year + "/" + attendate.Month + "/" + attendate.Day);
             parameters.Add("@attentime", attendance.AttenTime);
             parameters.Add("@attenstatus", attendance.AttenStatus);
             parameters.Add("@attenplace", attendance.AttenPlace);
-            //parameters.Add("@attenremarks", attendance.AttenRemarks);
+            parameters.Add("@attenvia", attendance.AttenVia);
             parameters.Add("@fiscalid", attendance.FiscalID);
             parameters.Add("@branchid", attendance.BrachID);
             var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
@@ -420,9 +420,11 @@ namespace Easy.Services.Services
                 parameters.Add("@fiscalid", bulkatten.FiscalID);
                 parameters.Add("@branchid", bulkatten.BranchID);
                 foreach (JSonParam jSon in bulkatten.Param)
-                {
+                {                    
+                    var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(jSon.AttenDate).Year, DateTime.Parse(jSon.AttenDate).Month, DateTime.Parse(jSon.AttenDate).Day);
                     parameters.Add("@userid", jSon.UserID);
                     parameters.Add("@attendate", jSon.AttenDate);
+                    parameters.Add("@attendatenepali", attendate.Year + "/" + attendate.Month + "/" + attendate.Day);
                     parameters.Add("@attentime", jSon.AttenTime);
                     await DBHelper.RunProc<dynamic>(sql, parameters);
                 }

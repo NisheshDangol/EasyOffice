@@ -179,18 +179,18 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/attendance-report")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To)
+        public async Task<IActionResult> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To, string DFlag)
         {
-            var data = await _unitOfWork.GetServices.AttendanceReport(ComID, UserID, Flag, Value,From,To);
+            var data = await _unitOfWork.GetServices.AttendanceReport(ComID, UserID, Flag, Value,From,To, DFlag);
             return Ok(data);
         }
 
         [HttpGet]
         [Route("~/api/atten-summary")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> AttendanceSummary(string ComID, int UserID, string Flag,string Values)
+        public async Task<IActionResult> AttendanceSummary(string ComID, int UserID, string Flag,string Values, string DFlag)
         {
-            var data = await _unitOfWork.GetServices.AttendanceSummary(ComID, UserID, Flag, Values);
+            var data = await _unitOfWork.GetServices.AttendanceSummary(ComID, UserID, Flag, Values, DFlag);
             return Ok(data);
         }
 

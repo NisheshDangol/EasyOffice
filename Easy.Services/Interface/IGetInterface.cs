@@ -26,7 +26,7 @@ namespace Easy.Services.Interface
         Task<LeaveTypeList> LeaveType(string ComID, int BranchID);
         Task<CustomerSupportListDto> CustomersupportList(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate);
         Task<LeaveReport> LeaveReport(string ComID, int UserID, int LeaveTypeID);
-        Task<AttendanceReportMonth> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To);
-        Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Value);
+        Task<AttendanceReportMonth> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To, string DFlag);
+        Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Value, string DFlag);
     }
 }
