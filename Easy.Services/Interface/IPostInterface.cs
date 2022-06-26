@@ -21,5 +21,6 @@ namespace Easy.Services.Interface
         Task<CommonResponse> UpdateLeaveStatus(string ComID, int UserID, int LeaveID, int Status);
         Task<CommonResponse> CreateAttendance(CreateAttendance attendance);
         Task<AdminDepartmentRes> AdminDepartment(AdminDepartmentReq req);
+        Task<SubDepartment> SubDepartment(SubDepartmentReq req);
     }
 }

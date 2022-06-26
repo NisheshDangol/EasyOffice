@@ -508,5 +508,40 @@ namespace Easy.Services.Services
             return res;
         }
 
+        public async Task<SubDepartment> SubDepartment(SubDepartmentReq req)
+        {
+            SubDepartment res = new SubDepartment();
+            res.SubDepList = null;
+            var sql = "sp_admin_sub_department";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@subdepartname", req.SubDepartName);
+            parameters.Add("@subdepheadid", req.SubDepHeadID);
+            parameters.Add("@departid", req.DepartID);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@subdepartid", req.SubDepartID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@comid", req.ComID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.SubDepList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
     }
 }
