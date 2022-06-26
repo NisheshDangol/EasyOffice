@@ -18,6 +18,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using static Dapper.SqlMapper;
 
 namespace Easy.Services.Services
 {
@@ -564,6 +565,54 @@ namespace Easy.Services.Services
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
                 res.DesignationList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<Product> ProductAdmin(ProductReq req)
+        {
+            Product res = new Product();
+            res.ProductList = null;
+            var sql = "sp_admin_product";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@productid", req.ProductID);
+            parameters.Add("@product", req.Product);
+            parameters.Add("@description", req.Description);
+            parameters.Add("@prodid", req.ProdID);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@comid", req.ComID);
+            if (string.IsNullOrEmpty(req.PImage))
+            {
+                var img=Convert.FromBase64String(req.PImage);
+                Image image = Image.FromStream(new MemoryStream(img));
+                var imgname = DateTime.Now.Ticks;
+                if (!Directory.Exists("assets\\product")){
+                    Directory.CreateDirectory("assets\\product");
+                    image.Save("assets\\product\\"+imgname+".jpg",ImageFormat.Jpeg);
+                }
+                image.Save("assets\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                parameters.Add("@pimage", imgname + ".jpg");
+            }
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.ProductList = data.ToList();
                 res.StatusCode = 200;
                 res.Message = "Success";
             }

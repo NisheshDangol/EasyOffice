@@ -1,0 +1,108 @@
+alter proc sp_admin_product(
+	@comid nvarchar(250)=null,
+	@staffid int = null,
+	@flag nvarchar(50)=null,
+	@productid int=null,
+	@product nvarchar(250)=null,
+	@description nvarchar(250)=null,
+	@prodid int=null,
+	@status int = null,
+	@branchid int=null,
+	@fiscalid int=null,
+	@pimage nvarchar(250)=null
+)
+AS
+Begin
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_product where product_id=@productid)
+		Begin
+			Select 203 StatusCode, 'Product already exists' Message
+			return;
+		End
+		
+		Insert into tbl_product (com_id,created_by,updated_by,product_id,prod_name,prod_description,prod_image,
+		created_date,updated_date,status) values (@comid,@staffid,@staffid,@productid,@product,@description,@pimage,getdate(),
+		GETDATE(),1)
+		Select 200 StatusCode,'Success' Message
+		return;
+	End
+
+
+	IF(@flag='u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_product where product_id=@productid)
+		Begin
+			Select 203 StatusCode, 'Product already exists' Message
+			return;
+		End
+
+		if not exists(Select 'm' from tbl_product where ID=@prodid)
+		Begin
+			Select 203 StatusCode, 'Product does not exists' Message
+			return;
+		End
+
+		Update tbl_product set updated_by=@staffid,product_id=@productid,prod_name=@product,prod_description=@description,
+		prod_image=@pimage,updated_date=GETDATE() where ID=@prodid
+		Select 200 StatusCode, 'Success'Message
+		return;
+	End
+
+	
+	If(@flag='s')
+	Begin
+		if(@staffid<>-1)
+		begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		end
+
+		Select p.ID ProdID,p.product_id ProductID, prod_name Product, prod_image PImage, prod_description Description,
+		count(l.ID) LeadCount, count(f.ID) FollowCount, count(s.ID) SupportCount, p.status Status
+		from tbl_product p
+		left join tbl_leads l on l.product_id=p.ID and l.com_id=@comid and l.status=1
+		left join tbl_follow_up f on f.product_id = p.ID and l.com_id=@comid and l.status=1
+		left join tbl_customer_support s on s.product_id=p.ID and l.com_id=@comid and l.status=1
+		where p.com_id=@comid and case @staffid when -1 then '1' else p.created_by end = case @staffid when -1 then '1' else @staffid end
+		group by p.ID,p.product_id,prod_name,prod_image,prod_description,p.status
+		return;
+	End
+
+
+	If(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_product where ID=@prodid)
+		Begin
+			Select 203 StatusCode, 'Product does not exists' Message
+			return;
+		End
+		Update tbl_product set status=@status, branch_id=@branchid,fiscal_id=@fiscalid, created_by=@staffid
+		where com_id=@comid and ID=@prodid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+End
