@@ -1,0 +1,134 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_designation]    Script Date: 6/26/2022 10:46:25 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_designation](
+	@comid nvarchar(150)=null,
+	@staffid int = null,
+	@departid int = null,
+	@subdepartid int = null,
+	@designation nvarchar(250)=null,
+	@maxsal money=null,
+	@minsal money = null,
+	@flag nvarchar(50)=null,
+	@branchid int=null,
+	@desigid int =null,
+	@status int=null,
+	@fiscalid int=null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	IF(@flag='i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_department where ID=@departid)
+		Begin
+			Select 203 StatusCode, 'Department does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_sub_department where ID=@subdepartid)
+		Begin
+			Select 204 StatusCode, 'Sub department does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_designation where desig_name=@designation)
+		Begin
+			Select 206 StatusCode,'Designation already exists' Message
+			return;
+		End
+		Insert into tbl_designation(com_id,created_by,updated_by,desig_name,max_sal,min_sal,branch_id,fiscal_id,
+		created_date,updated_date,status,depart_id,sub_depart_id) values 
+		(@comid,@staffid,@staffid,@designation,@maxsal,@minsal,@branchid,@fiscalid,GETDATE(),GETDATE(),1,@departid,@subdepartid)
+		Select 200 StausCode,'Success' Message
+		return;
+	End
+
+
+	If(@flag='u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_department where ID=@departid)
+		Begin
+			Select 203 StatusCode, 'Department does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_sub_department where ID=@subdepartid)
+		Begin
+			Select 204 StatusCode, 'Sub department does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_designation where ID=@desigid)
+		Begin
+			Select 206 StatusCode,'Designation does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_designation where desig_name=@designation)
+		Begin
+			Select 206 StatusCode,'Designation already exists' Message
+			return;
+		End
+		Update tbl_designation set updated_by=@staffid,depart_id=@departid,sub_depart_id=@subdepartid,
+		desig_name=@designation,max_sal=@maxsal,min_sal=@minsal,branch_id=@branchid,fiscal_id=@fiscalid,
+		updated_date=GETDATE() where com_id=@comid and ID=@desigid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag='s')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_department where ID=@departid)
+		Begin
+			Select 203 StatusCode, 'Department does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_sub_department where ID=@subdepartid)
+		Begin
+			Select 204 StatusCode, 'Sub department does not exists' Message
+			return;
+		End
+		Select depart_id DepartID, d.depart_name Department,sub_depart_id SubDepartID, s.sub_dep_name SubDepartment,
+		desig_name Designation, 
+		(Select count(1) from tbl_user where design_id=ds.ID) NoOfStaff,
+		ds.max_sal MaxSal,
+		ds.min_sal MinSal, ds.status Status
+		from tbl_designation ds
+		left join tbl_department d on ds.depart_id=d.ID
+		left join tbl_sub_department s on s.Id = ds.sub_depart_id
+		return;
+	End
+
+	If(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_designation where ID=@desigid)
+		Begin
+			Select 206 StatusCode,'Designation does not exists' Message
+			return;
+		End
+		Update tbl_designation set status=@status, updated_by=@staffid, branch_id=@branchid,fiscal_id=@fiscalid,
+		updated_date=GETDATE() where ID=@desigid
+		Select 200 StatusCode,'Success' Message
+		return;
+	End
+END

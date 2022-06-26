@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 5/18/2022 3:11:50 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_organization]    Script Date: 6/26/2022 11:53:48 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -202,7 +202,7 @@ join tbl_department on tbl_user.depart_id=tbl_department.ID
 join tbl_designation on tbl_user.design_id = tbl_designation.ID
 --join tbl_sub_department on tbl_user.sub_depart_id=  tbl_sub_department.Id
 where tbl_user.com_id=@com_id and tbl_user.branch=@branchid and
-tbl_department.ID=@DepartmentId;
+case @DepartmentId when -1 then '1' else tbl_department.ID end=case @DepartmentId when -1 then '1' else @DepartmentId end;
 END
 ELSE
 BEGIN

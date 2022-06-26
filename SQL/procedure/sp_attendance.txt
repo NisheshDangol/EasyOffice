@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/24/2022 6:51:52 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/26/2022 12:19:18 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -159,6 +159,7 @@ BEGIN
 			else 'No Check Out'
 			end OutRemarks,
 			case  when l.ID is not null then l.ID else 0 end LeaveID ,
+			case when l.ID is not null then total_days else 0 end NoOfDays,
 			isnull(attend_place,'0') Via, isnull(attend_verified,'0') IsVerified, isnull(t.verified_by,'0') VerifiedBy
 			from #workdate d
 			left join tbl_attendance t on t.attend_date=d.attend_date and com_id=@comid and user_id=@userid and status = 1
@@ -193,6 +194,7 @@ BEGIN
 			else 'No Check Out'
 			end OutRemarks,
 			case  when l.ID is not null then l.ID else 0 end LeaveID ,
+			case when l.ID is not null then total_days else 0 end NoOfDays,
 			attend_place Via, attend_verified IsVerified, t.verified_by VerifiedBy
 			from #workdate2 d
 			left join tbl_attendance t on t.attend_date=d.attend_date and com_id=@comid and user_id=@userid and status = 1
@@ -222,7 +224,7 @@ BEGIN
 			
 			--set @datecount = (Select count(distinct(attend_date)) from tbl_attendance where year(attend_date)=@value);
 			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
-			Select distinct(case 'n' when 'n' then substring(a.atten_nep_date,6,2) 
+			Select distinct(case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date)
 			end) ID,
 			case LOWER(@dflag) when 'e' then 
@@ -257,18 +259,21 @@ BEGIN
 				end 
 			end Name,
 			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and 
-			year(attend_date)=year(a.attend_date) and 
-			case 'n' when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case 'n' when 'n' then substring(a.atten_nep_date,6,2) 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) 
+			when 'e' then year(a.attend_date) end  and 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
 			and status=1) TotalPresent,
 			((Select count(distinct(attend_date)) from tbl_attendance where 
-			year(attend_date)=year(a.attend_date)and 
-			case 'n' when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case 'n' when 'n' then substring(a.atten_nep_date,6,2) 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) 
+			when 'e' then year(a.attend_date) end and 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
 			and status=1)-
 			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid 
-			and year(attend_date)=year(a.attend_date) and
-			case 'n' when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case 'n' when 'n' then substring(a.atten_nep_date,6,2) 
+			and case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case 'n' when 'n' then substring(a.atten_nep_date,1,4) 
+			when 'e' then year(a.attend_date) end  and
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
 			and status=1)) TotalAbsent
 			from tbl_attendance a

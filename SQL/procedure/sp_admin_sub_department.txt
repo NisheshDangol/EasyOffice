@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/26/2022 10:29:24 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/26/2022 11:25:44 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -80,7 +80,7 @@ BEGIN
 		left join tbl_department d on d.ID=s.dep_id and d.com_id=@comid 
 		left join tbl_user u on u.sub_depart_id=s.ID and u.com_id=@comid 
 		left join tbl_designation ds on ds.ID=u.design_id and ds.com_id=@comid 
-		where s.created_by=@staffid and s.com_id=@comid and s.dep_id=@departid 
+		where case when @staffid <> -1 then s.created_by else '1' end = case when @staffid <> -1 then @staffid else '1' end and s.com_id=@comid and s.dep_id=@departid 
 		group by dep_id,d.depart_name,sub_dep_head_id,sub_dep_name,s.ID,s.status 
 	End
 

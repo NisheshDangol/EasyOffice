@@ -119,5 +119,13 @@ namespace Easy.API.Controllers
             return Ok(data);
 
         }
+
+        [HttpPost]
+        [Route("~/api/admin/designation")]
+        public async Task<IActionResult> Designation(DesignationReq req)
+        {
+            var data = await _unitOfWork.PostServices.Designation(req);
+            return Ok(data);
+        }
     }
 }

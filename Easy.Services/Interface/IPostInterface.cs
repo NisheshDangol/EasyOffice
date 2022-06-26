@@ -22,5 +22,6 @@ namespace Easy.Services.Interface
         Task<CommonResponse> CreateAttendance(CreateAttendance attendance);
         Task<AdminDepartmentRes> AdminDepartment(AdminDepartmentReq req);
         Task<SubDepartment> SubDepartment(SubDepartmentReq req);
+        Task<Designation> Designation(DesignationReq req);
     }
 }
