@@ -727,7 +727,7 @@ namespace Easy.Services.Services
             var sql = "sp_fiscal";
             var parameters = new DynamicParameters();
             parameters.Add("@comid", ComID);
-            parameters.Add("@brancid", BranchID);
+            parameters.Add("@branchid", BranchID);
             var data = await DBHelper.RunProc<dynamic>(sql,parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
