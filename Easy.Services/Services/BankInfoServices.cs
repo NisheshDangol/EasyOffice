@@ -36,7 +36,7 @@ namespace Easy.Services.Services
                 parameters.Add("@emp_id", EmpID);
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 
-                if (data.Count() != 0 && data.FirstOrDefault().StatusCode== null)
+                if (data.Count() != 0 && data.FirstOrDefault().Message== null)
                 {
 
                     bank.BankInfo = data.ToList();
@@ -44,11 +44,17 @@ namespace Easy.Services.Services
                     bank.Message = "Success";
 
                 }
-                else
+                else if(data.Count() == 1 && data.FirstOrDefault().Message != null)
                 {
                     bank.BankInfo = null;
                     bank.StatusCode = data.FirstOrDefault().StatusCode;
                     bank.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    bank.BankInfo = null;
+                    bank.StatusCode = 400;
+                    bank.Message = "No Data";
                 }
             }
             return bank;      

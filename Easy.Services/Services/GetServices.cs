@@ -209,7 +209,7 @@ namespace Easy.Services.Services
             parameters.Add("@EmpId", EmpId);
             parameters.Add("@flag", "docinfo");
             var data= await DBHelper.RunProc<dynamic>(sql, parameters);
-            if(data.Count()!=0 && data.FirstOrDefault().StatusCode == null)
+            if(data.Count()!=0 && data.FirstOrDefault().Message == null)
             {
                 return new DocInfo
                 {
@@ -218,7 +218,7 @@ namespace Easy.Services.Services
                     StatusCode = 200
                 };
             }
-            else
+            else if(data.Count() == 1 && data.FirstOrDefault().Message != null)
             {
                 return new DocInfo
                 {
@@ -227,6 +227,15 @@ namespace Easy.Services.Services
                     StatusCode = data.FirstOrDefault().StatusCode
                 };
 
+            }
+            else
+            {
+                return new DocInfo
+                {
+                    Docs = null,
+                    Message = "No data",
+                    StatusCode = 400
+                };
             }
 
         }

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 6/21/2022 1:42:38 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_leave]    Script Date: 6/27/2022 1:08:05 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -40,7 +40,7 @@ begin
 		Select 204 StatusCode, ('User not allowed to take leave for more than '+@balance+' for Leave type') Message
 		return;
 	end
-	if(((Select sum(total_days) from tbl_leave where user_id=@UserID and leave_type=@LeaveTypeID)+DATEDIFF(day,@FromDate,@ToDate))>(@balance))
+	if(((Select sum(total_days) from tbl_leave where user_id=@UserID and status<>0 and leave_type=@LeaveTypeID)+DATEDIFF(day,@FromDate,@ToDate))>(@balance) )
 	begin
 		Select 204 StatusCode, ('User not allowed to take leave for more than '+@balance+' for Leave type') Message
 		return;
@@ -119,7 +119,12 @@ begin
 
 	Select l.ID LeaveID, title Title, l.description Cause, case day_type when 1 then 'Half Day' when 2 then 'Full Day' end DayType, lt.name LeaveType,format(leave_from, 'yyyy-MM-dd') FromDate,
 	format(leave_to, 'yyyy-MM-dd') ToDate, total_days TotalDays, is_field_work IsFielWork, concat(u.first_name+' ',u.middle_name+' ',u.last_name) AssignedTo,
-	leave_status LeaveStatus, leave_verified LeaveVerified, verified_by VerifiedBy
+	case leave_status when 0 then 'pending'
+	when 1 then 'success'
+	end LeaveStatus, 
+	case leave_verified when 0 then 'unverified'
+	when 1 then 'verified' 
+	end LeaveVerified, verified_by VerifiedBy
 	from tbl_leave l
 	left join tbl_user u on u.ID = l.user_id
 	left join tbl_leave_type lt on lt.ID = l.leave_type
@@ -140,7 +145,7 @@ begin
 		return;
 	end
 
-	Update tbl_leave set leave_status = @status where com_id=@ComID and user_id=@UserID and ID = @LeaveID
+	Update tbl_leave set status = @status where com_id=@ComID and user_id=@UserID and ID = @LeaveID
 	Select 200 StatusCode, 'Success' Message
 	return;
 end
