@@ -1,0 +1,102 @@
+alter proc sp_admin_shift(
+	@comid nvarchar(150)=null,
+	@staffid int = null,
+	@flag nvarchar(50)=null,
+	@shift nvarchar(150)=null,
+	@start nvarchar(50)=null,
+	@end nvarchar(50)=null,
+	@allowlatein nvarchar(50)=null,
+	@allowearlyout nvarchar(50)=null,
+	@lunchstart nvarchar(50)=null,
+	@lunchend nvarchar(50)=null,
+	@fiscalid int=null,
+	@shiftid int=null,
+	@status int=null,
+	@branchid int=null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid)
+		Begin
+			Select 202 StatusCode,'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_shift where shift_name = @shift)
+		Begin
+			Select 203 StatusCode,'Shift Name already exists' Message
+			return;
+		End
+		Insert into tbl_shift(com_id,created_by,updated_by,shift_name,shift_start,shift_end,allowed_late_in,allowed_early_out
+		,launch_start,launch_end,fiscal_id,branch_id,created_date,updated_date,status) values
+		(@comid,@staffid,@staffid,@shift,@start,@end,@allowlatein,@allowearlyout,@lunchstart,@lunchend,
+		@fiscalid,@branchid,GETDATE(),GETDATE(),1)
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid)
+		Begin
+			Select 202 StatusCode,'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_shift where shift_name = @shift)
+		Begin
+			Select 203 StatusCode,'Shift Name already exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_shift where ID = @shiftid)
+		Begin
+			Select 204 StatusCode,'Shift ID does not exists' Message
+			return;
+		End
+		Update tbl_shift set updated_by=@staffid,shift_name=@shift,shift_start=@start,shift_end=@end,launch_start=@lunchstart,
+		launch_end=@lunchend,fiscal_id=@fiscalid,branch_id=@branchid, updated_date=GETDATE() where ID=@shiftid and com_id=@comid
+	End
+
+
+	If(@flag='s')
+	Begin
+		if(@staffid<>-1)
+		Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid)
+		Begin
+			Select 202 StatusCode,'Staff does not exists' Message
+			return;
+		End
+		End
+		Select ID ShiftID, shift_name Shift, shift_start Start, shift_end Ends, allowed_late_in AllowLateIn,
+		allowed_early_out AllowEarlyOut,launch_start LunchStart, launch_end LunchEnd, status Status
+		from tbl_shift where case when @staffid=-1 then '1' else created_by end = case when @staffid=-1 then'1' else @staffid end
+		return;
+	End
+
+
+	If(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid)
+		Begin
+			Select 202 StatusCode,'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_shift where ID = @shiftid)
+		Begin
+			Select 204 StatusCode,'Shift ID does not exists' Message
+			return;
+		End
+		Update tbl_shift set updated_by=@staffid, status=@status,updated_date=GETDATE(),branch_id=@branchid,
+		fiscal_id=@fiscalid
+		where ID=@shiftid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

@@ -628,5 +628,46 @@ namespace Easy.Services.Services
             }
             return res;
         }
+
+
+        public async Task<Shift> ShiftAdmin(ShiftReq req)
+        {
+            Shift res = new Shift();
+            res.ShiftList = null;
+            var sql = "sp_admin_product";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@shiftid", req.ShiftID);
+            parameters.Add("@shift", req.Shift);
+            parameters.Add("@start", req.Start);
+            parameters.Add("@end", req.End);
+            parameters.Add("@allowlatein", req.AllowLateIn);
+            parameters.Add("@allowearlyout", req.AllowEarlyOut);
+            parameters.Add("@lunchstart", req.LunchStart);
+            parameters.Add("@lunchend", req.LunchEnd);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@comid", req.ComID);
+            
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.ShiftList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
     }
 }

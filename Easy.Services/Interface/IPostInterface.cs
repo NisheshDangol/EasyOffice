@@ -23,5 +23,6 @@ namespace Easy.Services.Interface
         Task<AdminDepartmentRes> AdminDepartment(AdminDepartmentReq req);
         Task<SubDepartment> SubDepartment(SubDepartmentReq req);
         Task<Designation> Designation(DesignationReq req);
+        Task<Shift> ShiftAdmin(ShiftReq req);
     }
 }

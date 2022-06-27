@@ -127,5 +127,21 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.Designation(req);
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("~/api/admin/product")]
+        public async Task<IActionResult> Product(ProductReq req)
+        {
+            var data = await _unitOfWork.PostServices.ProductAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/shift")]
+        public async Task<IActionResult> Shift(ShiftReq req)
+        {
+            var data = await _unitOfWork.PostServices.ShiftAdmin(req);
+            return Ok(data);
+        }
     }
 }
