@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_designation]    Script Date: 6/26/2022 10:46:25 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_designation]    Script Date: 6/27/2022 11:45:54 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -51,7 +51,7 @@ BEGIN
 		Insert into tbl_designation(com_id,created_by,updated_by,desig_name,max_sal,min_sal,branch_id,fiscal_id,
 		created_date,updated_date,status,depart_id,sub_depart_id) values 
 		(@comid,@staffid,@staffid,@designation,@maxsal,@minsal,@branchid,@fiscalid,GETDATE(),GETDATE(),1,@departid,@subdepartid)
-		Select 200 StausCode,'Success' Message
+		Select 200 StatusCode,'Success' Message
 		return;
 	End
 
@@ -93,11 +93,14 @@ BEGIN
 
 	IF(@flag='s')
 	Begin
+	if (@staffid<>-1)
+	begin
 		if not exists(Select 'm' from tbl_user where ID=@staffid)
 		Begin
 			Select 202 StatusCode, 'Staff does not exists' Message
 			return;
 		End
+	end
 		if not exists(Select 'm' from tbl_department where ID=@departid)
 		Begin
 			Select 203 StatusCode, 'Department does not exists' Message
@@ -109,13 +112,16 @@ BEGIN
 			return;
 		End
 		Select depart_id DepartID, d.depart_name Department,sub_depart_id SubDepartID, s.sub_dep_name SubDepartment,
-		desig_name Designation, 
+		ds.ID DesignationID,desig_name Designation, 
 		(Select count(1) from tbl_user where design_id=ds.ID) NoOfStaff,
 		ds.max_sal MaxSal,
 		ds.min_sal MinSal, ds.status Status
 		from tbl_designation ds
 		left join tbl_department d on ds.depart_id=d.ID
 		left join tbl_sub_department s on s.Id = ds.sub_depart_id
+		where ds.depart_id=@departid and ds.sub_depart_id=@subdepartid and 
+		case when @staffid=-1 then '1' else ds.created_by end = case when @staffid=-1 then '1' else @staffid end
+		and ds.branch_id=@branchid
 		return;
 	End
 

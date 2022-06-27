@@ -28,5 +28,6 @@ namespace Easy.Models.Models
         public string BranchID { get; set; }
         public string ShiftID { get; set; }
         public string Status { get; set; }
+        public int HDHour { get; set; }
     }
 }

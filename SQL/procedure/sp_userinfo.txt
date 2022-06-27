@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/21/2022 4:50:32 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/27/2022 11:39:31 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -105,11 +105,11 @@ Begin
 
 		  u.sub_depart_id as SubDepartmentID, 
 		  u.address as Address, 
-		  u.district as District, 
-		  ('https://esnep.com/office/assets/images/user/'+u.image) as UserImage, 
+		  dis.district_name as District, 
+		  ('http://gharelukam.com/assets/photo/user/'+u.image) as UserImage, 
 		  u.is_manager as IsManager, 
-		  y.fiscal_year as FiscalYear,
-		  u.fiscal_id as FiscalId,
+		  (Select fiscal_year from tbl_fiscal_year where is_current=1) as FiscalYear,
+		  (Select ID from tbl_fiscal_year where is_current=1) as FiscalId,
 		  s.shift_name as ShiftName, 
 		  s.shift_start as ShiftStart, 
 		  s.shift_end as ShiftEnd, 
@@ -159,8 +159,9 @@ Begin
 		  left join tbl_designation as de on de.ID = u.design_id 
 		  left join tbl_sub_department as sd on sd.Id = u.sub_depart_id
 		  left join tbl_branch as b on b.Id = u.branch
-		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
+		  --left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
 		  left join tbl_grade as g on g.Id=u.grade_id
+		  left join tbl_district dis on dis.ID=u.district
 		  where u.user_name=@username and u.working_status = 1
 
 
@@ -256,7 +257,7 @@ Begin
 		  u.sub_depart_id as SubDepartmentID, 
 		  u.address as  Address, 
 		  u.district as District, 
-		  ('https://esnep.com/office/assets/images/user/'+u.image) as UserImage,  
+		  ('http://gharelukam.com/assets/photo/user/'+u.image) as UserImage,  
 		  u.is_manager as IsManager,
 		  y.fiscal_year as FiscalYear,
 		  u.fiscal_id as FiscalID,		 
@@ -351,12 +352,12 @@ End
 
 if (@flag = 'jobinfo')
 begin
-if not exists(select 'm' from tbl_job_information where com_id = @comId)
-begin
-	select 201 StatusCode, 'Company ID does not exist' Message
-	return;
-end
-else if not exists(select 'm' from tbl_user where ID = @empId)
+--if not exists(select 'm' from tbl_job_information where com_id = @comId)
+--begin
+--	select 201 StatusCode, 'Company ID does not exist' Message
+--	return;
+--end
+if not exists(select 'm' from tbl_user where ID = @empId)
 begin
 	Select 202 StatusCode, 'EmpID does not exist' Message
 	return;
@@ -370,8 +371,8 @@ Select
   tbl_grade.grade_name as Grade, 
   tbl_user.user_name as Manager, 
   tbl_job_information.working_status as WorkingStatus, 
-  tbl_job_information.start_date as StartDate, 
-  tbl_job_information.end_date as Enddate
+  format(tbl_job_information.start_date,'yyyy-MM-dd') as StartDate, 
+  format(tbl_job_information.end_date,'yyyy-MM-dd') as Enddate
 from 
   tbl_job_information 
   left join tbl_designation on tbl_job_information.designation_id = tbl_designation.ID 

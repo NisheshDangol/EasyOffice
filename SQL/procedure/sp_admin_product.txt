@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_product]    Script Date: 6/27/2022 10:36:58 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_product]    Script Date: 6/27/2022 12:16:26 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -53,7 +53,7 @@ Begin
 			Select 202 StatusCode, 'Staff does not exists' Message
 			return;
 		End
-		if exists(Select 'm' from tbl_product where product_id=@productid)
+		if exists(Select 'm' from tbl_product where prod_name=@product)
 		Begin
 			Select 203 StatusCode, 'Product already exists' Message
 			return;

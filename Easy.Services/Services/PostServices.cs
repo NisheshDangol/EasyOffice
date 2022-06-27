@@ -597,6 +597,7 @@ namespace Easy.Services.Services
             parameters.Add("@branchid", req.BranchID);
             parameters.Add("@fiscalid", req.FiscalID);
             parameters.Add("@comid", req.ComID);
+            parameters.Add("@status", req.Status);
             if (!string.IsNullOrEmpty(req.PImage))
             {
                 var img=Convert.FromBase64String(req.PImage);
@@ -650,6 +651,7 @@ namespace Easy.Services.Services
             parameters.Add("@fiscalid", req.FiscalID);
             parameters.Add("@shiftid", req.ShiftID);          
             parameters.Add("@status", req.Status);
+            parameters.Add("@hdhour", req.HDHour);
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {

@@ -24,5 +24,6 @@ namespace Easy.Models.Models
         public int ProdID { get; set; }
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
+        public int Status { get; set; }
     }
 }

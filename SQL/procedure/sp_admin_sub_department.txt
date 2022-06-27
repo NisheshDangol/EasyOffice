@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/26/2022 11:25:44 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/27/2022 11:49:44 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -61,11 +61,14 @@ BEGIN
 
 	if(lower(@flag)='s')
 	Begin
-		if not exists(Select 'm' from tbl_user where ID=@staffid)
-		Begin
-			Select 202 StatusCode, 'Staff does not exists' Message
-			return;
-		End
+		if(@staffid<>-1)
+		begin
+			if not exists(Select 'm' from tbl_user where ID=@staffid)
+			Begin
+				Select 202 StatusCode, 'Staff does not exists' Message
+				return;
+			End
+		end		
 		
 		if not exists(Select 'm' from tbl_department where ID=@departid)
 		Begin
@@ -75,13 +78,14 @@ BEGIN
 		
 		select dep_id DepartmentID, d.depart_name Department, sub_dep_head_id SubDepartHeadID,
 		(Select first_name+' '+last_name from tbl_user where ID= s.sub_dep_head_id and com_id=@comid) SubDepartHead,s.ID SubDepartID,
-		sub_dep_name SubDepartName, count(ds.ID), (Select count(sub_depart_id) from tbl_user where sub_depart_id=s.ID) NoOfStaff, s.status Status
+		sub_dep_name SubDepartName, (select count(ID) from tbl_designation where ID=u.design_id) NoOfDesig, (Select count(sub_depart_id) from tbl_user where sub_depart_id=s.ID) NoOfStaff, s.status Status
 		from tbl_sub_department s
 		left join tbl_department d on d.ID=s.dep_id and d.com_id=@comid 
 		left join tbl_user u on u.sub_depart_id=s.ID and u.com_id=@comid 
-		left join tbl_designation ds on ds.ID=u.design_id and ds.com_id=@comid 
+		
 		where case when @staffid <> -1 then s.created_by else '1' end = case when @staffid <> -1 then @staffid else '1' end and s.com_id=@comid and s.dep_id=@departid 
-		group by dep_id,d.depart_name,sub_dep_head_id,sub_dep_name,s.ID,s.status 
+		and s.branch_id=@branchid
+		group by dep_id,d.depart_name,sub_dep_head_id,sub_dep_name,s.ID,s.status ,u.design_id
 	End
 
 

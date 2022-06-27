@@ -1,7 +1,14 @@
-alter proc sp_admin_shift(
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_shift]    Script Date: 6/27/2022 12:33:03 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_shift](
 	@comid nvarchar(150)=null,
 	@staffid int = null,
-	@flag nvarchar(50)=null,
+	@flag nvarchar(50),
 	@shift nvarchar(150)=null,
 	@start nvarchar(50)=null,
 	@end nvarchar(50)=null,
@@ -12,6 +19,7 @@ alter proc sp_admin_shift(
 	@fiscalid int=null,
 	@shiftid int=null,
 	@status int=null,
+	@hdhour int=null,
 	@branchid int=null
 )
 AS
@@ -34,9 +42,9 @@ BEGIN
 			return;
 		End
 		Insert into tbl_shift(com_id,created_by,updated_by,shift_name,shift_start,shift_end,allowed_late_in,allowed_early_out
-		,launch_start,launch_end,fiscal_id,branch_id,created_date,updated_date,status) values
+		,launch_start,launch_end,fiscal_id,branch_id,created_date,updated_date,status,hd_hour) values
 		(@comid,@staffid,@staffid,@shift,@start,@end,@allowlatein,@allowearlyout,@lunchstart,@lunchend,
-		@fiscalid,@branchid,GETDATE(),GETDATE(),1)
+		@fiscalid,@branchid,GETDATE(),GETDATE(),1,@hdhour)
 		Select 200 StatusCode, 'Success' Message
 		return;
 	End
@@ -60,7 +68,7 @@ BEGIN
 			return;
 		End
 		Update tbl_shift set updated_by=@staffid,shift_name=@shift,shift_start=@start,shift_end=@end,launch_start=@lunchstart,
-		launch_end=@lunchend,fiscal_id=@fiscalid,branch_id=@branchid, updated_date=GETDATE() where ID=@shiftid and com_id=@comid
+		launch_end=@lunchend,fiscal_id=@fiscalid,branch_id=@branchid, updated_date=GETDATE(), hd_hour=@hdhour where ID=@shiftid and com_id=@comid
 	End
 
 
@@ -75,8 +83,9 @@ BEGIN
 		End
 		End
 		Select ID ShiftID, shift_name Shift, shift_start Start, shift_end Ends, allowed_late_in AllowLateIn,
-		allowed_early_out AllowEarlyOut,launch_start LunchStart, launch_end LunchEnd, status Status
+		allowed_early_out AllowEarlyOut,launch_start LunchStart, launch_end LunchEnd, status Status, hd_hour HDHour 
 		from tbl_shift where case when @staffid=-1 then '1' else created_by end = case when @staffid=-1 then'1' else @staffid end
+		and com_id=@comid
 		return;
 	End
 
