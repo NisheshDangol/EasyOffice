@@ -597,16 +597,16 @@ namespace Easy.Services.Services
             parameters.Add("@branchid", req.BranchID);
             parameters.Add("@fiscalid", req.FiscalID);
             parameters.Add("@comid", req.ComID);
-            if (string.IsNullOrEmpty(req.PImage))
+            if (!string.IsNullOrEmpty(req.PImage))
             {
                 var img=Convert.FromBase64String(req.PImage);
                 Image image = Image.FromStream(new MemoryStream(img));
                 var imgname = DateTime.Now.Ticks;
-                if (!Directory.Exists("assets\\product")){
+                if (!Directory.Exists("assets\\photo\\product")){
                     Directory.CreateDirectory("assets\\product");
-                    image.Save("assets\\product\\"+imgname+".jpg",ImageFormat.Jpeg);
+                    image.Save("assets\\photo\\product\\" + imgname+".jpg",ImageFormat.Jpeg);
                 }
-                image.Save("assets\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                image.Save("assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
                 parameters.Add("@pimage", imgname + ".jpg");
             }
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);

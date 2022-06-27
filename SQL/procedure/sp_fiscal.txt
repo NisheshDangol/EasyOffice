@@ -1,0 +1,15 @@
+create proc sp_fiscal(
+	@comid nvarchar(150)=null,
+	@branchid int=null
+)
+AS
+BEGIN
+	if not exists(Select 'm' from tbl_branch where ID=@branchid)
+	Begin
+		Select 202 StatusCode,'Branch does not exists' Message
+		return;
+	End
+	Select ID FiscalID,fiscal_year FiscalYear,start_date StartDate, end_date EndDate from tbl_fiscal_year
+	where com_id=@comid and branch_id=@branchid
+	return;
+END
