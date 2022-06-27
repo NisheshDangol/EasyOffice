@@ -634,11 +634,11 @@ namespace Easy.Services.Services
         {
             Shift res = new Shift();
             res.ShiftList = null;
-            var sql = "sp_admin_product";
+            var sql = "sp_admin_shift";
             var parameters = new DynamicParameters();
-            parameters.Add("@flag", req.Flag);
+            parameters.Add("@comid", req.ComID);
             parameters.Add("@staffid", req.StaffID);
-            parameters.Add("@shiftid", req.ShiftID);
+            parameters.Add("@flag", req.Flag);
             parameters.Add("@shift", req.Shift);
             parameters.Add("@start", req.Start);
             parameters.Add("@end", req.End);
@@ -648,8 +648,8 @@ namespace Easy.Services.Services
             parameters.Add("@lunchend", req.LunchEnd);
             parameters.Add("@branchid", req.BranchID);
             parameters.Add("@fiscalid", req.FiscalID);
-            parameters.Add("@comid", req.ComID);
-            
+            parameters.Add("@shiftid", req.ShiftID);          
+            parameters.Add("@status", req.Status);
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
