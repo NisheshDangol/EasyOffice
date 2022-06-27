@@ -17,7 +17,7 @@ namespace Easy.Models.Models
         public string ComID { get; set; }
         public int StaffID { get; set; }
         public string Flag { get; set; }
-        public int ProductID { get; set; }
+        public string ProductID { get; set; }
         public string Product { get; set; }
         public string Description { get; set; }
         public string PImage { get; set; }

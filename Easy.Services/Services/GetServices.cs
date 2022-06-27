@@ -710,6 +710,37 @@ namespace Easy.Services.Services
             }
             return res;
         }
+
+        public async Task<FiscalYear> FiscalYear(string ComID, int BranchID)
+        {
+            FiscalYear res = new FiscalYear();
+            res.FiscalYearlst = null;
+            var sql = "sp_fiscal";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", ComID);
+            parameters.Add("@brancid", BranchID);
+            var data = await DBHelper.RunProc<dynamic>(sql,parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.StatusCode = 200;
+                res.Message = "Success";
+                res.FiscalYearlst = data.ToList();
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+                res.FiscalYearlst = data.ToList();
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+                res.FiscalYearlst = null;
+            }
+            return res;
+        }
+
     }
     
 }

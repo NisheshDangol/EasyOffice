@@ -29,5 +29,6 @@ namespace Easy.Services.Interface
         Task<AttendanceReportMonth> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To, string DFlag);
         Task<AttendanceSummary> AttendanceSummary(string ComID, int UserID, string Flag, string Value, string DFlag);
         Task<Holiday> GetHoliday(string ComID, int BranchID);
+        Task<FiscalYear> FiscalYear(string ComID, int BranchID);
     }
 }

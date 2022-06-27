@@ -202,5 +202,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.GetHoliday(ComID, BranchID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/fiscal-year")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> FiscalYear(string ComID, int BranchID)
+        {
+            var data = await _unitOfWork.GetServices.FiscalYear(ComID, BranchID);
+            return Ok(data);
+        }
     }
 }
