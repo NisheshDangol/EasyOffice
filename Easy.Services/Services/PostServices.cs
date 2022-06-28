@@ -27,7 +27,7 @@ namespace Easy.Services.Services
         private readonly SmtpSettings _settings;
         public PostServices(SmtpSettings smtpSettings)
         {
-            _settings= smtpSettings;
+            _settings = smtpSettings;
         }
 
         public async Task<CommonResponse> CreateNotification(Notification notifi)
@@ -53,7 +53,7 @@ namespace Easy.Services.Services
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 response.StatusCode = data.FirstOrDefault().StatusCode;
                 response.Message = data.FirstOrDefault().Message;
-                
+
             }
             return response;
         }
@@ -61,7 +61,7 @@ namespace Easy.Services.Services
         public async Task<CommonResponse> ContactUpdate(UpdateContact contact)
         {
             var common = new CommonResponse();
-                     
+
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid", contact.ComID);
@@ -72,7 +72,7 @@ namespace Easy.Services.Services
             parameters.Add("@lastname", contact.LastName);
             parameters.Add("@email", contact.Email);
             parameters.Add("@website", contact.Website);
-            parameters.Add("@phone", contact.Phone);               
+            parameters.Add("@phone", contact.Phone);
             parameters.Add("@jobtitle", contact.JobTitle);
             parameters.Add("@jobOrg", contact.JobOrg);
             parameters.Add("@address", contact.Address);
@@ -85,7 +85,7 @@ namespace Easy.Services.Services
                 var imagename = DateTime.Now.Ticks;
                 image.Save("Images/Contacts/" + imagename + ".jpg", ImageFormat.Jpeg);
                 parameters.Add("@image", imagename + ".jpg");
-            }           
+            }
             parameters.Add("@fb", contact.Fb);
             parameters.Add("@source", contact.Source);
             parameters.Add("@remarks", contact.Remarks);
@@ -97,8 +97,8 @@ namespace Easy.Services.Services
             common.StatusCode = data.FirstOrDefault().StatusCode;
             common.Message = data.FirstOrDefault().Message;
             return common;
-            
-            
+
+
         }
 
         public async Task<CommonResponse> CreateCompany(OrgnizationGet orgnization)
@@ -151,32 +151,32 @@ namespace Easy.Services.Services
             string sql = "sp_contect";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid", contact.ComID);
-            parameters.Add("@employeeid",contact.UserID);
-            parameters.Add("@firstname",contact.FirstName);
-            parameters.Add("@middlename",contact.MiddleName);
-            parameters.Add("@lastname",contact.LastName);
-            parameters.Add("@email",contact.Email);
-            parameters.Add("@website",contact.Website);
-            parameters.Add("@phone",contact.Phone);           
-            parameters.Add("@jobtitle",contact.JobTitle);
-            parameters.Add("@jobOrg",contact.JobOrg);
-            parameters.Add("@address",contact.Address);
-            parameters.Add("@district",contact.District);
-            parameters.Add("@gender",contact.Gender);
+            parameters.Add("@employeeid", contact.UserID);
+            parameters.Add("@firstname", contact.FirstName);
+            parameters.Add("@middlename", contact.MiddleName);
+            parameters.Add("@lastname", contact.LastName);
+            parameters.Add("@email", contact.Email);
+            parameters.Add("@website", contact.Website);
+            parameters.Add("@phone", contact.Phone);
+            parameters.Add("@jobtitle", contact.JobTitle);
+            parameters.Add("@jobOrg", contact.JobOrg);
+            parameters.Add("@address", contact.Address);
+            parameters.Add("@district", contact.District);
+            parameters.Add("@gender", contact.Gender);
             if (!string.IsNullOrEmpty(contact.Image))
             {
                 var imageUrl = Convert.FromBase64String(contact.Image);
                 Image image = Image.FromStream(new MemoryStream(imageUrl));
                 var imgname = DateTime.Now.Ticks;
                 image.Save("Images/Contacts/" + imgname + ".jpg", ImageFormat.Jpeg);
-                
+
                 parameters.Add("@image", imgname + ".jpg");
-            }           
-            parameters.Add("@fb",contact.Fb);
-            parameters.Add("@source",contact.Source);
-            parameters.Add("@remarks",contact.Remarks);
-            parameters.Add("@branchID",contact.BranchID);
-            parameters.Add("@fiscalID",contact.FiscalID);
+            }
+            parameters.Add("@fb", contact.Fb);
+            parameters.Add("@source", contact.Source);
+            parameters.Add("@remarks", contact.Remarks);
+            parameters.Add("@branchID", contact.BranchID);
+            parameters.Add("@fiscalID", contact.FiscalID);
             parameters.Add("@flag", "Create");
             var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
 
@@ -214,14 +214,14 @@ namespace Easy.Services.Services
                 common.StatusCode = data.FirstOrDefault().StatusCode;
                 common.Message = data.FirstOrDefault().Message;
             }
-            
+
             return common;
-            
+
         }
 
         public async Task<CommonResponse> CreateLeads(Lead lead)
         {
-            CommonResponse response=new CommonResponse();
+            CommonResponse response = new CommonResponse();
             response.StatusCode = 400;
             if (string.IsNullOrEmpty(lead.ComID)) response.Message = "Input CompanyId";
             else if (lead.UserID == 0) response.Message = "Input EmpID";
@@ -250,35 +250,35 @@ namespace Easy.Services.Services
                 response.StatusCode = data.FirstOrDefault().StatusCode;
                 response.Message = data.FirstOrDefault().Message;
             }
-            return response;      
+            return response;
         }
 
         public async Task<CommonResponse> CustomerSupport(CustomerSupport customerSupport)
         {
             var data12 = new CommonResponse();
             string sql = "sp_customer_support";
-            DynamicParameters parameters=new DynamicParameters();
+            DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@companyid", customerSupport.ComID);
-            parameters.Add("@createdby",customerSupport.UserID);
-            parameters.Add("@organizationid",customerSupport.OrgID);
-            parameters.Add("@productid",customerSupport.ProductID);
-            parameters.Add("@issue",customerSupport.Issue);
-            parameters.Add("@issuedate",customerSupport.IssueDate);
-            parameters.Add("@starttime",customerSupport.StartTime);
-            parameters.Add("@endtime",customerSupport.EndTime);
+            parameters.Add("@createdby", customerSupport.UserID);
+            parameters.Add("@organizationid", customerSupport.OrgID);
+            parameters.Add("@productid", customerSupport.ProductID);
+            parameters.Add("@issue", customerSupport.Issue);
+            parameters.Add("@issuedate", customerSupport.IssueDate);
+            parameters.Add("@starttime", customerSupport.StartTime);
+            parameters.Add("@endtime", customerSupport.EndTime);
             if (customerSupport.Attachment != null && customerSupport.Attachment.Count() != 0
                 && !string.IsNullOrEmpty(customerSupport.Attachment.FirstOrDefault().AttachmentUrl))
             {
                 parameters.Add("@attach", 0);
             }
-            parameters.Add("@assignedto",customerSupport.StaffID);
-            parameters.Add("@supportstatus",customerSupport.SupportStatus);
-            parameters.Add("@supportmedium",customerSupport.SupportMedium);
-            parameters.Add("@clientcomment",customerSupport.ClientComment);
-            parameters.Add("@remarks",customerSupport.Remarks);
-            parameters.Add("@branch",customerSupport.BranchID);
-            parameters.Add("@fiscal",customerSupport.FiscalID);
-            parameters.Add("@flag","Create");
+            parameters.Add("@assignedto", customerSupport.StaffID);
+            parameters.Add("@supportstatus", customerSupport.SupportStatus);
+            parameters.Add("@supportmedium", customerSupport.SupportMedium);
+            parameters.Add("@clientcomment", customerSupport.ClientComment);
+            parameters.Add("@remarks", customerSupport.Remarks);
+            parameters.Add("@branch", customerSupport.BranchID);
+            parameters.Add("@fiscal", customerSupport.FiscalID);
+            parameters.Add("@flag", "Create");
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             data12.Message = data.FirstOrDefault().Message;
             data12.StatusCode = data.FirstOrDefault().StatusCode;
@@ -300,7 +300,7 @@ namespace Easy.Services.Services
                     param.Add("@flag", "addattachment");
                     await DBHelper.RunProc<dynamic>(sql, param);
                 }
-            }          
+            }
             return data12;
         }
 
@@ -312,11 +312,11 @@ namespace Easy.Services.Services
             var sql = "sp_leave";
             var parameters = new DynamicParameters();
             parameters.Add("@flag", "createleave");
-            parameters.Add("@ComID",leave.ComID);
-            parameters.Add("@UserID",leave.UserID);
+            parameters.Add("@ComID", leave.ComID);
+            parameters.Add("@UserID", leave.UserID);
             parameters.Add("@LeaveTypeID", leave.LeaveTypeID);
             parameters.Add("@DayTypeID", leave.DayTypeID);
-            parameters.Add("@Title",leave.Title);
+            parameters.Add("@Title", leave.Title);
             parameters.Add("@Cause", leave.Cause);
             parameters.Add("@FromDate", leave.FromDate);
             parameters.Add("@ToDate", leave.ToDate);
@@ -355,7 +355,7 @@ namespace Easy.Services.Services
                 {
                     client.Dispose();
                 }
-            }            
+            }
             return res;
         }
 
@@ -379,7 +379,7 @@ namespace Easy.Services.Services
         {
             string sql = "sp_attendance";
             var parameters = new DynamicParameters();
-            parameters.Add("@flag","createattendance");
+            parameters.Add("@flag", "createattendance");
             parameters.Add("@comid", attendance.ComID);
             parameters.Add("@userid", attendance.UserID);
             parameters.Add("@departmentid", attendance.DepartmentID);
@@ -391,9 +391,9 @@ namespace Easy.Services.Services
             string day = "";
             if (attendate.Month < 10)
             {
-                month= "0" + attendate.Month;
+                month = "0" + attendate.Month;
             }
-            else month= ""+attendate.Month;
+            else month = "" + attendate.Month;
             if (attendate.Day < 10)
             {
                 day = "0" + attendate.Day;
@@ -415,7 +415,7 @@ namespace Easy.Services.Services
             };
         }
 
-        public async Task<CommonResponse> CreateBulkAttendance( BulkAttendance bulkatten) 
+        public async Task<CommonResponse> CreateBulkAttendance(BulkAttendance bulkatten)
         {
             try
             {
@@ -436,7 +436,7 @@ namespace Easy.Services.Services
                 foreach (JSonParam jSon in bulkatten.Param)
                 {
                     string month = "";
-                    string day = "";                    
+                    string day = "";
                     var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(jSon.AttenDate).Year, DateTime.Parse(jSon.AttenDate).Month, DateTime.Parse(jSon.AttenDate).Day);
                     if (attendate.Month < 10)
                     {
@@ -460,7 +460,7 @@ namespace Easy.Services.Services
                     Message = "Success"
                 };
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return new CommonResponse()
                 {
@@ -468,7 +468,7 @@ namespace Easy.Services.Services
                     Message = ex.Message
                 };
             }
-            
+
             //res.StatusCode = data.FirstOrDefault().StatusCode;
             //res.Message = data.FirstOrDefault().Message;
             //return res;           
@@ -489,14 +489,14 @@ namespace Easy.Services.Services
             parameters.Add("@departmentid", req.DepartmentID);
             parameters.Add("@status", req.Status);
             parameters.Add("@comid", req.ComID);
-            var data = await DBHelper.RunProc<dynamic>(sql,parameters);
-            if(data.Count()!=0 && data.FirstOrDefault().Message == null)
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
                 res.list = data.ToList();
                 res.StatusCode = 200;
                 res.Message = "Success";
             }
-            else if(data.Count()==1 && data.FirstOrDefault().Message != null)
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
             {
                 res.StatusCode = data.FirstOrDefault().StatusCode;
                 res.Message = data.FirstOrDefault().Message;
@@ -600,12 +600,13 @@ namespace Easy.Services.Services
             parameters.Add("@status", req.Status);
             if (!string.IsNullOrEmpty(req.PImage))
             {
-                var img=Convert.FromBase64String(req.PImage);
+                var img = Convert.FromBase64String(req.PImage);
                 Image image = Image.FromStream(new MemoryStream(img));
                 var imgname = DateTime.Now.Ticks;
-                if (!Directory.Exists("assets\\photo\\product")){
+                if (!Directory.Exists("assets\\photo\\product"))
+                {
                     Directory.CreateDirectory("assets\\product");
-                    image.Save("assets\\photo\\product\\" + imgname+".jpg",ImageFormat.Jpeg);
+                    image.Save("assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
                 }
                 image.Save("assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
                 parameters.Add("@pimage", imgname + ".jpg");
@@ -649,7 +650,7 @@ namespace Easy.Services.Services
             parameters.Add("@lunchend", req.LunchEnd);
             parameters.Add("@branchid", req.BranchID);
             parameters.Add("@fiscalid", req.FiscalID);
-            parameters.Add("@shiftid", req.ShiftID);          
+            parameters.Add("@shiftid", req.ShiftID);
             parameters.Add("@status", req.Status);
             parameters.Add("@hdhour", req.HDHour);
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
@@ -697,6 +698,8 @@ namespace Easy.Services.Services
             parameters.Add("@pan", req.PAN);
             parameters.Add("@gender", req.Gender);
             parameters.Add("@bloodgroup", req.BloodGroup);
+            parameters.Add("@firstname", req.FirstName);
+            parameters.Add("@lastname", req.LastName);
             parameters.Add("@religion", req.Religion);
             parameters.Add("@maritialstatus", req.MaritialStatus);
             parameters.Add("@image", req.Image);
@@ -704,8 +707,8 @@ namespace Easy.Services.Services
             parameters.Add("@workingstatus", req.WorkingStatus);
             parameters.Add("@leavedate", req.LeaveDate);
             parameters.Add("@jobtype", req.JobType);
-            parameters.Add("@shift", req.Shift);            
-            parameters.Add("@shifttype", req.ShiftType);            
+            parameters.Add("@shift", req.Shift);
+            parameters.Add("@shifttype", req.ShiftType);
             parameters.Add("@grade", req.Grade);
             parameters.Add("@department", req.Department);
             parameters.Add("@subdepartment", req.SubDepartment);
@@ -716,6 +719,7 @@ namespace Easy.Services.Services
             parameters.Add("@branchid", req.BranchID);
             parameters.Add("@status", req.Status);
             parameters.Add("@uid", req.UID);
+            parameters.Add("@middlename", req.MiddleName);
             if (!string.IsNullOrEmpty(req.Image))
             {
                 var img = Convert.FromBase64String(req.Image);
@@ -747,6 +751,81 @@ namespace Easy.Services.Services
                 res.Message = "No Data";
             }
             return res;
-        } 
+        }
+
+
+        public async Task<Branch> BranchAdmin(BranchReq req)
+        {
+            var res = new Branch();
+            res.BranchLst = null;
+            var sql = "sp_admin_branch";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@address", req.Address);
+            parameters.Add("@district", req.District);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.BranchLst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<FiscalYear> FiscalAdmin(FiscalYearReq req)
+        {
+            var res = new FiscalYear();
+            res.FiscalYearlst = null;
+            var sql = "sp_admin_fiscal";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);            
+            parameters.Add("@fiscalyear", req.FiscalYear);            
+            parameters.Add("@iscurrent", req.IsCurrent);            
+            parameters.Add("@startdate", req.StartDate);            
+            parameters.Add("@enddate", req.EndDate);            
+            parameters.Add("@fiscalid", req.FiscalID);            
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fid", req.FID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.FiscalYearlst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
     }
 }

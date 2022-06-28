@@ -1,4 +1,11 @@
-create proc sp_holiday(
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_holiday]    Script Date: 6/28/2022 12:57:25 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_holiday](
 	@comid nvarchar(250)=null,
 	@branchid int=null
 )
@@ -6,6 +13,9 @@ AS
 BEGIN
 	SELECT holiday Holiday,
 	english_date EnglishDate,
-	nepali_date NepaliDate
-	from tbl_holiday where status=1 and english_date>=getdate() and com_id=@comid and branch_id=@branchid
+	nepali_date NepaliDate,
+	case when english_date>GETDATE() then convert(nvarchar(2),datediff(day,getdate(),english_date)) 
+	else 'Today'
+	end DaysRemaining
+	from tbl_holiday where status=1 and english_date>=convert(date,getdate()) and com_id=@comid and branch_id=@branchid
 END

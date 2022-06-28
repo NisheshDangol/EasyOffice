@@ -25,5 +25,7 @@ namespace Easy.Services.Interface
         Task<Designation> Designation(DesignationReq req);
         Task<Shift> ShiftAdmin(ShiftReq req);
         Task<User> UserAdmin(UserReq req);
+        Task<Branch> BranchAdmin(BranchReq req);
+        Task<FiscalYear> FiscalAdmin(FiscalYearReq req);
     }
 }

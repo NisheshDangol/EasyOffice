@@ -151,5 +151,21 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.UserAdmin(req);
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("~/api/admin/branch")]
+        public async Task<IActionResult> Branch(BranchReq req)
+        {
+            var data = await _unitOfWork.PostServices.BranchAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/fiscal")]
+        public async Task<IActionResult> Fiscal(FiscalYearReq req)
+        {
+            var data = await _unitOfWork.PostServices.FiscalAdmin(req);
+            return Ok(data);
+        }
     }
 }

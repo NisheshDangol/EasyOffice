@@ -1,0 +1,93 @@
+alter proc sp_admin_branch(
+	@comid nvarchar(150)=null,
+	@staffid int = null,
+	@flag nvarchar(10) = null,
+	@name nvarchar(150) = null,
+	@address nvarchar(150) = null,
+	@district int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@branchid int =  null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_branch where name=@name)
+		Begin
+			Select 204 StatusCode, 'Branch name already exists' Message
+			return;
+		End
+		Insert into tbl_branch (com_id,created_by,updated_by,name,address,district,fiscal_id, created_date,updated_date,status)
+		values (@comid,@staffid,@staffid,@name,@address,@district,@fiscalid,GETDATE(),GETDATE(),1);
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End 
+
+
+	If(@flag='u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if exists(Select 'm' from tbl_branch where name=@name and ID<>@branchid)
+		Begin
+			Select 204 StatusCode, 'Branch name already exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_branch where ID=@branchid)
+		Begin
+			Select 204 StatusCode, 'Branch does not exists' Message
+			return;
+		End
+		Update tbl_branch set updated_by=@staffid, name=@name, address=@address, district=@district,fiscal_id=@fiscalid,
+		updated_date=GETDATE() where com_id=@comid and ID=@branchid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag = 's')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Select b.ID BranchID, name Name, address Address, district DistrictID, d.district_name District,b.status Status
+		from tbl_branch b
+		left join tbl_district d on d.ID=b.district and d.status=1
+		where b.created_by=@staffid and b.com_id = @comid
+	End
+
+
+	IF(@flag = 'us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_branch where ID=@branchid)
+		Begin
+			Select 204 StatusCode, 'Branch does not exists' Message
+			return;
+		End
+		Update tbl_branch set status = @status, updated_by=@staffid, fiscal_id=@fiscalid 
+		where com_id=@comid and ID=@branchid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

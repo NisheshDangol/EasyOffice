@@ -22,6 +22,9 @@ namespace Easy.Models.Models
         public int DeviceCode { get; set; }
         public string MobileID { get; set; }
         public string UserName { get; set; }
+        public string FirstName { get; set; }
+        public string MiddleName { get; set; }
+        public string LastName { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
         public string Contact { get; set; }

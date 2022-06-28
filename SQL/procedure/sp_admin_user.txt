@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 10:21:51 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 2:39:39 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -43,6 +43,9 @@ ALTER proc [dbo].[sp_admin_user](
 	@fiscalid int=null,
 	@branchid int=null,
 	@status int=null,
+	@firstname nvarchar(150)=null,
+	@lastname nvarchar(150)=null,
+	@middlename nvarchar(150)=null,
 	@uid int=null
 )
 AS
@@ -77,11 +80,11 @@ BEGIN
 		Insert into tbl_user(com_id,added_by,updated_by,user_id,user_code,device_code,device_id,user_name,password,
 		email,contact,phone,address,district,date_of_birth,citizenship_no,pan,gender,blood_group,religion,marital_status,
 		image,enroll_date,working_status,leave_date,job_type,shift_id,shift_type_id,grade_id,depart_id,sub_depart_id,
-		design_id,working_day,is_manager,fiscal_id,branch,status,added_date,updated_date) values 
+		design_id,working_day,is_manager,fiscal_id,branch,status,added_date,updated_date,first_name,last_name,middle_name) values 
 		(@comid,@staffid,@staffid,@userid,@usercode,@devicecode,@mobileid,@username,HASHBYTES('SHA2_256',@password),
 		@email,@contact,@phone,@address,@district,@dateofbirth,@citizenship,@pan,@gender,@bloodgroup,@religion,@maritialstatus,
 		@image,@enrolldate,@workingstatus,@leavedate,@jobtype,@shift,@shifttype,@grade,@department,@subdepartment,@designation,
-		@workingdays,@ismanager,@fiscalid,@branchid,1,GETDATE(),GETDATE())
+		@workingdays,@ismanager,@fiscalid,@branchid,1,GETDATE(),GETDATE(),@firstname,@lastname,@middlename)
 		Select 200 StatusCode, 'Success' Message
 		return;
 	End
@@ -94,22 +97,22 @@ BEGIN
 			Select 205 StatusCode, 'User does not exists.' Message
 			return;
 		End
-		If exists (Select 'm' from tbl_user where user_code=@usercode and ID!=@uid)
+		If exists (Select 'm' from tbl_user where user_code=@usercode and ID<>@uid)
 		Begin
 			Select 202 StatusCode, 'User Code already exists.' Message
 			return;
 		End		
-		If exists (Select 'm' from tbl_user where device_code=@devicecode and ID!=@uid)
+		If exists (Select 'm' from tbl_user where device_code=@devicecode and ID<>@uid)
 		Begin
 			Select 203 StatusCode, 'Device Code already exists.' Message
 			return;
 		End
-		If exists (Select 'm' from tbl_user where device_id=@mobileid and ID!=@uid)
+		If exists (Select 'm' from tbl_user where device_id=@mobileid and ID<>@uid)
 		Begin
 			Select 204 StatusCode, 'Mobile ID already exists.' Message
 			return;
 		End
-		If exists (Select 'm' from tbl_user where pan=@pan and ID!=@uid)
+		If exists (Select 'm' from tbl_user where pan=@pan and ID<>@uid)
 		Begin
 			Select 205 StatusCode, 'PAN already exists.' Message
 			return;
@@ -130,17 +133,69 @@ BEGIN
 
 	IF(@flag='si')
 	Begin
-		If not exists (Select 'm' from tbl_user where ID=@uid)
-		Begin
-			Select 205 StatusCode, 'User does not exists.' Message
-			return;
-		End
+		
+				If not exists (Select 'm' from tbl_user where ID=@uid ) 
+				Begin
+					Select 205 StatusCode, 'User does not exists.' Message
+					return;
+				End
+		
+		
 		Select u.ID UID, first_name FirstName, middle_name MiddleName, last_name LastName, user_id UserID,user_code UserCode,
 		device_code DeviceCode, device_id MobileID, user_name UserName, email Email, contact Contact,phone Phone,
-		address Address, district District, date_of_birth DateOfBirth, citizenship_no CitizenshipNo, pan PAN, gender Gender,
-		blood_group BloodGroup,religion Religion, marital_status MaritialStatus,('http://gharelukam.com/assets/photo/user/'+image) Image,
-		enroll_date EnrollDate, working_status WorkingStatus, leave_date LeaveDate, job_type JobType, shift_id ShiftID,
+		address Address, district DistrictID,
+		dis.district_name DistrictName,
+		date_of_birth DateOfBirth, citizenship_no CitizenshipNo, pan PAN,  
+		u.gender GenderID,
+		case u.gender
+		  when 1 then 'Male'
+		  when 2 then 'Female'
+		  Else 'Others'
+		  end Gender,
+
+		  u.blood_group BloodGroupID,
+		  case u.blood_group
+		  when 1 then 'A+'
+		  when 2 then 'A-'
+		  when 3 then 'B+'
+		  when 4 then 'B-'
+		  when 5 then 'AB+'
+		  when 6 then 'AB-'
+		  when 7 then 'O+'
+		  else 'O-'
+		  end BloodGroup,
+		  u.religion ReligionID,
+		  case u.religion
+		  when 1 then 'Hindu'
+		  when 2 then 'Buddhist'
+		  when 3 then 'Islam'
+		  else 'Christian'
+		  end Religion, 
+		  marital_status MaritialStatusID,
+		  case u.marital_status
+		  when 1 then 'Single'
+		  when 2 then 'Married'
+		  when 3 then 'Widow'
+		  else 'Divorced'
+		  end MaritalStatus,
+		  ('http://gharelukam.com/assets/photo/user/'+image) Image,
+		enroll_date EnrollDate, 
+		u.working_status WorkingStatusID,
+		case u.working_status
+		  when 1 then 'Working'
+		  else 'Not Working'
+		  end WorkingStatus,
+		  leave_date LeaveDate, 
+		  u.job_type JobTypeID,
+		case u.job_type
+		  when 1 then 'Full Time'
+		  when 2 then 'Part Time'
+		  when 3 then 'Freelance'
+		  else 'Contract'
+		  end JobType,
+		shift_id ShiftID,
 		s.shift_name Shift,
+		shift_type_id ShiftTypeID,
 		case shift_type_id when 1 then 'Weekly'
 		when 2 then 'Monthly'
 		when 3 then 'Yearly'
@@ -162,6 +217,7 @@ BEGIN
 		left join tbl_department d on d.ID = u.depart_id and d.status=1 and d.com_id=@comid
 		left join tbl_sub_department sd on sd.ID = u.sub_depart_id and sd.status=1 and sd.com_id=@comid
 		left join tbl_designation des on des.ID=u.design_id and des.status=1 and des.com_id=@comid
+		left join tbl_district dis on dis.ID=u.district and dis.status=1
 		where u.ID=@uid and u.com_id=@comid
 		return;
 	End
@@ -169,14 +225,25 @@ BEGIN
 
 	If(@flag='s')
 	Begin
-		If not exists (Select 'm' from tbl_user where ID=@uid) and (@uid<>-1)
+		If not exists (Select 'm' from tbl_user where ID=@staffid) and (@staffid<>-1)
 		Begin
 			Select 205 StatusCode, 'User does not exists.' Message
 			return;
 		End
-		Select u.ID UID, first_name FirstName, middle_name MiddleName, last_name LastName, user_name UserName,
-		('http://gharelukam.com/assets/photo/user/'+image) Image, enroll_date EnrollDate, working_status WorkinStatus,
-		job_type JobType, shift_id,
+		Select u.ID UID,u.user_code UserCode,
+		first_name FirstName, middle_name MiddleName, last_name LastName, user_name UserName,
+		('http://gharelukam.com/assets/photo/user/'+image) Image, enroll_date EnrollDate, 
+		case u.working_status
+		  when 1 then 'Working'
+		  else 'Not Working'
+		  end WorkingStatus,
+		case u.job_type
+		  when 1 then 'Full Time'
+		  when 2 then 'Part Time'
+		  when 3 then 'Freelance'
+		  else 'Contract'
+		  end JobType, 
+		  shift_id ShiftID,
 		s.shift_name Shift,
 		case shift_type_id when 1 then 'Weekly'
 		when 2 then 'Monthly'
@@ -199,7 +266,7 @@ BEGIN
 		left join tbl_sub_department sd on sd.ID = u.sub_depart_id and sd.status=1 and sd.com_id=@comid
 		left join tbl_designation des on des.ID=u.design_id and des.status=1 and des.com_id=@comid
 		where u.com_id=@comid and 
-		case when @uid=-1 then '1' else u.ID end = case when @uid=-1 then '1' else @uid end and 
+		case when @staffid=-1 then '1' else u.added_by end = case when @staffid=-1 then '1' else @staffid end and 
 		case when @subdepartment=-1 then '1' else u.sub_depart_id end = case when @subdepartment=-1 then '1' else @subdepartment end and
 		case when @designation=-1 then '1' else u.design_id end = case when @designation=-1 then '1' else @designation end and 
 		u.branch=@branchid
@@ -211,7 +278,7 @@ BEGIN
 	Begin
 		if not exists(Select 'm' from tbl_user where ID=@uid)
 		Begin
-			Select 202 StatusCode, 'Success'Message
+			Select 202 StatusCode, 'User does not exists'Message
 			return;
 		End
 		Update tbl_user set status=@status, updated_date=getdate(), updated_by=@uid
