@@ -143,5 +143,13 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.ShiftAdmin(req);
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("~/api/admin/user")]
+        public async Task<IActionResult> User(UserReq req)
+        {
+            var data = await _unitOfWork.PostServices.UserAdmin(req);
+            return Ok(data);
+        }
     }
 }

@@ -671,5 +671,82 @@ namespace Easy.Services.Services
             }
             return res;
         }
+
+        public async Task<User> UserAdmin(UserReq req)
+        {
+            var res = new User();
+            res.UserList = null;
+            var sql = "sp_admin_user";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@usercode", req.UserCode);
+            parameters.Add("@devicecode", req.DeviceCode);
+            parameters.Add("@mobileid", req.MobileID);
+            parameters.Add("@username", req.UserName);
+            parameters.Add("@password", req.Password);
+            parameters.Add("@email", req.Email);
+            parameters.Add("@contact", req.Contact);
+            parameters.Add("@phone", req.Phone);
+            parameters.Add("@address", req.Address);
+            parameters.Add("@district", req.District);
+            parameters.Add("@dateofbirth", req.DateOfBirth);
+            parameters.Add("@citizenship", req.CitizenshipNo);
+            parameters.Add("@pan", req.PAN);
+            parameters.Add("@gender", req.Gender);
+            parameters.Add("@bloodgroup", req.BloodGroup);
+            parameters.Add("@religion", req.Religion);
+            parameters.Add("@maritialstatus", req.MaritialStatus);
+            parameters.Add("@image", req.Image);
+            parameters.Add("@enrolldate", req.EnrollDate);
+            parameters.Add("@workingstatus", req.WorkingStatus);
+            parameters.Add("@leavedate", req.LeaveDate);
+            parameters.Add("@jobtype", req.JobType);
+            parameters.Add("@shift", req.Shift);            
+            parameters.Add("@shifttype", req.ShiftType);            
+            parameters.Add("@grade", req.Grade);
+            parameters.Add("@department", req.Department);
+            parameters.Add("@subdepartment", req.SubDepartment);
+            parameters.Add("@designation", req.Designation);
+            parameters.Add("@workingdays", req.WorkintDays);
+            parameters.Add("@ismanager", req.IsManager);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@uid", req.UID);
+            if (!string.IsNullOrEmpty(req.Image))
+            {
+                var img = Convert.FromBase64String(req.Image);
+                Image image = Image.FromStream(new MemoryStream(img));
+                var imgname = DateTime.Now.Ticks;
+                if (!Directory.Exists("assets\\photo\\user"))
+                {
+                    Directory.CreateDirectory("assets\\user");
+                    image.Save("assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                }
+                image.Save("assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                parameters.Add("@pimage", imgname + ".jpg");
+            }
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.UserList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        } 
     }
 }

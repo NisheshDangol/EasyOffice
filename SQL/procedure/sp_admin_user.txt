@@ -1,0 +1,223 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 10:21:51 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_user](
+	@comid nvarchar(150)=null,
+	@flag nvarchar(50)=null,
+	@staffid int=null,
+	@userid nvarchar(100)=null,
+	@usercode nvarchar(250)=null,
+	@devicecode nvarchar(150) =null,
+	@mobileid nvarchar(250)=null,
+	@username nvarchar(250)=null,
+	@password nvarchar(250)=null,
+	@email nvarchar(250)=null,
+	@contact nvarchar(50)=null,
+	@phone nvarchar(50)=null,
+	@address nvarchar(50)=null,
+	@district int=null,
+	@dateofbirth nvarchar(50)=null,
+	@citizenship nvarchar(250)=null,
+	@pan nvarchar(250)=null,
+	@gender int=null,
+	@bloodgroup int=null,
+	@religion int=null,
+	@maritialstatus int=null,
+	@image nvarchar(250)=null,
+	@enrolldate nvarchar(250)=null,
+	@workingstatus int=null,
+	@leavedate nvarchar(250)=null,
+	@jobtype int=null,
+	@shift int =null,
+	@shifttype int=null,
+	@grade int = null,
+	@department int=null,
+	@subdepartment int = null,
+	@designation int = null,
+	@workingdays int=null,
+	@ismanager int=null,
+	@fiscalid int=null,
+	@branchid int=null,
+	@status int=null,
+	@uid int=null
+)
+AS
+BEGIN
+	If not (@flag='i' or @flag='s' or @flag='u' or @flag='us' or @flag='si')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	IF(@flag='i')
+	Begin
+		If exists (Select 'm' from tbl_user where user_code=@usercode)
+		Begin
+			Select 202 StatusCode, 'User Code already exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where device_code=@devicecode)
+		Begin
+			Select 203 StatusCode, 'Device Code already exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where device_id=@mobileid)
+		Begin
+			Select 204 StatusCode, 'Mobile ID already exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where pan=@pan)
+		Begin
+			Select 205 StatusCode, 'PAN already exists.' Message
+			return;
+		End
+		Insert into tbl_user(com_id,added_by,updated_by,user_id,user_code,device_code,device_id,user_name,password,
+		email,contact,phone,address,district,date_of_birth,citizenship_no,pan,gender,blood_group,religion,marital_status,
+		image,enroll_date,working_status,leave_date,job_type,shift_id,shift_type_id,grade_id,depart_id,sub_depart_id,
+		design_id,working_day,is_manager,fiscal_id,branch,status,added_date,updated_date) values 
+		(@comid,@staffid,@staffid,@userid,@usercode,@devicecode,@mobileid,@username,HASHBYTES('SHA2_256',@password),
+		@email,@contact,@phone,@address,@district,@dateofbirth,@citizenship,@pan,@gender,@bloodgroup,@religion,@maritialstatus,
+		@image,@enrolldate,@workingstatus,@leavedate,@jobtype,@shift,@shifttype,@grade,@department,@subdepartment,@designation,
+		@workingdays,@ismanager,@fiscalid,@branchid,1,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag='u')
+	Begin
+		If not exists (Select 'm' from tbl_user where ID=@uid)
+		Begin
+			Select 205 StatusCode, 'User does not exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where user_code=@usercode and ID!=@uid)
+		Begin
+			Select 202 StatusCode, 'User Code already exists.' Message
+			return;
+		End		
+		If exists (Select 'm' from tbl_user where device_code=@devicecode and ID!=@uid)
+		Begin
+			Select 203 StatusCode, 'Device Code already exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where device_id=@mobileid and ID!=@uid)
+		Begin
+			Select 204 StatusCode, 'Mobile ID already exists.' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_user where pan=@pan and ID!=@uid)
+		Begin
+			Select 205 StatusCode, 'PAN already exists.' Message
+			return;
+		End
+		
+		Update tbl_user set updated_by=@staffid,user_id=@userid,user_code=@usercode,device_id=@mobileid,
+		user_name=@username,email=@email,contact=@contact,phone=@phone,address=@address,district=@district,
+		date_of_birth=@dateofbirth,citizenship_no=@citizenship,pan=@pan,gender=@gender,blood_group=@bloodgroup,
+		religion=@religion,marital_status=@maritialstatus,image=@image,enroll_date=@enrolldate,working_status=@workingstatus,
+		leave_date=@leavedate,job_type=@jobtype,shift_id=@shift,shift_type_id=@shifttype,grade_id=@grade,
+		depart_id=@department,sub_depart_id=@subdepartment,design_id=@designation,working_day=@workingdays,is_manager=@ismanager,
+		fiscal_id=@fiscalid, branch=@branchid 
+		where ID=@uid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag='si')
+	Begin
+		If not exists (Select 'm' from tbl_user where ID=@uid)
+		Begin
+			Select 205 StatusCode, 'User does not exists.' Message
+			return;
+		End
+		Select u.ID UID, first_name FirstName, middle_name MiddleName, last_name LastName, user_id UserID,user_code UserCode,
+		device_code DeviceCode, device_id MobileID, user_name UserName, email Email, contact Contact,phone Phone,
+		address Address, district District, date_of_birth DateOfBirth, citizenship_no CitizenshipNo, pan PAN, gender Gender,
+		blood_group BloodGroup,religion Religion, marital_status MaritialStatus,('http://gharelukam.com/assets/photo/user/'+image) Image,
+		enroll_date EnrollDate, working_status WorkingStatus, leave_date LeaveDate, job_type JobType, shift_id ShiftID,
+		s.shift_name Shift,
+		case shift_type_id when 1 then 'Weekly'
+		when 2 then 'Monthly'
+		when 3 then 'Yearly'
+		end ShiftType,
+		grade_id GradeID,
+		g.grade_name Grade,
+		u.depart_id DepartmentID,
+		d.depart_name Department,
+		u.sub_depart_id SubDepartmentID,
+		sub_dep_name SubDepartment,
+		design_id DesignationID,
+		des.desig_name Designation,
+		working_day WorkingDays,
+		is_manager IsManager,
+		u.status Status
+		from tbl_user u
+		left join tbl_shift s on s.ID=u.shift_id and s.status=1 and s.com_id=@comid
+		left join tbl_grade g on g.ID=u.grade_id and g.status=1 and g.com_id=@comid
+		left join tbl_department d on d.ID = u.depart_id and d.status=1 and d.com_id=@comid
+		left join tbl_sub_department sd on sd.ID = u.sub_depart_id and sd.status=1 and sd.com_id=@comid
+		left join tbl_designation des on des.ID=u.design_id and des.status=1 and des.com_id=@comid
+		where u.ID=@uid and u.com_id=@comid
+		return;
+	End
+
+
+	If(@flag='s')
+	Begin
+		If not exists (Select 'm' from tbl_user where ID=@uid) and (@uid<>-1)
+		Begin
+			Select 205 StatusCode, 'User does not exists.' Message
+			return;
+		End
+		Select u.ID UID, first_name FirstName, middle_name MiddleName, last_name LastName, user_name UserName,
+		('http://gharelukam.com/assets/photo/user/'+image) Image, enroll_date EnrollDate, working_status WorkinStatus,
+		job_type JobType, shift_id,
+		s.shift_name Shift,
+		case shift_type_id when 1 then 'Weekly'
+		when 2 then 'Monthly'
+		when 3 then 'Yearly'
+		end ShiftType,
+		grade_id GradeID,
+		g.grade_name Grade,
+		u.depart_id DepartmentID,
+		d.depart_name Department,
+		u.sub_depart_id SubDepartmentID,
+		sub_dep_name SubDepartment,
+		design_id DesignationID,
+		des.desig_name Designation,
+		is_manager IsManager,
+		u.status Status
+		from tbl_user u
+		left join tbl_shift s on s.ID=u.shift_id and s.status=1 and s.com_id=@comid
+		left join tbl_grade g on g.ID=u.grade_id and g.status=1 and g.com_id=@comid
+		left join tbl_department d on d.ID = u.depart_id and d.status=1 and d.com_id=@comid
+		left join tbl_sub_department sd on sd.ID = u.sub_depart_id and sd.status=1 and sd.com_id=@comid
+		left join tbl_designation des on des.ID=u.design_id and des.status=1 and des.com_id=@comid
+		where u.com_id=@comid and 
+		case when @uid=-1 then '1' else u.ID end = case when @uid=-1 then '1' else @uid end and 
+		case when @subdepartment=-1 then '1' else u.sub_depart_id end = case when @subdepartment=-1 then '1' else @subdepartment end and
+		case when @designation=-1 then '1' else u.design_id end = case when @designation=-1 then '1' else @designation end and 
+		u.branch=@branchid
+		return;
+	End
+
+
+	IF(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@uid)
+		Begin
+			Select 202 StatusCode, 'Success'Message
+			return;
+		End
+		Update tbl_user set status=@status, updated_date=getdate(), updated_by=@uid
+		where ID=@uid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END
+
