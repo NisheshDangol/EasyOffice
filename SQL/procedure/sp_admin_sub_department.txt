@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/27/2022 11:49:44 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_sub_department]    Script Date: 6/29/2022 4:56:06 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -47,7 +47,7 @@ BEGIN
 			return;
 		End
 		
-		if exists(Select 'm' from tbl_sub_department where sub_dep_name=@subdepartname)
+		if exists(Select 'm' from tbl_sub_department where sub_dep_name=@subdepartname and dep_id=@departid)
 		Begin
 			Select 205 StatusCode, 'Sub department name already exists' Message
 			return;
@@ -78,14 +78,14 @@ BEGIN
 		
 		select dep_id DepartmentID, d.depart_name Department, sub_dep_head_id SubDepartHeadID,
 		(Select first_name+' '+last_name from tbl_user where ID= s.sub_dep_head_id and com_id=@comid) SubDepartHead,s.ID SubDepartID,
-		sub_dep_name SubDepartName, (select count(ID) from tbl_designation where ID=u.design_id) NoOfDesig, (Select count(sub_depart_id) from tbl_user where sub_depart_id=s.ID) NoOfStaff, s.status Status
+		sub_dep_name SubDepartName, count(des.ID) NoOfDesig, (Select count(sub_depart_id) from tbl_user where sub_depart_id=s.ID) NoOfStaff, s.status Status
 		from tbl_sub_department s
-		left join tbl_department d on d.ID=s.dep_id and d.com_id=@comid 
-		left join tbl_user u on u.sub_depart_id=s.ID and u.com_id=@comid 
-		
+		left join tbl_department d on d.ID=s.dep_id and d.com_id=@comid and d.status = 1
+		left join tbl_designation des on des.sub_depart_id = s.ID and des.status=1
 		where case when @staffid <> -1 then s.created_by else '1' end = case when @staffid <> -1 then @staffid else '1' end and s.com_id=@comid and s.dep_id=@departid 
-		and s.branch_id=@branchid
-		group by dep_id,d.depart_name,sub_dep_head_id,sub_dep_name,s.ID,s.status ,u.design_id
+		and s.branch_id=@branchid and
+		case when @status=-1 then '1' else s.status end = case when @status=-1 then '1' else @status end 
+		group by dep_id,d.depart_name,sub_dep_head_id,sub_dep_name,s.ID,s.status 
 	End
 
 

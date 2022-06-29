@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_designation]    Script Date: 6/27/2022 11:45:54 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_designation]    Script Date: 6/29/2022 4:58:07 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -43,7 +43,7 @@ BEGIN
 			Select 204 StatusCode, 'Sub department does not exists' Message
 			return;
 		End
-		if exists(Select 'm' from tbl_designation where desig_name=@designation)
+		if exists(Select 'm' from tbl_designation where desig_name=@designation and depart_id=@departid and sub_depart_id=@subdepartid)
 		Begin
 			Select 206 StatusCode,'Designation already exists' Message
 			return;
@@ -117,11 +117,12 @@ BEGIN
 		ds.max_sal MaxSal,
 		ds.min_sal MinSal, ds.status Status
 		from tbl_designation ds
-		left join tbl_department d on ds.depart_id=d.ID
-		left join tbl_sub_department s on s.Id = ds.sub_depart_id
+		left join tbl_department d on ds.depart_id=d.ID and d.status=1
+		left join tbl_sub_department s on s.Id = ds.sub_depart_id and s.status=1
 		where ds.depart_id=@departid and ds.sub_depart_id=@subdepartid and 
 		case when @staffid=-1 then '1' else ds.created_by end = case when @staffid=-1 then '1' else @staffid end
-		and ds.branch_id=@branchid
+		and ds.branch_id=@branchid and
+		case when @status=-1 then '1' else ds.status end = case when @status=-1 then '1' else @status end
 		return;
 	End
 
