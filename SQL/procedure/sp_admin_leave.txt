@@ -1,0 +1,97 @@
+alter proc sp_admin_leave (
+	@comid nvarchar(150)=null,
+	@staffid int = null,
+	@flag nvarchar(10) = null,
+	@name nvarchar(250)=null,
+	@balance nvarchar(250)=null,
+	@ispaid int = null,
+	@iscarryable int = null,
+	@gender int = null,
+	@description nvarchar(500)=null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@leaveid int = null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag = 'i' )
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Insert into tbl_leave_type(com_id,created_by,updated_by,name,balance,is_paid,is_carryable,gender,description,
+		branch_id,fiscal_id,created_date,updated_date) values 
+		(@comid,@staffid,@staffid,@name,@balance,@ispaid,@iscarryable,@gender,@description,@branchid,@fiscalid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+
+	If(@flag = 'u')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_leave_type where ID=@leaveid and status=1)
+		Begin
+			Select 202 StatusCode, 'LeaveID does not exists' Message
+			return;
+		End
+		Update tbl_leave_type set updated_by=@staffid,name=@name,balance=@balance,is_paid=@ispaid,is_carryable=@iscarryable,
+		gender=@gender,description=@description,branch_id=@branchid,fiscal_id=@fiscalid, updated_date=GETDATE()
+		where com_id=@comid and ID = @leaveid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End 
+
+
+	If(@flag = 's')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status=1) and @staffid<>-1
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Select ID LeaveID, name Name, balance Balance, is_paid IsPaid, is_carryable IsCarryable, 
+		case gender when 1 then 'Male' 
+		when 2 then 'Female' 
+		when 3 then 'Other'
+		end Gender, 
+		description Description, status Status
+		from tbl_leave_type
+		where com_id=@comid and branch_id=@branchid and 
+		case when @staffid=-1 then '1' else created_by end = case when @staffid=-1 then '1' else @staffid end and 
+		case when @status=-1 then '1' else status end = case when @status=-1 then '1' else @status end
+		return;
+	End
+
+
+	If(@flag = 'us')
+	Begin
+	If not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_leave_type where ID=@leaveid )
+		Begin
+			Select 202 StatusCode, 'LeaveID does not exists' Message
+			return;
+		End
+		Update tbl_leave_type set status=@status,updated_by=@staffid,branch_id=@branchid, fiscal_id=@fiscalid
+		where com_id=@comid and ID=@leaveid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

@@ -167,5 +167,30 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.FiscalAdmin(req);
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("~/api/admin/u-doc")]
+        public async Task<IActionResult> Document(DocumentReq req)
+        {
+            var data = await _unitOfWork.PostServices.DocumentAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/u-bank")]
+        public async Task<IActionResult> Bank(BankAdminReq req)
+        {
+            var data = await _unitOfWork.PostServices.BankAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/u-leave-type")]
+        public async Task<IActionResult> LeaveType(LeaveTypeReq req)
+        {
+            var data = await _unitOfWork.PostServices.LeaveType(req);
+            return Ok(data);
+        }
+
     }
 }

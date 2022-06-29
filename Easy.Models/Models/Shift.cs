@@ -27,7 +27,7 @@ namespace Easy.Models.Models
         public string FiscalID { get; set; }
         public string BranchID { get; set; }
         public string ShiftID { get; set; }
-        public string Status { get; set; }
+        public int Status { get; set; }
         public int HDHour { get; set; }
     }
 }

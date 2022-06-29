@@ -629,8 +629,10 @@ namespace Easy.Services.Services
             parameters.Add("@repflag", Flag);
             if (DFlag.Equals("n", StringComparison.OrdinalIgnoreCase) && Flag.Equals("d", StringComparison.OrdinalIgnoreCase))
             {
-                var fromdate = NepaliDateConverter.DateConverter.ConvertToEnglish(DateTime.Parse(From).Year, DateTime.Parse(From).Month, DateTime.Parse(From).Day);
-                var todate = NepaliDateConverter.DateConverter.ConvertToEnglish(DateTime.Parse(To).Year, DateTime.Parse(To).Month, DateTime.Parse(To).Day);
+                var from = From.Split('/');
+                var to = To.Split('/');
+                var fromdate = NepaliDateConverter.DateConverter.ConvertToEnglish(Int32.Parse(from[0]), Int32.Parse(from[1]), Int32.Parse(from[2]));
+                var todate = NepaliDateConverter.DateConverter.ConvertToEnglish(Int32.Parse(to[0]), Int32.Parse(to[1]), Int32.Parse(to[2]));
                 From = fromdate.Year +"-"+fromdate.Month+"-"+fromdate.Day;
                 To = todate.Year+"-"+todate.Month+"-"+todate.Day;
             }            

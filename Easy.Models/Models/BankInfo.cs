@@ -18,4 +18,26 @@ namespace Easy.Models.Models
     {
         public List<dynamic> BankInfo { get; set; }
     }
+
+
+    public class BankAdminRes : CommonResponse
+    {
+        public List<dynamic> BankLst { get; set; }
+    }
+
+    public class BankAdminReq
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public int UserID { get; set; }
+        public string Flag { get; set; }
+        public string BankName { get; set; }
+        public string AcName { get; set; }
+        public string AcNo { get; set; }
+        public string Branch { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public int Status { get; set; }
+        public int BankID { get; set; }
+    }
 }

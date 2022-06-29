@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_department]    Script Date: 6/27/2022 11:48:20 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_department]    Script Date: 6/29/2022 10:42:33 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -57,13 +57,12 @@ BEGIN
 		Select d.ID DepartmentID, depart_name Department, head_id DepartHeadID,(select (first_name+' '+last_name) from tbl_user where ID=d.head_id) DepartHead,
 		count(s.ID) NoOfSubDepart,count(ds.ID) NoOfDesign, 
 		(Select count(ID) from tbl_user where dep_id=d.ID) NoOfStaff,d.status Status
-		from tbl_department d
-		left join tbl_user u on u.depart_id=d.ID and u.com_id=@comid 
+		from tbl_department d		
 		left join tbl_sub_department s on s.dep_id=d.ID and s.com_id=@comid
-		left join tbl_designation ds on u.design_id=ds.ID and ds.com_id=@comid
+		left join tbl_designation ds on d.ID=ds.depart_id
 		where case when @staffid=-1 then '1' else d.created_by end = case when @staffid=-1 then '1' else @staffid end
 		and d.com_id=@comid and d.branch_id=@branchid
-		group by d.ID,depart_name,head_id,u.first_name,u.last_name,s.dep_id,d.status
+		group by d.ID,depart_name,head_id,s.dep_id,d.status
 	End
 
 	if(@flag='u')

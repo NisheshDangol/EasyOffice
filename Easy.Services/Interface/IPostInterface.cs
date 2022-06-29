@@ -27,5 +27,8 @@ namespace Easy.Services.Interface
         Task<User> UserAdmin(UserReq req);
         Task<Branch> BranchAdmin(BranchReq req);
         Task<FiscalYear> FiscalAdmin(FiscalYearReq req);
+        Task<DocumentRes> DocumentAdmin(DocumentReq req);
+        Task<BankAdminRes> BankAdmin(BankAdminReq req);
+        Task<LeaveType> LeaveType(LeaveTypeReq req);
     }
 }

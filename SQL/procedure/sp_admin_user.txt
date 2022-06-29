@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 2:39:39 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 4:51:26 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -281,8 +281,8 @@ BEGIN
 			Select 202 StatusCode, 'User does not exists'Message
 			return;
 		End
-		Update tbl_user set status=@status, updated_date=getdate(), updated_by=@uid
-		where ID=@uid and com_id=@comid
+		Update tbl_user set status=@status, updated_date=getdate(), updated_by=@staffid, branch=@branchid,fiscal_id=@fiscalid
+		where ID=@uid and com_id=@comid 
 		Select 200 StatusCode, 'Success' Message
 		return;
 	End

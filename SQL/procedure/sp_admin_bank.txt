@@ -1,0 +1,105 @@
+alter proc sp_admin_bank (
+	@comid nvarchar(150)=null,
+	@staffid int = null,
+	@userid int = null,
+	@flag nvarchar(10) = null,
+	@bankname nvarchar(250) = null,
+	@acname nvarchar(250) = null,
+	@acno nvarchar(150) = null,
+	@branch nvarchar(250)=null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@bankid int = null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+		If not exists(Select 'm 'from tbl_user where ID=@staffid and status =1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm 'from tbl_user where ID=@userid and status=1)
+		Begin
+			Select 202 StatusCode, 'User does not exists' Message
+			return;
+		End
+		
+		Insert into tbl_bank_information(com_id,created_by,updated_by,employee_id,bank_name,ac_name,ac_no,branch,branch_id
+		,fiscal_id,created_date,updated_date,status) values
+		(@comid,@staffid,@staffid,@userid,@bankname,@acname,@acno,@branch,@branchid,@fiscalid,GETDATE(),GETDATE(),1)
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='u')
+	Begin
+		If not exists(Select 'm 'from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm 'from tbl_user where ID=@userid and status=1)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		If not exists(Select 'm 'from tbl_bank_information where ID=@bankid and status=1)
+		Begin
+			Select 204 StatusCode, 'Bank does not exists' Message
+			return;
+		End
+		Update tbl_bank_information set updated_by=@staffid, employee_id=@userid, bank_name=@bankname,ac_name=@acname,
+		ac_no=@acno,branch=@branch,branch_id=@branchid,fiscal_id=@fiscalid,updated_date=GETDATE()
+		where com_id=@comid and ID=@bankid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag = 's')
+	Begin
+		If not exists(Select 'm 'from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm 'from tbl_user where ID=@userid and status=1)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Select ID BankID, bank_name BankName, ac_name AcName, ac_no AcNo, branch Branch, status Status
+		from tbl_bank_information 
+		where com_id=@comid and created_by=@staffid and employee_id=@userid and 
+		case when @status=-1 then '1' else status end = case when @status=-1 then '1' else @status end
+		return;
+	End
+
+
+	If(@flag = 'us')
+	Begin
+		If not exists(Select 'm 'from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm 'from tbl_user where ID=@userid and status=1)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Update tbl_bank_information set status=@status, updated_by=@staffid, updated_date=GETDATE(), branch_id=@branchid,
+		fiscal_id=@fiscalid where com_id=@comid and employee_id=@userid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

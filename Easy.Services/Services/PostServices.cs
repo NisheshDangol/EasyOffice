@@ -702,7 +702,7 @@ namespace Easy.Services.Services
             parameters.Add("@lastname", req.LastName);
             parameters.Add("@religion", req.Religion);
             parameters.Add("@maritialstatus", req.MaritialStatus);
-            parameters.Add("@image", req.Image);
+            
             parameters.Add("@enrolldate", req.EnrollDate);
             parameters.Add("@workingstatus", req.WorkingStatus);
             parameters.Add("@leavedate", req.LeaveDate);
@@ -725,13 +725,16 @@ namespace Easy.Services.Services
                 var img = Convert.FromBase64String(req.Image);
                 Image image = Image.FromStream(new MemoryStream(img));
                 var imgname = DateTime.Now.Ticks;
-                if (!Directory.Exists("assets\\photo\\user"))
+                if (!Directory.Exists("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\user"))
                 {
-                    Directory.CreateDirectory("assets\\user");
-                    image.Save("assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                    Directory.CreateDirectory("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\user");
+                    image.Save("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
                 }
-                image.Save("assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
-                parameters.Add("@pimage", imgname + ".jpg");
+                else
+                {
+                    image.Save("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\user\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                }                
+                parameters.Add("@image", imgname + ".jpg");
             }
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
@@ -812,6 +815,142 @@ namespace Easy.Services.Services
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
                 res.FiscalYearlst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<DocumentRes> DocumentAdmin(DocumentReq req)
+        {
+            var res = new DocumentRes();
+            res.Doclst = null;
+            var sql = "sp_admin_document";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@filename", req.FileName);
+            parameters.Add("@filemedium", req.FileMedium);
+            if(req.FileMedium == 2)
+            {
+                var file = Convert.FromBase64String(req.FilePath);
+                if (!Directory.Exists("E:\\easysoftware\\API\\gharelukam\\assets\\file\\"))
+                {
+                    Directory.CreateDirectory("E:\\easysoftware\\API\\gharelukam\\assets\\file\\");                    
+                }
+                var f = new FileStream("E:\\easysoftware\\API\\gharelukam\\assets\\file\\" + req.FileName+req.FileType, FileMode.Create,FileAccess.Write);
+                //var f = new FileStream("assets\\file\\" + req.FileName+"."+req.FileType, FileMode.Create,FileAccess.Write);
+                f.Write(file);
+                f.Close();
+                
+                parameters.Add("@filepath",req.FileName+"."+req.FileType);
+            }
+            else
+            {
+                parameters.Add("@filepath", req.FilePath);
+            }
+            parameters.Add("@filetype", req.FileType);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@docid", req.DocID);
+            
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.Doclst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<BankAdminRes> BankAdmin(BankAdminReq req)
+        {
+            BankAdminRes res = new BankAdminRes();
+            res.BankLst = null;
+            var sql = "sp_admin_bank";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@bankname", req.BankName);
+            parameters.Add("@acname", req.AcName);
+            parameters.Add("@acno", req.AcNo);
+            parameters.Add("@branch", req.Branch);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);            
+            parameters.Add("@status", req.Status);
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@bankid", req.BankID);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.BankLst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<LeaveType> LeaveType(LeaveTypeReq req)
+        {
+            LeaveType res = new LeaveType();
+            res.LeaveLst = null;
+            var sql = "sp_admin_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@balance", req.Balance);
+            parameters.Add("@ispaid", req.IsPaid);
+            parameters.Add("@iscarryable", req.IsCarryable);
+            parameters.Add("@gender", req.Gender);
+            parameters.Add("@description", req.Description);
+            parameters.Add("@branchid", req.BrancID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@leaveid", req.LeaveID);
+            
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.LeaveLst = data.ToList();
                 res.StatusCode = 200;
                 res.Message = "Success";
             }

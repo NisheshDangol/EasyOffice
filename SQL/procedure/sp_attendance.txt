@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/26/2022 12:19:18 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_attendance]    Script Date: 6/29/2022 12:40:25 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -75,16 +75,16 @@ BEGIN
 		End
 		
 		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift s 
-		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
 		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift s 
-		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)
 			
 		if (((convert(datetime,@attentime))<=@tblshiftres and (convert(datetime,@attentime))>=(select convert(datetime,shift_start) from tbl_shift s 
-		left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
 		begin
 			set @attenremarks = 2
 		end
-		else if (((convert(datetime,@attentime))<(select convert(datetime,shift_start) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
+		else if (((convert(datetime,@attentime))<(select convert(datetime,shift_start) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 1)
 		begin
 			set @attenremarks = 1
 		end
@@ -96,11 +96,11 @@ BEGIN
 		begin
 			set @attenremarks = 4
 		end
-		else if(((convert(datetime,@attentime))>@leftearly) and ((convert(datetime,@attentime))<=(select convert(datetime,shift_end) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
+		else if(((convert(datetime,@attentime))>@leftearly) and ((convert(datetime,@attentime))<=(select convert(datetime,shift_end) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
 		begin
 			set @attenremarks = 2
 		end
-		else if(((convert(datetime,@attentime))>(Select convert(datetime,shift_end) from tbl_shift s left join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
+		else if(((convert(datetime,@attentime))>(Select convert(datetime,shift_end) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@userid)) and @attenstatus = 2)
 		begin
 			set @attenremarks = 5
 		end
@@ -112,7 +112,7 @@ BEGIN
 		attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date,atten_nep_date,atten_via,device_code)
 		values(@comid,@userid,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
 		@fiscalid,@branchid,1,
-		case @attenvia when 1 then 1 
+		case @attenvia when 1 then 1
 		when 2 then 0 
 		when 3 then 1 end,
 		@userid,@userid,GETDATE(),GETDATE(),@attendatenepali,@attenvia,
@@ -144,6 +144,16 @@ BEGIN
 			and attend_date=d.attend_date),'No Check In') CheckIn,
 			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id='es25' and attend_status=2 
 			and attend_date=d.attend_date),'No Check Out')  CheckOut,
+			
+			case  when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and attend_date=d.attend_date)),convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 
+			and attend_date=d.attend_date))) <= (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Half'
+			when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and attend_date=d.attend_date)),convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 
+			and attend_date=d.attend_date))) > (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Full'
+			else 'Absent'			
+			end DayType,
+			
 			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
 			and attend_date=d.attend_date) 
 			when 1 then 'Early In'
@@ -164,7 +174,8 @@ BEGIN
 			from #workdate d
 			left join tbl_attendance t on t.attend_date=d.attend_date and com_id=@comid and user_id=@userid and status = 1
 			left join tbl_leave l on l.user_id=@userid and l.leave_from>= d.attend_date and l.leave_to<=d.attend_date  and l.status=1
-			
+			left join tbl_user u on u.ID = t.user_id and u.com_id=@comid
+			order by AttenDate desc
 			----------
 			drop table #workdate
 		end
@@ -180,7 +191,17 @@ BEGIN
 			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid 
 			and attend_status=1 and attend_date=d.attend_date),'No Check In') CheckIn,
 			isnull((Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid 
-			and attend_status=2 and attend_date=d.attend_date),'No Check Out') CheckOut,			
+			and attend_status=2 and attend_date=d.attend_date),'No Check Out') CheckOut,	
+			
+			case  when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and attend_date=d.attend_date)),convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 
+			and attend_date=d.attend_date))) <= (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Half Day'
+			when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 
+			and attend_date=d.attend_date)),convert(datetime,(Select attend_time from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=2 
+			and attend_date=d.attend_date))) > (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Full Day'
+			else 'Absent'			
+			end DayType,
+
 			case (Select attend_remarks from tbl_attendance where user_id=@userid and com_id=@comid and attend_status=1 and attend_date=d.attend_date) 
 			when 1 then 'Early In'
 			when 2 then 'On Time'
@@ -195,12 +216,15 @@ BEGIN
 			end OutRemarks,
 			case  when l.ID is not null then l.ID else 0 end LeaveID ,
 			case when l.ID is not null then total_days else 0 end NoOfDays,
-			attend_place Via, attend_verified IsVerified, t.verified_by VerifiedBy
+			attend_place Via, isnull(attend_verified,'0')  IsVerified, t.verified_by VerifiedBy
 			from #workdate2 d
 			left join tbl_attendance t on t.attend_date=d.attend_date and com_id=@comid and user_id=@userid and status = 1
 			left join tbl_leave l on l.user_id=@userid and l.leave_from>=convert(datetime,d.attend_date)  and l.leave_to<=convert(datetime,d.attend_date) and l.status=1
+			left join tbl_user u on u.ID = t.user_id and u.com_id=@comid
 			where format(d.attend_date, 'yyyy-MM-dd')>=@fromdate and 
 			format(d.attend_date, 'yyyy-MM-dd')<=@todate
+			order by AttenDate desc
+
 			----------
 			drop table #workdate2
 		end
@@ -258,26 +282,27 @@ BEGIN
 				when 12 then 'Chaitra'
 				end 
 			end Name,
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and 
+			(Select count(distinct(attend_date)) from tbl_attendance where user_id=@userid and com_id=@comid and 
 			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) 
 			when 'e' then year(a.attend_date) end  and 
 			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
-			and status=1) TotalPresent,
+			and status=1 and attend_status=2) TotalPresent,
 			((Select count(distinct(attend_date)) from tbl_attendance where 
 			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) 
 			when 'e' then year(a.attend_date) end and 
 			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
 			and status=1)-
-			(Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid 
+			(Select count(distinct(attend_date)) from tbl_attendance where  user_id=@userid and com_id=@comid 
 			and case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= case 'n' when 'n' then substring(a.atten_nep_date,1,4) 
 			when 'e' then year(a.attend_date) end  and
 			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
 			when 'e' then month(a.attend_date) end
-			and status=1)) TotalAbsent
-			from tbl_attendance a
-			where user_id=@userid and com_id=@comid and case LOWER(@dflag) when 'e' then year(attend_date) when 'n' then substring(a.atten_nep_date,1,4) end=@value and status=1
+			and status=1 and attend_status=2)) TotalAbsent
+
+			from tbl_attendance a			
+			where a.user_id=@userid and a.com_id=@comid and case LOWER(@dflag) when 'e' then year(attend_date) when 'n' then substring(a.atten_nep_date,1,4) end=@value and a.status=1
 
 
 		end
@@ -286,7 +311,7 @@ BEGIN
 		begin
 			Select distinct(attend_date), atten_nep_date into #workdate3 from tbl_attendance 
 			
-			--set @presentcount = (Select count(distinct(attend_date)) from tbl_attendance where attend_remarks<>2 and user_id=@userid and com_id=@comid and year(attend_date)=@value);
+			
 			Select distinct(case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end) ID,
 			year(case LOWER(@dflag) when 'e' then a.attend_date when 'n' then substring(a.atten_nep_date,1,4) end) Name,
 			(Select count(1) from tbl_attendance where  user_id=@userid and com_id=@comid and 
@@ -305,3 +330,4 @@ BEGIN
 			
 	End
 END
+

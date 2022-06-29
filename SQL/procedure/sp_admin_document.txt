@@ -1,0 +1,127 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_document]    Script Date: 6/29/2022 8:15:36 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_document](
+	@comid nvarchar(150)=null,
+	@staffid int =null,
+	@userid int = null,
+	@flag nvarchar(50)=null,
+	@filename nvarchar(50) = null,
+	@filetype nvarchar(50) = null,
+	@filemedium int =null,
+	@filepath nvarchar(250)=null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@docid int = null
+)
+AS
+BEGIN
+	If not (@flag='i' or @flag='s' or @flag='u' or @flag='us' or @flag='si')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	IF(@flag = 'i')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End 
+		if not exists(Select 'm' from tbl_user where ID = @userid)
+		Begin
+			Select 202 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Insert into tbl_document(com_id, created_by,updated_by,employee_id, file_name,file_type,file_medium,file_path,
+		branch_id,fiscal_id,status,created_date,updated_date) values 
+		(@comid,@staffid,@staffid,@userid,@filename,
+		case @filetype when 'doc' then '1'
+		when 'pdf' then '2'
+		when 'ppt' then '3'
+		when 'file' then '4'
+		when 'url' then '5'
+		when 'png' then '6'
+		end,
+		@filemedium,@filepath,@branchid,@fiscalid,1,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	If(@flag = 'u')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_document where ID = @docid and status=1)
+		Begin
+			Select 204 StatusCode, 'Document does not exists' Message
+			return;
+		End
+		Update tbl_document set updated_by=@staffid,file_name=@filename,file_type=case @filetype when 'doc' then '1'
+		when 'pdf' then '2'
+		when 'ppt' then '3'
+		when 'file' then '4'
+		when 'url' then '5'
+		when 'png' then '6'
+		end,file_medium=@filemedium,
+		file_path=@filepath,branch_id=@branchid,fiscal_id=@fiscalid, updated_date=GETDATE() where ID=@docid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag = 'us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_document where ID = @docid and status=1)
+		Begin
+			Select 204 StatusCode, 'Document does not exists' Message
+			return;
+		End
+		Update tbl_document set status=@status, updated_by=@staffid, updated_date=GETDATE(),branch_id=@branchid,fiscal_id=@fiscalid
+		where ID=@docid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag = 's')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID = @staffid and status=1) and @staffid<>-1
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		if not exists(Select 'm' from tbl_user where ID = @userid and status=1) and @userid<>-1
+		Begin
+			Select 202 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Select ID DocID, file_name FileName, 
+		case file_type 
+		when 1 then 'doc'
+		when 2 then 'pdf'
+		when 3 then 'ppt'
+		when 4 then 'file'
+		when 5 then 'url'
+		when 6 then 'png'
+		end FileType, 
+		file_medium FileMedium, file_path FilePath,status Status
+		from tbl_document
+		where com_id=@comid and branch_id=@branchid and 
+		case when @staffid=-1 then '1' else created_by end = case when @staffid=-1 then '1' else @staffid end and
+		case when @userid=-1 then '1' else employee_id end = case when @userid=-1 then '1' else @userid end
+	End
+END
