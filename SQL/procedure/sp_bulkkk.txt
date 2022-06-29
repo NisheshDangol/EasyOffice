@@ -1,0 +1,119 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_bulkattenxml]    Script Date: 6/29/2022 8:30:17 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- ================================================
+-- Template generated from Template Explorer using:
+-- Create Procedure (New Menu).SQL
+--
+-- Use the Specify Values for Template Parameters 
+-- command (Ctrl-Shift-M) to fill in the parameter 
+-- values below.
+--
+-- This block of comments will not be included in
+-- the definition of the procedure.
+-- ================================================
+ALTER proc [dbo].[sp_bulkattenxml] (
+@xml XML=null,
+@comid nvarchar(250)=null,
+@fiscalid int=null,
+@userid int=null,
+@departmentid int=null,
+@subdepartmentid int=null,
+@designationid int=null,
+@attendate date=null,
+@attentime nvarchar(50)=null,
+@attenstatus int=null,
+@attenplace int=null,
+@branchid int=null,
+@attenremarks int=null,
+@tblshiftres datetime=null,
+@leftearly datetime=null,
+@i int =1,
+@uid int = null,
+@user_id int =null,
+@count int=null,
+@staffid int = null,
+@earlyin datetime=null,
+@attendatenepali nvarchar(50)=null,
+@flag nvarchar(150)
+)
+as
+
+BEGIN
+	if(@flag = 'cleardata')
+	Begin
+		Delete from tbl_attendance where atten_via=1
+		return;
+	end
+	if(@flag = 'createattendance')
+	begin
+		
+		if exists(Select 'm' from tbl_attendance where device_code = @userid and com_id=@comid and attend_date=@attendate and attend_status=2 and status=1)
+		begin
+			return;
+		end
+		if exists(Select 'm' from tbl_attendance where device_code = @userid and com_id=@comid and attend_date=@attendate and attend_status=1 and status=1)
+		begin
+			set @attenstatus = 2
+		end
+		else
+		begin
+			set @attenstatus = 1
+		end
+		set @user_id = (Select ID from tbl_user where device_code=@userid)
+		set @tblshiftres=(select dateadd(minute, datediff(minute,convert(datetime,shift_start), convert(datetime,allowed_late_in)),convert(datetime,shift_start)) from tbl_shift s 
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)
+		set @leftearly=(select dateadd(minute, datediff(minute,convert(datetime,shift_end), convert(datetime,allowed_early_out)),convert(datetime,shift_end)) from tbl_shift s 
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)
+			
+		if (((convert(datetime,@attentime))<=@tblshiftres and (convert(datetime,@attentime))>=(select convert(datetime,shift_start) from tbl_shift s 
+		inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)) and @attenstatus = 1)
+		begin
+			set @attenremarks = 2
+		end
+		else if (((convert(datetime,@attentime))<(select convert(datetime,shift_start) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)) and @attenstatus = 1)
+		begin
+			set @attenremarks = 1
+		end
+		else if(((convert(datetime,@attentime))>@tblshiftres) and @attenstatus = 1)
+		begin
+			set @attenremarks = 3
+		end
+		else if(((convert(datetime,@attentime))<@leftearly) and @attenstatus = 2)
+		begin
+			set @attenremarks = 4
+		end
+		else if(((convert(datetime,@attentime))>@leftearly) and ((convert(datetime,@attentime))<=(select convert(datetime,shift_end) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)) and @attenstatus = 2)
+		begin
+			set @attenremarks = 2
+		end
+		else if(((convert(datetime,@attentime))>(Select convert(datetime,shift_end) from tbl_shift s inner join tbl_user u on u.shift_id=s.ID and u.ID=@user_id)) and @attenstatus = 2)
+		begin
+			set @attenremarks = 5
+		end
+		else
+		begin
+			set @attenremarks = 2
+		end
+		
+		set @departmentid = (Select depart_id from tbl_user where device_code= @userid) 
+		set @subdepartmentid = (Select sub_depart_id from tbl_user where device_code=@userid)
+		set @designationid = (Select design_id from tbl_user where device_code=@userid)
+		
+		if exists(Select ID from tbl_user where device_code=@userid ) and not exists(Select 'm' from tbl_attendance where device_code=@userid and attend_date=@attendate and attend_status=2)
+		begin
+			Insert into tbl_attendance(com_id,user_id,department_id,sub_department_id,designation_id,attend_date,attend_time,attend_status,
+			attend_place, attend_remarks, fiscal_id, branch_id,status,attend_verified,updated_by,created_by,created_date,updated_date,device_code,atten_nep_date,atten_via)
+			values(@comid,@user_id,@departmentid,@subdepartmentid,@designationid,@attendate,@attentime,@attenstatus,@attenplace,@attenremarks,
+			@fiscalid,@branchid,1,1,@staffid,@staffid,GETDATE(),GETDATE(),@userid,@attendatenepali,1)
+			Select 200 StatusCode, 'Success' Message
+			return;
+		end	
+	end
+	Select 200 StatusCode, 'Success' Message
+
+END

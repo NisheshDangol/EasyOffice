@@ -426,6 +426,8 @@ namespace Easy.Services.Services
                 //XmlNode xmlNode = JsonConvert.DeserializeXmlNode(jsonstring);
                 string sql = "sp_bulkattenxml";
                 var parameters = new DynamicParameters();
+                parameters.Add("@flag", "cleardata");
+                await DBHelper.RunProc<dynamic>(sql, parameters);
                 parameters.Add("@flag", "createattendance");
                 parameters.Add("@comid", bulkatten.ComID);
                 //parameters.Add("@attenstatus", attendance.AttenStatus);
