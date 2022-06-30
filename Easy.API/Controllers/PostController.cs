@@ -192,5 +192,21 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
 
+        [HttpPost]
+        [Route("~/api/admin/holiday")]
+        public async Task<IActionResult> HolidayAdmin(HolidayReq req)
+        {
+            var data = await _unitOfWork.PostServices.HolidayAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/notification")]
+        public async Task<IActionResult> NotificationAdmin(NotificationAdminReq req)
+        {
+            var data = await _unitOfWork.PostServices.NotificationAdmin(req);
+            return Ok(data);
+        }
+
     }
 }

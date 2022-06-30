@@ -1,0 +1,75 @@
+alter proc sp_admin_holiday(
+	@comid nvarchar(150) = null,
+	@staffid int = null,
+	@flag nvarchar(10) = null,
+	@name nvarchar(150) = null,
+	@englishdate date = null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@nepdate nvarchar(50) = null,
+	@hid int = null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag = 'i')
+	begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+		ENd
+		Insert into tbl_holiday(com_id,created_by,updated_by,holiday,english_date,branch_id,fiscal_id,nepali_date,
+		created_date,updated_date,status)
+		values (@comid,@staffid,@staffid,@name,@englishdate,@branchid,@fiscalid,@nepdate,GETDATE(),GETDATE(),1);
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag = 'u')
+	begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+		ENd
+		if not exists(Select 'm' from tbl_holiday where ID=@hid and status=1)
+		Begin
+			Select 202 StatusCode, 'Holiday does not exists' Message
+		ENd
+		Update tbl_holiday set updated_date=GETDATE(), updated_by=@staffid,holiday=@name,english_date=@englishdate,branch_id=@branchid,
+		fiscal_id=@fiscalid,nepali_date=@nepdate where com_id=@comid and ID=@hid
+	end
+
+
+	If(@flag = 's')
+	begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+		ENd
+		Select ID HolidayID,holiday Name,english_date EnglishDate, nepali_date NepaliDate, 
+		datediff(day,getdate(),english_date) DaysRemaining, status Status
+		from tbl_holiday where com_id=@comid and created_by=@staffid and branch_id=@branchid and 
+		case when @status=-1 then '1' else status end = case when @status=-1 then '1' else @status end
+	End
+
+
+	If(@flag='us')
+	Begin
+		if not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+		ENd
+		if not exists(Select 'm' from tbl_holiday where ID=@hid and status=1)
+		Begin
+			Select 202 StatusCode, 'Holiday does not exists' Message
+		ENd
+		Update tbl_holiday set status=@status,updated_by=@staffid,updated_date=GETDATE(),branch_id=@branchid,
+		fiscal_id=@fiscalid where ID=@hid and com_id=@comid
+	ENd
+END

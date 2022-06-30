@@ -50,4 +50,26 @@ namespace Easy.Models.Models
     {
         public string DeviceID { get; set; }
     }
+
+    public class NotificationAdminReq
+    {
+        public string ComID { get; set; }
+        public string Flag { get; set; }
+        public int StaffID { get; set; }
+        public string NFlag { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Image { get; set; }
+        public string AcBtn { get; set; }
+        public string AcUrl { get; set; }
+        public string PublishedDate { get; set; }
+        public int UserID { get; set; }
+        public int DepartmentID { get; set; }
+        public int SubDepartmentID { get; set; }
+        public int DesignationID { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public int Status { get; set; }
+        public int NotificationID { get; set; }        
+    }
 }

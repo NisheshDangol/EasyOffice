@@ -968,5 +968,109 @@ namespace Easy.Services.Services
             }
             return res;
         }
+
+        public async Task<Holiday> HolidayAdmin(HolidayReq req)
+        {
+            Holiday res = new Holiday();
+            res.Holidays = null;
+            var sql = "sp_admin_holiday";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@englishdate", req.EnglishDate);
+            string month = "";
+            string day = "";
+            var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(req.EnglishDate).Year, DateTime.Parse(req.EnglishDate).Month, DateTime.Parse(req.EnglishDate).Day);
+            if (attendate.Month < 10)
+            {
+                month = "0" + attendate.Month;
+            }
+            else month = "" + attendate.Month;
+            if (attendate.Day < 10)
+            {
+                day = "0" + attendate.Day;
+            }
+            else day = "" + attendate.Day;
+            parameters.Add("@nepdate", attendate.Year + "/" + month + "/" + day);
+            parameters.Add("@hid", req.HolidayID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.Holidays = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<NotificationListDto> NotificationAdmin(NotificationAdminReq req)
+        {
+            NotificationListDto res = new NotificationListDto();
+            res.NotificationList = null;
+            var sql = "sp_admin_holiday";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@nflag", req.NFlag);
+            parameters.Add("@title", req.Title);
+            parameters.Add("@description", req.Description);
+            if(!string.IsNullOrEmpty(req.Image))
+            {
+                var img = Convert.FromBase64String(req.Image);
+                var imgname = DateTime.Now.Ticks;
+                Image image = Image.FromStream(new MemoryStream(img));
+                if (!Directory.Exists("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\"))
+                {
+                    Directory.CreateDirectory("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\");
+                }
+                image.Save("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                parameters.Add("@image", imgname+".jpg");
+            }            
+            parameters.Add("@acbtn", req.AcBtn);
+            parameters.Add("@acurl", req.AcUrl);
+            parameters.Add("@publisheddate", req.PublishedDate);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@depid", req.DepartmentID);
+            parameters.Add("@subdepid", req.SubDepartmentID);
+            parameters.Add("@desigid", req.DesignationID);
+            parameters.Add("@branchid", req.BranchID);          
+            parameters.Add("@fiscalid", req.FiscalID);          
+            parameters.Add("@status", req.Status);          
+            parameters.Add("@nid", req.NotificationID);          
+            
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.NotificationList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
     }
 }

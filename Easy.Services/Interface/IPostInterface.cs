@@ -30,5 +30,7 @@ namespace Easy.Services.Interface
         Task<DocumentRes> DocumentAdmin(DocumentReq req);
         Task<BankAdminRes> BankAdmin(BankAdminReq req);
         Task<LeaveType> LeaveType(LeaveTypeReq req);
+        Task<Holiday> HolidayAdmin(HolidayReq req);
+        Task<NotificationListDto> NotificationAdmin(NotificationAdminReq req);
     }
 }

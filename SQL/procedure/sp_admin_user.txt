@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/28/2022 4:51:26 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_user]    Script Date: 6/30/2022 9:11:24 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -72,7 +72,7 @@ BEGIN
 			Select 204 StatusCode, 'Mobile ID already exists.' Message
 			return;
 		End
-		If exists (Select 'm' from tbl_user where pan=@pan)
+		If exists (Select 'm' from tbl_user where pan=@pan) and (@pan is not null or @pan<>'')
 		Begin
 			Select 205 StatusCode, 'PAN already exists.' Message
 			return;
@@ -117,14 +117,28 @@ BEGIN
 			Select 205 StatusCode, 'PAN already exists.' Message
 			return;
 		End
-		
+		If(@image is null or @image='')
+		Begin
+			Update tbl_user set updated_by=@staffid,user_id=@userid,user_code=@usercode,device_id=@mobileid,
+			user_name=@username,email=@email,contact=@contact,phone=@phone,address=@address,district=@district,
+			date_of_birth=@dateofbirth,citizenship_no=@citizenship,pan=@pan,gender=@gender,blood_group=@bloodgroup,
+			religion=@religion,marital_status=@maritialstatus,
+			enroll_date=@enrolldate,working_status=@workingstatus,
+			leave_date=@leavedate,job_type=@jobtype,shift_id=@shift,shift_type_id=@shifttype,grade_id=@grade,
+			depart_id=@department,sub_depart_id=@subdepartment,design_id=@designation,working_day=@workingdays,is_manager=@ismanager,
+			fiscal_id=@fiscalid, branch=@branchid, first_name=@firstname, last_name=@lastname, middle_name=@middlename 
+			where ID=@uid and com_id=@comid
+			Select 200 StatusCode, 'Success' Message
+			return;
+		End
 		Update tbl_user set updated_by=@staffid,user_id=@userid,user_code=@usercode,device_id=@mobileid,
 		user_name=@username,email=@email,contact=@contact,phone=@phone,address=@address,district=@district,
 		date_of_birth=@dateofbirth,citizenship_no=@citizenship,pan=@pan,gender=@gender,blood_group=@bloodgroup,
-		religion=@religion,marital_status=@maritialstatus,image=@image,enroll_date=@enrolldate,working_status=@workingstatus,
+		religion=@religion,marital_status=@maritialstatus,image=@image,
+		enroll_date=@enrolldate,working_status=@workingstatus,
 		leave_date=@leavedate,job_type=@jobtype,shift_id=@shift,shift_type_id=@shifttype,grade_id=@grade,
 		depart_id=@department,sub_depart_id=@subdepartment,design_id=@designation,working_day=@workingdays,is_manager=@ismanager,
-		fiscal_id=@fiscalid, branch=@branchid 
+		fiscal_id=@fiscalid, branch=@branchid, first_name=@firstname, last_name=@lastname, middle_name=@middlename 
 		where ID=@uid and com_id=@comid
 		Select 200 StatusCode, 'Success' Message
 		return;
@@ -179,7 +193,7 @@ BEGIN
 		  else 'Divorced'
 		  end MaritalStatus,
 		  ('http://gharelukam.com/assets/photo/user/'+image) Image,
-		enroll_date EnrollDate, 
+		format(enroll_date,'yyyy-MM-dd') EnrollDate, 
 		u.working_status WorkingStatusID,
 		case u.working_status
 		  when 1 then 'Working'
@@ -232,7 +246,7 @@ BEGIN
 		End
 		Select u.ID UID,u.user_code UserCode,
 		first_name FirstName, middle_name MiddleName, last_name LastName, user_name UserName,
-		('http://gharelukam.com/assets/photo/user/'+image) Image, enroll_date EnrollDate, 
+		('http://gharelukam.com/assets/photo/user/'+image) Image, format(enroll_date,'yyyy-MM-dd') EnrollDate, 
 		case u.working_status
 		  when 1 then 'Working'
 		  else 'Not Working'
@@ -269,6 +283,7 @@ BEGIN
 		case when @staffid=-1 then '1' else u.added_by end = case when @staffid=-1 then '1' else @staffid end and 
 		case when @subdepartment=-1 then '1' else u.sub_depart_id end = case when @subdepartment=-1 then '1' else @subdepartment end and
 		case when @designation=-1 then '1' else u.design_id end = case when @designation=-1 then '1' else @designation end and 
+		case when @status=-1 then '1' else u.status end = case when @status=-1 then '1' else @status end and 
 		u.branch=@branchid
 		return;
 	End

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/27/2022 11:39:31 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/30/2022 9:08:17 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -42,13 +42,7 @@ Begin
 	return;
 	End
 
-	if not exists(select 'M' from tbl_user where device_id = @device_id and user_name = @username)
-	Begin
-		select 204 StatusCode,
-		'Device not allowed' Message
-		return;
-	end
-
+	
 	if exists (select 'm' from tbl_user where user_name = @username and working_status = 3)
 	begin
 		select 206 StatusCode, 'User not allowed. Please contact to organisation' Message
@@ -371,8 +365,8 @@ Select
   tbl_grade.grade_name as Grade, 
   tbl_user.user_name as Manager, 
   tbl_job_information.working_status as WorkingStatus, 
-  format(tbl_job_information.start_date,'yyyy-MM-dd') as StartDate, 
-  format(tbl_job_information.end_date,'yyyy-MM-dd') as Enddate
+  tbl_job_information.start_date as StartDate, 
+  tbl_job_information.end_date as Enddate
 from 
   tbl_job_information 
   left join tbl_designation on tbl_job_information.designation_id = tbl_designation.ID 

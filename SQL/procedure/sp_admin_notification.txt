@@ -1,0 +1,110 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_notification]    Script Date: 6/30/2022 4:30:52 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_notification](
+	@comid nvarchar(150) = null,
+	@staffid int =null,
+	@flag nvarchar(10)=null,
+	@nflag nvarchar(10)=null,
+	@title nvarchar(150) = null,
+	@description nvarchar(500)=null,
+	@image nvarchar(250)=null,
+	@acbtn nvarchar(250)=null,
+	@acurl nvarchar(250)=null,
+	@publisheddate date = null,
+	@userid int = null,
+	@depid int =null,
+	@subdepid int = null,
+	@desigid int = null,
+	@brancid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@nid int = null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff not found' Message
+			return;
+		End
+		Insert into tbl_notification(com_id,created_by,updated_by,title,description,image,ac_btn,red_url,published_date,
+		user_id,department_id,sub_department_id,designation_id,branch_id,fiscal_id,created_date,updated_date,status,nflag)
+		values(@comid,@staffid,@staffid,@title,@description,@image,@acbtn,@acurl,@publisheddate,@userid,@depid,@subdepid,
+		@desigid,@brancid,@fiscalid,GETDATE(),GETDATE(),1,@nflag)
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag='u')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_notification where ID=@nid )
+		Begin
+			Select 202 StatusCode, 'Notification does not exists' Message
+			return;
+		End
+		Update tbl_notification set updated_by=@staffid,nflag=@nflag,title=@title,description=@description,
+		image=isnull(@image,image),ac_btn=@acbtn,red_url=@acurl,published_date=@publisheddate,user_id=@userid,
+		department_id =@depid,@subdepid=@subdepid,designation_id=@desigid,branch_id=@brancid,fiscal_id=@fiscalid,
+		updated_date=GETDATE() where ID=@nid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag = 's')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Select ID NotificationID, title Title,description Description, image Image, published_date PublishedDate,
+		ac_btn AcBtn, red_url AcUrl, status Status
+		from tbl_notification where com_id=@comid and created_by=@staffid and user_id = @userid and 
+		case lower(@nflag) when 'i' then user_id 
+		when 'a' then '1'
+		when 'd' then department_id
+		when 's' then sub_department_id
+		when 'de' then designation_id
+		end = case lower(@nflag) when 'i' then user_id 
+		when 'a' then '1'
+		when 'd' then @depid
+		when 's' then @subdepid
+		when 'de' then @desigid
+		end and branch_id=@brancid and 
+		case when @status=-1 then '1' else status end=case when @status=-1 then '1' else @status end
+	End
+
+
+	If(@flag = 'us')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid and status=1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Update tbl_notification set status=@status, updated_by=@staffid, updated_date=GETDATE(),branch_id=@brancid,
+		fiscal_id=@fiscalid where ID=@nid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END
+
