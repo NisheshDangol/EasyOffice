@@ -64,5 +64,23 @@ namespace Easy.Models.Models
         public List<dynamic> AttenSummary { get; set; }
     }
 
-    //public class Attendance
+    public class AttenAdminReq
+    {
+        public string ComID { get; set; }
+        public int DepartmentID { get; set; }
+        public int SubDepartmentID { get; set; }
+        public string Flag { get; set; }
+        public string Value { get; set; }
+        public string DFlag { get; set; }
+        public int StaffID { get; set; }
+        public int UserID { get; set; }
+        public int AttenStatus { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+    }
+
+    public class AttenAdminRes:CommonResponse
+    {
+        public List<dynamic> AttenRes { get; set; }
+    }
 }

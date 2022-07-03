@@ -1,0 +1,22 @@
+alter proc sp_admin_birthday(
+	@comid nvarchar(150) = null,
+	@rflag nvarchar(10)=null,
+	@value nvarchar(10)=null,
+	@status int =null,
+	@branchid int = null
+)
+AS
+BEGIN
+	Select ID UserID,(first_name+' '+last_name) FullName, date_of_birth EngDate, 	
+	datediff(day,getdate(),convert(date,format(getdate(),'yyyy')+'-'+format(convert(date,date_of_birth),'MM-dd'))) DaysRemaining
+	from tbl_user
+	where case lower(@rflag) when 'y' then '1' 
+	when 'm' then MONTH(convert(date,date_of_birth))
+	when 't' then format(convert(date,date_of_birth),'MM-dd')
+	end = case lower(@rflag) when 'y' then '1'
+	when 'm' then @value
+	when 't' then @value
+	end
+	and com_id=@comid and branch=@branchid
+	and GETDATE()<=convert(date,format(getdate(),'yyyy')+'-'+format(convert(date,date_of_birth),'MM-dd'))
+END

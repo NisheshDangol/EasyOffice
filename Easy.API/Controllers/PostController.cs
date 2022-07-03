@@ -208,5 +208,44 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
 
+        [HttpPost]
+        [Route("~/api/admin/u-job-inf")]
+        public async Task<IActionResult> JobInfoAdmin(JobInfoReq req)
+        {
+            var data = await _unitOfWork.PostServices.JobInfoAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/u-birthday")]
+        public async Task<IActionResult> BirthdayAdmin(BirthdayReq req)
+        {
+            var data = await _unitOfWork.PostServices.Birthday(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/bulkbyxml")]
+        public async Task<IActionResult> Bulk(BulkAttendance req)
+        {
+            var data = await _unitOfWork.PostServices.CreateBulkAttendanceXml(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/attendance")]
+        public async Task<IActionResult> AdminAttendance(AttenAdminReq req)
+        {
+            var data = await _unitOfWork.PostServices.AttendanceAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/leave")]
+        public async Task<IActionResult> AdminLeave(LeaveReq req)
+        {
+            var data = await _unitOfWork.PostServices.LeaveAdmin(req);
+            return Ok(data);
+        }
     }
 }

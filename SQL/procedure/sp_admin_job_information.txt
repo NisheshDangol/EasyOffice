@@ -1,0 +1,133 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_jobinfo]    Script Date: 7/1/2022 10:03:41 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_jobinfo](
+	@comid nvarchar(150) = null,
+	@staffid int =null,
+	@flag nvarchar(10)=null,	
+	@userid int = null,
+	@depid int =null,
+	@subdepid int = null,
+	@desigid int = null,
+	@gradeid int =null,
+	@jobtype int = null,
+	@workingstatus int = null,
+	@startdate date = null,
+	@enddate date = null,
+	@brancid int = null,
+	@fiscalid int = null,
+	@status int = null,
+	@jobid int = null
+)
+AS
+BEGIN
+	if not (@flag='i' or @flag='s' or @flag='u' or @flag='us')
+	begin
+		Select 205 StatusCode, 'Flag does not exists' Message
+		return;
+	end
+	If(@flag='i')
+	Begin
+
+		IF not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_user where ID=@userid)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Insert into tbl_job_information(com_id,created_by,updated_by,employee_id,designation_id,department_id,sub_department_id,grade_group_id,
+		job_type,working_status,start_date,end_date,branch_id,fiscal_id,created_date,updated_date,status) values
+		(@comid,@staffid,@staffid,@userid,@desigid,@depid,@subdepid,@gradeid,@jobtype,@workingstatus,@startdate,
+		@enddate,@brancid,@fiscalid,GETDATE(),GETDATE(),1)
+		Select 200 StatusCode, 'Success' Message
+		return;
+
+	End
+
+	If(@flag='u')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_user where ID=@userid)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_job_information where ID=@jobid)
+		Begin
+			Select 204 StatusCode, 'Job does not exists' Message
+			return;
+		End
+		Update tbl_job_information set updated_by=@staffid, employee_id=@userid,updated_date=GETDATE(),designation_id=@desigid,department_id=@depid,sub_department_id=@subdepid,
+		grade_group_id=@gradeid,job_type=@jobtype, working_status=@workingstatus, start_date=@startdate,end_date=@enddate,
+		branch_id=@brancid, fiscal_id=@fiscalid where ID=@jobid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+	
+	If(@flag='s')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_user where ID=@userid)
+		Begin
+			Select 203 StatusCode, 'User does not exists' Message
+			return;
+		End
+		Select j.ID JobID, designation_id DesignationID, des.desig_name Designation, depart_id DepartmentID, depart_name Department,
+		sub_depart_id SubDepartmentID, sub_dep_name SubDepartment, grade_group_id GradeID, grade_name Grade, 
+		job_type JobTypeID,
+		case job_type when 1 then 'Full Time'
+		when 2 then 'Part Time'
+		when 3 then 'Intern'
+		when 4 then 'Paid Intern'
+		when 5 then 'Freelance'
+		when 6 then 'Contract'
+		when 7 then 'Training'
+		end JobType,
+		working_status WorkingStatusID,
+		case working_status when 1 then 'Working'
+		when 2 then 'Not Working' end WorkingStatus, format(start_date,'yyyy-MM-dd') StartDate, format(end_date,'yyyy-MM-dd') EndDate,
+		j.branch_id BranchID, j.fiscal_id FiscalID
+		from tbl_job_information j
+		left join tbl_designation des on des.ID=j.designation_id and des.com_id=@comid and des.status=1
+		left join tbl_department d on d.ID = j.department_id and j.com_id=@comid and d.status=1
+		left join tbl_sub_department s on s.ID = j.sub_department_id and s.com_id=@comid and s.status=1
+		left join tbl_grade g on g.ID = j.grade_group_id and g.com_id=@comid and g.status=1
+		where j.com_id=@comid  and j.created_by=@staffid and j.employee_id=@userid and j.branch_id=@brancid
+		and case when @status=-1 then '1' else j.status end = case when @status=-1 then '1' else @status end
+	End
+
+	If(@flag='us')
+	Begin
+		IF not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		IF not exists(Select 'm' from tbl_job_information where ID=@jobid)
+		Begin
+			Select 204 StatusCode, 'Job does not exists' Message
+			return;
+		End
+		Update tbl_job_information set status=1, updated_by=@staffid, branch_id=@brancid,fiscal_id=@fiscalid
+		where ID=@jobid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	ENd
+
+END

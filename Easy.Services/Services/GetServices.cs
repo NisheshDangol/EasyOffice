@@ -266,8 +266,7 @@ namespace Easy.Services.Services
                 }
                 else
                 {
-                    org.Message = "No Data";
-                    
+                    org.Message = "No Data";                    
                 }
             }
             return org;
@@ -752,6 +751,33 @@ namespace Easy.Services.Services
             return res;
         }
 
+        public async Task<UserActivity> UserActivity(int UserID, string ComID, int FiscalID, int BranchID)
+        {
+            UserActivity res = new UserActivity();
+            res.UserAct = null;
+            var sql = @"select act_date AcDate,act_time AcTime,remarks Remarks from tbl_user_activity where user_id ='"+UserID+"' and com_id='"+ComID+"' and status = 1 and fiscal_id='"+FiscalID+"' and branch_id='"+BranchID+"' order by AcDate,AcTime desc";
+            
+            var data = await DBHelper.RunQuery<dynamic>(sql);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.StatusCode = 200;
+                res.Message = "Success";
+                res.UserAct = data.ToList();
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+                res.UserAct = data.ToList();
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+                res.UserAct = null;
+            }
+            return res;
+        }
     }
     
 }

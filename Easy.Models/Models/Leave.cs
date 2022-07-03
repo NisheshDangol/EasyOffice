@@ -46,4 +46,19 @@ namespace Easy.Models.Models
         public int LeaveID { get; set; }
         public int Status { get; set; }
     }
+
+
+    public class LeaveReq
+    {
+        public string ComID { get; set; }
+        public int UserID { get; set; }
+        public string Flag { get; set; }
+        public string DFlag { get; set; }
+        public string Values { get; set; }
+        public int Status { get; set; }
+        public int LeaveStatus { get; set; }
+        public int BranchID { get; set; }
+        public int StaffID { get; set; }
+        public int FiscalID { get; set; }
+    }
 }

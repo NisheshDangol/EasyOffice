@@ -211,5 +211,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.FiscalYear(ComID, BranchID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/user-activity")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> UserActivity(string ComID,int UserID,int FiscalID, int BranchID)
+        {
+            var data = await _unitOfWork.GetServices.UserActivity(UserID,ComID,FiscalID, BranchID);
+            return Ok(data);
+        }
     }
 }

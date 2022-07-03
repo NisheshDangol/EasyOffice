@@ -32,5 +32,9 @@ namespace Easy.Services.Interface
         Task<LeaveType> LeaveType(LeaveTypeReq req);
         Task<Holiday> HolidayAdmin(HolidayReq req);
         Task<NotificationListDto> NotificationAdmin(NotificationAdminReq req);
+        Task<JobInfoAdmin> JobInfoAdmin(JobInfoReq req);
+        Task<Birthday> Birthday(BirthdayReq req);
+        Task<AttenAdminRes> AttendanceAdmin(AttenAdminReq req);
+        Task<LeaveReport> LeaveAdmin(LeaveReq req);
     }
 }

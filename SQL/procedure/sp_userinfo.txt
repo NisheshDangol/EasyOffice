@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 6/30/2022 9:08:17 AM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 7/1/2022 2:46:52 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -20,7 +20,6 @@ ALTER Procedure [dbo].[sp_userinfo]
 @emp_id int = NULL,
 @user_id int = NULL,
 @oldpassword nvarchar(150) = NULL,
-
 
 @flag nvarchar(50)
 )
@@ -51,6 +50,15 @@ Begin
 
 	if exists(select 'M' from tbl_user where user_name=@username and PwdCompare(@password,(select password from tbl_user where user_name = @username ))=1 )
 	Begin
+
+		Insert into tbl_user_activity(com_id,user_id,act_date,act_time,remarks,status,created_by,updated_by,created_date,
+		updated_date,fiscal_id, branch_id) values 
+		(@com_id,(Select ID from tbl_user where user_name=@username and status=1),format(GETDATE(),'yyyy-MM-dd'),format(getdate(),'hh:mm tt'),
+		'User logged on easy office on '+FORMAT (getdate(), 'dd, MMMM, yyyy, hh:mm tt')+' from web',1,
+		(Select ID from tbl_user where user_name=@username and status=1),(Select ID from tbl_user where user_name=@username and status=1),
+		format(GETDATE(),'yyyy-MM-dd'),format(GETDATE(),'yyyy-MM-dd'),(Select ID from tbl_fiscal_year where is_current=1),
+		(Select branch from tbl_user where user_name=@username))
+		
 		select 
 		  u.ID as UID,
 		  u.user_id as UserID,

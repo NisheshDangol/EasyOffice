@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 5/22/2022 3:34:27 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_followup]    Script Date: 7/3/2022 1:29:26 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -101,7 +101,8 @@ begin
 	left join tbl_product as p on p.ID=f.product_id
 	left join tbl_user as u on u.ID=f.assigned_to
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and case when @OrgType=-1 then '1' else o.org_type end = case when @OrgType=-1 then '1' else @OrgType end 
+	and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
 	and p.status=1 and f.to_type = @totype
 	return;
 end
@@ -125,7 +126,8 @@ begin
 	left join tbl_product as p on p.ID=f.product_id
 	left join tbl_user as u on u.ID=f.assigned_to
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and case when @OrgType=-1 then '1' else o.org_type end = case when @OrgType=-1 then '1' else @OrgType end 
+	and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
 	and p.status=1 and f.to_type = @totype and f.follow_status=@followstatus
 	return;
 end
@@ -149,7 +151,8 @@ begin
 	left join tbl_product as p on p.ID=f.product_id
 	left join tbl_user as u on u.ID=f.assigned_to
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	and o.org_type=@OrgType and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
+	and case when @OrgType=-1 then '1' else o.org_type end = case when @OrgType=-1 then '1' else @OrgType end 
+	and f.follow_type=@followtype and f.status=1 and o.status=1 and ft.status=1 
 	and p.status=1 and f.to_type = @totype and o.is_our_client=@isourclient 
 	return;
 end
@@ -173,7 +176,8 @@ begin
 	left join tbl_product as p on p.ID=f.product_id and p.status=1
 	left join tbl_user as u on u.ID=f.assigned_to 
 	where f.com_id=@companyid and f.created_by=@createdby and f.follow_date>=@fromDate and f.follow_date<= @toDate
-	 and f.follow_type=@followtype and f.status=1  and o.is_our_client=@isourclient and o.org_type=@OrgType
+	 and f.follow_type=@followtype and f.status=1  and o.is_our_client=@isourclient 
+	 and case when @OrgType=-1 then '1' else o.org_type end = case when @OrgType=-1 then '1' else @OrgType end 
 	 and f.to_type = @totype and f.follow_status=@followstatus
 	return;
 end

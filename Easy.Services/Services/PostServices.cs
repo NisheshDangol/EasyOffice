@@ -131,12 +131,25 @@ namespace Easy.Services.Services
                 parameter.Add("@fb", orgnization.Fb);
                 parameter.Add("@latitude", orgnization.Latitude);
                 parameter.Add("@longitude", orgnization.Longitude);
-                parameter.Add("@source", orgnization.Source);
+                parameter.Add("@iflag", orgnization.IFlag);
+                parameter.Add("@source", orgnization.SourceID);
                 parameter.Add("@isourclient", orgnization.IsOurClient);
                 parameter.Add("@currentsystem", orgnization.CurrentSystem);
                 parameter.Add("@branchid", orgnization.BranchID);
                 parameter.Add("@fiscalid", orgnization.FiscalID);
-                parameter.Add("@AssignedTo", orgnization.StaffID);
+                parameter.Add("@productid", orgnization.ProductID);
+                parameter.Add("@leadstatus", orgnization.LeadStatus);
+                parameter.Add("@lassignedto", orgnization.LAssignedTo);
+                parameter.Add("@AssignedTo", orgnization.LAssignedTo);
+                parameter.Add("@enquirydate", orgnization.EnquiryDate);
+                parameter.Add("@enquirytime", orgnization.EnquiryTime);
+                parameter.Add("@lremarks", orgnization.LRemarks);
+                parameter.Add("@followtype", orgnization.FollowType);
+                parameter.Add("@followdate", orgnization.FollowDate);
+                parameter.Add("@followtime", orgnization.FollowTime);
+                parameter.Add("@fassignedto", orgnization.FAssignedTo);
+                parameter.Add("@fremarks", orgnization.FRemarks);
+                parameter.Add("@leadsource", orgnization.SourceID);
                 parameter.Add("@flag", "createorg");
                 var data = await DBHelper.RunProc<CommonResponse>(sql, parameter);
                 res.StatusCode = data.FirstOrDefault().StatusCode;
@@ -605,12 +618,12 @@ namespace Easy.Services.Services
                 var img = Convert.FromBase64String(req.PImage);
                 Image image = Image.FromStream(new MemoryStream(img));
                 var imgname = DateTime.Now.Ticks;
-                if (!Directory.Exists("assets\\photo\\product"))
+                if (!Directory.Exists("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\product"))
                 {
-                    Directory.CreateDirectory("assets\\product");
-                    image.Save("assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                    Directory.CreateDirectory("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\product");
+                    
                 }
-                image.Save("assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                image.Save("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\product\\" + imgname + ".jpg", ImageFormat.Jpeg);
                 parameters.Add("@pimage", imgname + ".jpg");
             }
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
@@ -933,7 +946,7 @@ namespace Easy.Services.Services
         {
             LeaveType res = new LeaveType();
             res.LeaveLst = null;
-            var sql = "sp_admin_leave";
+            var sql = "sp_admin_user_leave";
             var parameters = new DynamicParameters();
             parameters.Add("@flag", req.Flag);
             parameters.Add("@staffid", req.StaffID);
@@ -980,22 +993,28 @@ namespace Easy.Services.Services
             parameters.Add("@comid", req.ComID);
             parameters.Add("@name", req.Name);
             parameters.Add("@englishdate", req.EnglishDate);
-            string month = "";
-            string day = "";
-            var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(req.EnglishDate).Year, DateTime.Parse(req.EnglishDate).Month, DateTime.Parse(req.EnglishDate).Day);
-            if (attendate.Month < 10)
+            if (req.Flag.Equals("i", StringComparison.OrdinalIgnoreCase))
             {
-                month = "0" + attendate.Month;
+                string month = "";
+                string day = "";
+                var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(req.EnglishDate).Year, DateTime.Parse(req.EnglishDate).Month, DateTime.Parse(req.EnglishDate).Day);
+                if (attendate.Month < 10)
+                {
+                    month = "0" + attendate.Month;
+                }
+                else month = "" + attendate.Month;
+                if (attendate.Day < 10)
+                {
+                    day = "0" + attendate.Day;
+                }
+                else day = "" + attendate.Day;
+                parameters.Add("@nepdate", attendate.Year + "/" + month + "/" + day);
             }
-            else month = "" + attendate.Month;
-            if (attendate.Day < 10)
-            {
-                day = "0" + attendate.Day;
-            }
-            else day = "" + attendate.Day;
-            parameters.Add("@nepdate", attendate.Year + "/" + month + "/" + day);
+            
             parameters.Add("@hid", req.HolidayID);
-
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@status", req.Status);
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
@@ -1057,6 +1076,195 @@ namespace Easy.Services.Services
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
                 res.NotificationList = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<JobInfoAdmin> JobInfoAdmin(JobInfoReq req)
+        {
+            JobInfoAdmin res = new JobInfoAdmin();
+            res.JobInfo = null;
+            var sql = "sp_admin_jobinfo";
+            var parameters = new DynamicParameters();
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@comid", req.ComID);            
+            parameters.Add("@userid", req.UserID);            
+            parameters.Add("@depid", req.DepartmentID);            
+            parameters.Add("@subdepid", req.SubDepartmentID);            
+            parameters.Add("@desigid", req.DesignationID);            
+            parameters.Add("@gradeid", req.GradeID);            
+            parameters.Add("@jobtype", req.JobType);            
+            parameters.Add("@workingstatus", req.WorkingStatus);            
+            parameters.Add("@startdate", req.StartDate);            
+            parameters.Add("@enddate", req.EndDate);            
+            parameters.Add("@branchid", req.BranchID);            
+            parameters.Add("@fiscalid", req.FiscalID);            
+            parameters.Add("@status", req.Status);            
+            parameters.Add("@jobid", req.JobID);            
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.JobInfo = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<Birthday> Birthday(BirthdayReq req)
+        {
+            Birthday res = new Birthday();
+            res.BirthdayLst = null;
+            var sql = "sp_admin_birthday";
+            var parameters = new DynamicParameters();            
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@rflag", req.RFlag);
+            parameters.Add("@value", req.Value);            
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);           
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.BirthdayLst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<CommonResponse> CreateBulkAttendanceXml(BulkAttendance bulkatten)
+        {
+            try
+            {
+                var param = bulkatten.Param;
+                CommonResponse res = new CommonResponse();
+                
+                string jsonstring = JsonConvert.SerializeObject(bulkatten);
+                XmlDocument xmlNode = (XmlDocument)JsonConvert.DeserializeXmlNode(jsonstring,"root");
+                string sql = "sp_bulkattenbyxml";
+                var parameters = new DynamicParameters();
+                //parameters.Add("@flag", "createattendance");
+                parameters.Add("@comid", bulkatten.ComID);
+                parameters.Add("@attenplace", bulkatten.AttenPlace);
+                parameters.Add("@staffid", bulkatten.StaffID);
+                parameters.Add("@fiscalid", bulkatten.FiscalID);
+                parameters.Add("@branchid", bulkatten.BranchID);
+                parameters.Add("@branchid", bulkatten.BranchID);                
+                parameters.Add("@XmlData", xmlNode.OuterXml);
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                return new CommonResponse()
+                {
+                    StatusCode = data.FirstOrDefault().StatusCode,
+                    Message = data.FirstOrDefault().Message
+                };
+            }
+            catch (Exception ex)
+            {
+                return new CommonResponse()
+                {
+                    StatusCode = 200,
+                    Message = ex.Message
+                };
+            }         
+        }
+
+        public async Task<AttenAdminRes> AttendanceAdmin(AttenAdminReq req)
+        {
+            AttenAdminRes res = new AttenAdminRes();
+            res.AttenRes = null;
+            var sql = "sp_admin_attendance";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@departmentid", req.DepartmentID);
+            parameters.Add("@subdepartmentid", req.SubDepartmentID);
+            parameters.Add("@value", req.Value);
+            parameters.Add("@attenstatus", req.AttenStatus);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@dflag", req.DFlag);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@staffid", req.StaffID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.AttenRes = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<LeaveReport> LeaveAdmin(LeaveReq req)
+        {
+            LeaveReport res = new LeaveReport();
+            res.LeaveReports = null;
+            var sql = "sp_admin_leave";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@values", req.Values);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@leavestatus", req.LeaveStatus);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@dflag", req.DFlag);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@staffid", req.StaffID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.LeaveReports = data.ToList();
                 res.StatusCode = 200;
                 res.Message = "Success";
             }

@@ -56,4 +56,10 @@ namespace Easy.Models.Models
         public int Status { get; set; }
         public int UID { get; set; }
     }
+
+
+    public class UserActivity:CommonResponse
+    {
+        public List<dynamic> UserAct { get; set; }
+    }
 }

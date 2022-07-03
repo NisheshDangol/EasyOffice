@@ -14,6 +14,7 @@ namespace Easy.Models.Models
         public string Password { get; set; }
         public string NotificationToken { get; set; }
         public string DeviceID { get; set; }
+
     }
     //public class LoginViewModel:CommonResponse
     //{

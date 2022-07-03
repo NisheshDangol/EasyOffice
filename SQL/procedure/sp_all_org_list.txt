@@ -1,13 +1,13 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 5/18/2022 3:03:48 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_all_org_list]    Script Date: 7/1/2022 1:36:10 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
 ALTER proc [dbo].[sp_all_org_list](
 @isourclient int =Null,
-@companyid nvarchar(250) = NULL,
+@com_id nvarchar(250) = NULL,
 @userid int = NULL,
 @FromDate nvarchar(250)=NULL,
 @ToDate nvarchar(250) = NULL,
@@ -27,74 +27,77 @@ BEGIN
 		if (@orgtype=-1 and @sourceid=-1)
 		begin
 			select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-			o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-			o.assigned_to StaffID,u.user_name as StaffName,
-			(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-			(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organization_type as t on o.org_type=t.Id
-			--left join tbl_leads as l on l.org_id=o.Id
-			--left join tbl_follow_up as f on f.contact_id=o.Id
-			--left join tbl_customer_support as s on s.org_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.added_date>=@FromDate and o.added_date<=@ToDate 
-			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+			left join tbl_lead_source l on l.ID=o.source
+			where comp_id=@com_id and o.created_by=@userid and o.added_date>=@FromDate and o.added_date<=@ToDate 
+			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 			return;
 		end		
 		else if @orgtype=-1
 		begin
 			select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-			o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-			o.assigned_to StaffID,u.user_name as StaffName,
-			(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-			(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
-
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organization_type as t on o.org_type=t.Id
-			--left join tbl_leads as l on l.org_id=o.Id
-			--left join tbl_follow_up as f on f.contact_id=o.Id
-			--left join tbl_customer_support as s on s.org_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate 
-			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+			left join tbl_lead_source l on l.ID=o.source
+			where comp_id=@com_id and o.created_by=@userid and o.source=@sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate 
+			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 			return;
 		end
 		else if @sourceid=-1
 		begin
 			select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-			o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-			o.assigned_to StaffID,u.user_name as StaffName,
-			(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-			(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organization_type as t on o.org_type=t.Id
-			--left join tbl_leads as l on l.org_id=o.Id
-			--left join tbl_follow_up as f on f.contact_id=o.Id
-			--left join tbl_customer_support as s on s.org_id=o.Id
-			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.added_date>=@FromDate and o.added_date<=@ToDate 
-			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+			left join tbl_lead_source l on l.ID=o.source
+			where comp_id=@com_id and o.created_by=@userid and o.org_type=@orgtype and o.added_date>=@FromDate and o.added_date<=@ToDate 
+			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 			return;
 		end
 		else
 		begin
 			select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-			o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-			o.assigned_to StaffID,u.user_name as StaffName,
-			(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-			(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-			(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 			from tbl_organization as o 
 			left join tbl_user as u on o.assigned_to=u.ID
 			left join tbl_organization_type as t on o.org_type=t.Id
-			--left join tbl_leads as l on l.org_id=o.Id
-			--left join tbl_follow_up as f on f.contact_id=o.Id
-			--left join tbl_customer_support as s on s.org_id=o.Id 
-			where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and o.source = @sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate 
-			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+			left join tbl_lead_source l on l.ID=o.source
+			where comp_id=@com_id and o.created_by=@userid and o.org_type=@orgtype and o.source = @sourceid and o.added_date>=@FromDate and o.added_date<=@ToDate 
+			group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 			return;
 		end
 	
@@ -104,73 +107,77 @@ BEGIN
 	if (@orgtype=-1 and @sourceid=-1)
 	begin
 		select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-		o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-		o.assigned_to StaffID,u.user_name as StaffName,
-		(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-		(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organization_type as t on o.org_type=t.Id
-		--left join tbl_leads as l on l.org_id=o.Id
-		--left join tbl_follow_up as f on f.contact_id=o.Id
-		--left join tbl_customer_support as s on s.org_id=o.Id
-		where o.comp_id=@companyid and o.created_by=@userid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
-		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+		left join tbl_lead_source l on l.ID=o.source
+		where o.comp_id=@com_id and o.created_by=@userid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
+		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 		return;
 	end		
 	else if @orgtype=-1
 	begin
 		select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-		o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-		o.assigned_to StaffID,u.user_name as StaffName,
-		(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-		(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organization_type as t on o.org_type=t.Id
-		--left join tbl_leads as l on l.org_id=o.Id
-		--left join tbl_follow_up as f on f.contact_id=o.Id
-		--left join tbl_customer_support as s on s.org_id=o.Id
-		where comp_id=@companyid and o.created_by=@userid and o.source=@sourceid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
-		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+		left join tbl_lead_source l on l.ID=o.source
+		where comp_id=@com_id and o.created_by=@userid and o.source=@sourceid and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
+		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 		return;
 	end
 	else if @sourceid=-1
 	begin
 		select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-		o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-		o.assigned_to StaffID,u.user_name as StaffName,
-		(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-		(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organization_type as t on o.org_type=t.Id
-		--left join tbl_leads as l on l.org_id=o.Id
-		--left join tbl_follow_up as f on f.contact_id=o.Id
-		--left join tbl_customer_support as s on s.org_id=o.Id
-		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
-		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+		left join tbl_lead_source l on l.ID=o.source
+		where comp_id=@com_id and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate 
+		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 		return;
 	end
 	else
 	begin
 	select o.Id as OrgId,o.org_name as OrgName,t.name as OrgType,o.address as Address,
-		o.district as District,o.phone_no as Phone,o.cperson_contact as ContactPerson,
-		o.assigned_to StaffID,u.user_name as StaffName,
-		(select COUNT(ID) from tbl_leads where comp_id=@companyid and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
-		(select COUNT(ID) from tbl_follow_up where comp_id=@companyid and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
-		(select COUNT(ID) from tbl_customer_support where comp_id=@companyid and created_by=@userid and org_id=o.Id and status=1) as SupportCount
+			o.district as District,o.source SourceID, l.name Source,o.phone_no as Phone,o.cperson_contact as ContactPerson,
+			is_our_client IsOurClientID, case is_our_client when 0 then 'No' else 'Yes' end IsOurClient 
+			,o.assigned_to StaffID,u.user_name as StaffName,
+			(select COUNT(ID) from tbl_leads where comp_id=@com_id and created_by=@userid and org_id=o.Id  and status=1) as LeadCount,
+			(select COUNT(ID) from tbl_follow_up where comp_id=@com_id and created_by=@userid and contact_id=o.Id and to_type=1 and status=1) as FollowCount,
+			(select COUNT(ID) from tbl_customer_support where comp_id=@com_id and created_by=@userid and org_id=o.Id and status=1) as SupportCount,
+			format(o.added_date,'yyyy-MM-dd') CreateDate
 		from tbl_organization as o 
 		left join tbl_user as u on o.assigned_to=u.ID
 		left join tbl_organization_type as t on o.org_type=t.Id
-		--left join tbl_leads as l on l.org_id=o.Id
-		--left join tbl_follow_up as f on f.contact_id=o.Id
-		--left join tbl_customer_support as s on s.org_id=o.Id and o.org_type=@orgtype 
-		where comp_id=@companyid and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.source = @sourceid
-		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name
+		left join tbl_lead_source l on l.ID=o.source
+		where comp_id=@com_id and o.created_by=@userid and o.org_type=@orgtype and is_our_client=@isourclient and o.added_date>=@FromDate and o.added_date<=@ToDate and o.source = @sourceid
+		group by o.Id,o.comp_id,o.org_name,t.name,o.address,o.district,o.phone_no,o.cperson_contact,o.assigned_to,u.user_name,
+			o.source,l.name,o.is_our_client,o.added_date
 		return;
 	end
 	END
