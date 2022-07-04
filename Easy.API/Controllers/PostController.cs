@@ -233,7 +233,7 @@ namespace Easy.API.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/admin/attendance")]
+        [Route("~/api/admin/atten-report")]
         public async Task<IActionResult> AdminAttendance(AttenAdminReq req)
         {
             var data = await _unitOfWork.PostServices.AttendanceAdmin(req);
@@ -247,5 +247,22 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.PostServices.LeaveAdmin(req);
             return Ok(data);
         }
+
+        [HttpPost]
+        [Route("~/api/admin/atten-summary")]
+        public async Task<IActionResult> AdminAttenSummary(AttenAdminReq req)
+        {
+            var data = await _unitOfWork.PostServices.AttendanceAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/atten")]
+        public async Task<IActionResult> AdminAttenUpdateStatus(AttenAdminReq req)
+        {
+            var data = await _unitOfWork.PostServices.AttendanceAdmin(req);
+            return Ok(data);
+        }
+
     }
 }

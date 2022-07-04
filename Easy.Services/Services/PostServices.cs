@@ -1222,6 +1222,7 @@ namespace Easy.Services.Services
             parameters.Add("@dflag", req.DFlag);
             parameters.Add("@userid", req.UserID);
             parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@attendate", req.AttenDate);
 
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)

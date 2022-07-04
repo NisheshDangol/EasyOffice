@@ -1,0 +1,194 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_attendance]    Script Date: 7/4/2022 10:21:45 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_attendance](
+	@flag nvarchar(150),
+	@comid nvarchar(250)=null,
+	@departmentid int=null,
+	@subdepartmentid int=null,
+	@value nvarchar(50)=null,
+	@attenstatus int = null,
+	@branchid int =null,
+	@fiscalid int = null,
+	@dflag nvarchar(10)=null,
+	@userid int = null,
+	@staffid int =null,
+	@converteddate nvarchar(50)=null
+)
+as
+Begin
+
+	IF(@flag='d')
+	Begin
+
+		Select @value Atten,ID into #workdate2 from tbl_user  
+		if(LOWER(@dflag)='n')
+		begin
+			set @converteddate = (Select distinct(attend_date) from tbl_attendance where atten_nep_date=@value)
+		end
+		--------------------
+		select distinct(Atten) AttenDate,
+		d.ID StaffID,
+		(u.first_name+' '+u.last_name) StaffName,
+		substring(Atten,9,10) AttenDay, 
+		isnull((Select attend_time from tbl_attendance where com_id=@comid 
+		and attend_status=1 and case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date
+		end =Atten and user_id=u.ID),'No Check In') CheckIn,
+		isnull((Select attend_time from tbl_attendance where com_id=@comid 
+		and attend_status=2 and case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date end=Atten
+		and user_id=u.ID),'No Check Out') CheckOut,	
+			
+		case (Select attend_remarks from tbl_attendance where com_id=@comid and attend_status=1 and case LOWER(@dflag) when 'e' then 
+		convert(nvarchar(50),attend_date) else atten_nep_date end=Atten 
+		and user_id=u.ID) 
+		when 1 then 'Early In'
+		when 2 then 'On Time'
+		when 3 then 'Late'
+		else 'No Check In'
+		end InRemarks,
+		case (Select attend_remarks from tbl_attendance where com_id=@comid and attend_status=2 and case LOWER(@dflag) when 'e' then 
+		convert(nvarchar(50),attend_date) else atten_nep_date end=Atten 
+		and user_id=u.ID) 
+		when 2 then 'On Time'
+		when 4 then 'left early'
+		when 5 then 'after office'
+		else 'No Check Out'
+		end OutRemarks,
+		case  when l.ID is not null then l.ID else 0 end LeaveID ,
+		case when l.ID is not null then total_days else 0 end NoOfDays,
+		attend_place Via, 
+		isnull(attend_verified,'0')  IsVerified, 
+		t.verified_by VerifiedBy
+		from #workdate2 d
+		left join tbl_attendance t on case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date end=Atten
+		and com_id=@comid and status = 1 and
+		case when @departmentid=-1 then '1' else t.department_id end = case when @departmentid=-1 then '1' else @departmentid end
+		and case when @subdepartmentid=-1 then '1' else t.sub_department_id end =case when @subdepartmentid=-1 then '1' else @subdepartmentid end 
+		left join tbl_user u on u.ID = d.ID 
+		left join tbl_leave l on l.user_id=u.ID and l.leave_from>=convert(datetime,case when LOWER(@dflag)='e' then Atten else @converteddate end)  
+		and l.leave_to<=convert(datetime,case when LOWER(@dflag)='e' then Atten else @converteddate end) and l.status=1 
+		where u.status=1 and t.attend_verified=1
+		order by AttenDate desc
+
+		--------
+		drop table #workdate2
+		return;
+	End	
+
+
+	IF(@flag = 'm')
+	BEGIN
+		Select distinct(case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) 
+			when 'e' then month(a.attend_date)
+			end) ID,
+			case LOWER(@dflag) when 'e' then 
+				case month(a.attend_date)
+				when 01 then 'January'
+				when 02 then 'Febuary'
+				when 03 then 'March'
+				when 04 then 'April'
+				when 05 then 'May'
+				when 06 then 'June'
+				when 07 then 'July'
+				when 08 then 'August'
+				when 09 then 'September'
+				when 10 then 'October'
+				when 11 then 'November'
+				when 12 then 'December'
+				end 
+				when 'n' then 
+				case substring(atten_nep_date,6,2)
+				when 01 then 'Baisakh'
+				when 02 then 'Jestha'
+				when 03 then 'Asadh'
+				when 04 then 'Shrawan'
+				when 05 then 'Bhadra'
+				when 06 then 'Asoj'
+				when 07 then 'Kartik'
+				when 08 then 'Mangsir'
+				when 09 then 'Poush'
+				when 10 then 'Magh'
+				when 11 then 'Falgun'
+				when 12 then 'Chaitra'
+				end 
+			end Name,
+			u.ID StaffID,
+			(u.first_name+' '+u.last_name) StaffName,
+			(Select count(distinct(attend_date)) from tbl_attendance where user_id=u.ID and com_id=@comid and 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= 
+			case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) when 'e' then year(a.attend_date) end  and 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= 
+			case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) when 'e' then month(a.attend_date) end
+			and status=1 and attend_status=2 and attend_verified=1) TotalPresent,
+
+			((Select count(distinct(attend_date)) from tbl_attendance where 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= 
+			case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,1,4) when 'e' then year(a.attend_date) end and 
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= 
+			case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) when 'e' then month(a.attend_date) end
+			and status=1 and attend_verified=1)-
+			(Select count(distinct(attend_date)) from tbl_attendance where  user_id=u.ID and com_id=@comid 
+			and case LOWER(@dflag) when 'n' then substring(atten_nep_date,1,4) when 'e' then year(attend_date) end= 
+			case 'n' when 'n' then substring(a.atten_nep_date,1,4) when 'e' then year(a.attend_date) end  and
+			case LOWER(@dflag) when 'n' then substring(atten_nep_date,6,2) when 'e' then month(attend_date) end= 
+			case LOWER(@dflag) when 'n' then substring(a.atten_nep_date,6,2) when 'e' then month(a.attend_date) end
+			and status=1 and attend_status=2 and attend_verified=1)) TotalAbsent
+
+			from tbl_attendance a	
+			left join tbl_user u on a.user_id=u.ID and u.status=1
+			where a.com_id=@comid and 
+			case LOWER(@dflag) when 'e' then format(attend_date,'yyyy-MM') when 'n' then substring(a.atten_nep_date,1,7) end=@value and a.status=1
+			and case when @departmentid=-1 then '1' else a.department_id end = case when @departmentid=-1 then '1' else @departmentid end
+			and case when @subdepartmentid=-1 then '1' else a.sub_department_id end =case when @subdepartmentid=-1 then '1' else @subdepartmentid end 
+			and u.status=1
+	END
+
+
+
+	IF(@flag='y')
+	Begin
+		Select distinct(attend_date), atten_nep_date into #workdate3 from tbl_attendance 
+			
+			
+		Select distinct(case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end) ID,
+		year(case LOWER(@dflag) when 'e' then a.attend_date when 'n' then substring(a.atten_nep_date,1,4) end) Name,
+		u.ID StaffID, (u.first_name+' '+u.last_name) StaffName,			
+		(Select count(1) from tbl_attendance where  user_id=u.ID and com_id=@comid and 
+		case LOWER(@dflag) when 'e' then year(attend_date) when 'n' then substring(atten_nep_date,1,4) end=case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end 
+		and status=1 and attend_status=2 ) TotalPresent,
+		((Select count(attend_date) from #workdate3 where 
+		case LOWER(@dflag) when 'e' then year(attend_date) when 'n' then substring(atten_nep_date,1,4) end=case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end)-
+		(Select count(1) from tbl_attendance where user_id=u.ID and com_id=@comid and 
+		case LOWER(@dflag) when 'e' then year(attend_date) when 'n' then substring(atten_nep_date,1,4) end=case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end
+		and status=1 and attend_status=2 )) TotalAbsent
+		from tbl_attendance a
+		left join tbl_user u on u.ID=a.user_id
+		where a.com_id=@comid and a.status=1 and u.status=1 and
+		case LOWER(@dflag) when 'e' then year(a.attend_date) when 'n' then substring(a.atten_nep_date,1,4) end =@value
+		and case when @departmentid=-1 then '1' else a.department_id end = case when @departmentid=-1 then '1' else @departmentid end
+		and case when @subdepartmentid=-1 then '1' else a.sub_department_id end =case when @subdepartmentid=-1 then '1' else @subdepartmentid end 
+		order by ID
+
+		drop table #workdate3
+		return;
+	End
+
+	IF(@flag='uls')
+	Begin
+		if not exists (Select 'm' from tbl_user where ID=@staffid) and @staffid is not null
+		begin
+			Select 203 StatusCode, 'Staff does not exists' Message
+			return;
+		end
+		update tbl_attendance set attend_status=@attenstatus, branch_id=@branchid, fiscal_id=@fiscalid,updated_by=@staffid, 
+		attend_verified=case @attenstatus when 0 then 0 else attend_verified end
+		where com_id=@comid and user_id=@userid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+End
+

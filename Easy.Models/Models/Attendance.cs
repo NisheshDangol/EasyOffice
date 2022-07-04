@@ -77,6 +77,7 @@ namespace Easy.Models.Models
         public int AttenStatus { get; set; }
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
+        public string AttenDate { get; set; }
     }
 
     public class AttenAdminRes:CommonResponse
