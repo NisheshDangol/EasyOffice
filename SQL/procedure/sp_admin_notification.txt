@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_admin_notification]    Script Date: 6/30/2022 4:30:52 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_admin_notification]    Script Date: 7/8/2022 10:53:52 AM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -20,7 +20,7 @@ ALTER proc [dbo].[sp_admin_notification](
 	@depid int =null,
 	@subdepid int = null,
 	@desigid int = null,
-	@brancid int = null,
+	@branchid int = null,
 	@fiscalid int = null,
 	@status int = null,
 	@nid int = null
@@ -42,7 +42,7 @@ BEGIN
 		Insert into tbl_notification(com_id,created_by,updated_by,title,description,image,ac_btn,red_url,published_date,
 		user_id,department_id,sub_department_id,designation_id,branch_id,fiscal_id,created_date,updated_date,status,nflag)
 		values(@comid,@staffid,@staffid,@title,@description,@image,@acbtn,@acurl,@publisheddate,@userid,@depid,@subdepid,
-		@desigid,@brancid,@fiscalid,GETDATE(),GETDATE(),1,@nflag)
+		@desigid,@branchid,@fiscalid,GETDATE(),GETDATE(),1,@nflag)
 		Select 200 StatusCode, 'Success' Message
 		return;
 	End
@@ -62,7 +62,7 @@ BEGIN
 		End
 		Update tbl_notification set updated_by=@staffid,nflag=@nflag,title=@title,description=@description,
 		image=isnull(@image,image),ac_btn=@acbtn,red_url=@acurl,published_date=@publisheddate,user_id=@userid,
-		department_id =@depid,@subdepid=@subdepid,designation_id=@desigid,branch_id=@brancid,fiscal_id=@fiscalid,
+		department_id =@depid,@subdepid=@subdepid,designation_id=@desigid,branch_id=@branchid,fiscal_id=@fiscalid,
 		updated_date=GETDATE() where ID=@nid and com_id=@comid
 		Select 200 StatusCode, 'Success' Message
 		return;
@@ -89,7 +89,7 @@ BEGIN
 		when 'd' then @depid
 		when 's' then @subdepid
 		when 'de' then @desigid
-		end and branch_id=@brancid and 
+		end and branch_id=@branchid and 
 		case when @status=-1 then '1' else status end=case when @status=-1 then '1' else @status end
 	End
 
@@ -101,7 +101,7 @@ BEGIN
 			Select 202 StatusCode, 'Staff does not exists' Message
 			return;
 		End
-		Update tbl_notification set status=@status, updated_by=@staffid, updated_date=GETDATE(),branch_id=@brancid,
+		Update tbl_notification set status=@status, updated_by=@staffid, updated_date=GETDATE(),branch_id=@branchid,
 		fiscal_id=@fiscalid where ID=@nid and com_id=@comid
 		Select 200 StatusCode, 'Success' Message
 		return;

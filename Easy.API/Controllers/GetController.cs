@@ -124,9 +124,9 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/csupport-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> CustomerSupport(string ComID, int UserID, int OrgID, int SupportStatus, string SupportMedium, string FromDate, string ToDate)
+        public async Task<IActionResult> CustomerSupport(string ComID, int UserID, int OrgID, int SupportStatus,int ProductID, string SupportMedium, string FromDate, string ToDate)
         {
-            var data = await _unitOfWork.GetServices.CustomersupportList(ComID,UserID,OrgID,SupportStatus,SupportMedium,FromDate,ToDate);
+            var data = await _unitOfWork.GetServices.CustomersupportList(ComID,UserID,OrgID,SupportStatus, ProductID,SupportMedium, FromDate,ToDate);
             return Ok(data);
 
         }

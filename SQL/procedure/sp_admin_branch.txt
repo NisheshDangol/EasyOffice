@@ -1,4 +1,11 @@
-alter proc sp_admin_branch(
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_branch]    Script Date: 7/5/2022 1:23:26 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_branch](
 	@comid nvarchar(150)=null,
 	@staffid int = null,
 	@flag nvarchar(10) = null,
@@ -61,15 +68,19 @@ BEGIN
 
 	IF(@flag = 's')
 	Begin
-		if not exists(Select 'm' from tbl_user where ID=@staffid)
+		if not exists(Select 'm' from tbl_user where ID=@staffid) and @staffid<>-1
 		Begin
 			Select 202 StatusCode, 'Staff does not exists' Message
 			return;
 		End
-		Select b.ID BranchID, name Name, address Address, district DistrictID, d.district_name District,b.status Status
+		Select b.ID BranchID, name Name, address Address, 
+		(Select count(ID) from tbl_user where branch=b.ID) NoOfStaff,
+		district DistrictID, d.district_name District,b.status Status
 		from tbl_branch b
 		left join tbl_district d on d.ID=b.district and d.status=1
-		where b.created_by=@staffid and b.com_id = @comid
+		where case when @staffid=-1 then '1' else b.created_by end=case when @staffid=-1 then '1' else @staffid end 
+		and b.com_id = @comid and
+		case when @status=-1 then '1' else b.status end = case when @status=-1 then '1' else @status end
 	End
 
 

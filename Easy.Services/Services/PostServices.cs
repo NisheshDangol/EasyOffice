@@ -134,7 +134,13 @@ namespace Easy.Services.Services
                 parameter.Add("@iflag", orgnization.IFlag);
                 parameter.Add("@source", orgnization.SourceID);
                 parameter.Add("@isourclient", orgnization.IsOurClient);
-                parameter.Add("@currentsystem", orgnization.CurrentSystem);
+                parameter.Add("@quoteprice", orgnization.QuotePrice);
+                parameter.Add("@currentsoftware", orgnization.CurrentSoftware);
+                parameter.Add("@currentattend", orgnization.CurrentAttend);
+                parameter.Add("@currentsms", orgnization.CurrentSms);
+                parameter.Add("@currentcloud", orgnization.CurrentCloud);
+                parameter.Add("@clienttype", orgnization.ClientType);
+
                 parameter.Add("@branchid", orgnization.BranchID);
                 parameter.Add("@fiscalid", orgnization.FiscalID);
                 parameter.Add("@productid", orgnization.ProductID);
@@ -1040,7 +1046,7 @@ namespace Easy.Services.Services
         {
             NotificationListDto res = new NotificationListDto();
             res.NotificationList = null;
-            var sql = "sp_admin_holiday";
+            var sql = "sp_admin_notification";
             var parameters = new DynamicParameters();
             parameters.Add("@flag", req.Flag);
             parameters.Add("@staffid", req.StaffID);
@@ -1185,9 +1191,11 @@ namespace Easy.Services.Services
                 parameters.Add("@attenplace", bulkatten.AttenPlace);
                 parameters.Add("@staffid", bulkatten.StaffID);
                 parameters.Add("@fiscalid", bulkatten.FiscalID);
-                parameters.Add("@branchid", bulkatten.BranchID);
                 parameters.Add("@branchid", bulkatten.BranchID);                
                 parameters.Add("@XmlData", xmlNode.OuterXml);
+                parameters.Add("@flag", bulkatten.Flag);
+                parameters.Add("@remarks", bulkatten.Remarks);
+                
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);
                 return new CommonResponse()
                 {
@@ -1197,9 +1205,17 @@ namespace Easy.Services.Services
             }
             catch (Exception ex)
             {
+                if (bulkatten.Flag != "I")
+                {
+                    string sql = "sp_bulkattenbyxml";
+                    var parameters = new DynamicParameters();
+                    parameters.Add("@flag", "es");
+                    parameters.Add("@remarks", ex.Message);
+                    await DBHelper.RunProc<dynamic>(sql, parameters);
+                }                
                 return new CommonResponse()
                 {
-                    StatusCode = 200,
+                    StatusCode = 400,
                     Message = ex.Message
                 };
             }         

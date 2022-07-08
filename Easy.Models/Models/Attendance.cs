@@ -48,6 +48,8 @@ namespace Easy.Models.Models
         public int AttenPlace { get; set; }
         public int FiscalID { get; set; }
         public int BranchID { get; set; }
+        public string Flag { get; set; }
+        public string Remarks { get; set; }
 
     }
 
@@ -56,6 +58,7 @@ namespace Easy.Models.Models
         public int UserID { get; set; }        
         public string AttenDate { get; set; }
         public string AttenTime { get; set; }
+        public string NepDate { get; set; }
         
     }
      

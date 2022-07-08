@@ -25,7 +25,7 @@ namespace Easy.Services.Services
             string sqluser = "sp_userinfo";
             DynamicParameters parameters = new DynamicParameters();
             parameters.Add("@com_id", Login.ComID);
-            parameters.Add("@username", Login.UserName);
+            parameters.Add("@user_id", Login.UID);
             parameters.Add("@device_id", Login.DeviceID);
             parameters.Add("@notification_token", Login.NotificationToken);
             parameters.Add("@flag", "CheckSession");
@@ -39,13 +39,22 @@ namespace Easy.Services.Services
                     StatusCode = 200
                 };
             }
-            else
+            else if (common.Count() == 1 && common.FirstOrDefault().Message != null)
             {
                 return new CheckSessionOutput
                 {
                     Logins = null,
                     Message = common.FirstOrDefault().Message,
                     StatusCode = common.FirstOrDefault().StatusCode
+                };
+            }
+            else
+            {
+                return new CheckSessionOutput
+                {
+                    Logins = null,
+                    Message = "NO Data",
+                    StatusCode = 400
                 };
             }
         }

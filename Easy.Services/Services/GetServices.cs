@@ -410,7 +410,7 @@ namespace Easy.Services.Services
             return contlist;
         }
 
-        public async Task<CustomerSupportListDto> CustomersupportList(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus, string Supportmedium, string Fromdate, string Todate)
+        public async Task<CustomerSupportListDto> CustomersupportList(string CompanyId, int EmployeeId, int Organizationid, int Supportstatus,int ProductID, string Supportmedium, string Fromdate, string Todate)
         {
             var customersupport = new CustomerSupportListDto();
             customersupport.StatusCode = 400;
@@ -426,6 +426,7 @@ namespace Easy.Services.Services
                 parameters.Add("@organizationid", Organizationid);
                 parameters.Add("@supportstatus", Supportstatus);
                 parameters.Add("@supportmedium", Supportmedium);
+                parameters.Add("@productid", ProductID);
                 parameters.Add("@fromdate", Fromdate);
                 //parameters.Add("@supportmedium", Supportmedium);
                 parameters.Add("@todate", Todate);

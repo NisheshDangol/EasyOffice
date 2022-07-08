@@ -17,6 +17,7 @@ ALTER proc [dbo].[sp_admin_attendance](
 	@dflag nvarchar(10)=null,
 	@userid int = null,
 	@staffid int =null,
+	@attendate nvarchar(50)=null,
 	@converteddate nvarchar(50)=null
 )
 as
@@ -25,7 +26,8 @@ Begin
 	IF(@flag='d')
 	Begin
 
-		Select @value Atten,ID into #workdate2 from tbl_user  
+		Select @value Atten,ID into #workdate2 from tbl_user where case when @departmentid=-1 then '1' else depart_id end = case when @departmentid=-1 then '1' else @departmentid end
+		and case when @subdepartmentid=-1 then '1' else sub_depart_id end =case when @subdepartmentid=-1 then '1' else @subdepartmentid end
 		if(LOWER(@dflag)='n')
 		begin
 			set @converteddate = (Select distinct(attend_date) from tbl_attendance where atten_nep_date=@value)
@@ -42,6 +44,15 @@ Begin
 		and attend_status=2 and case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date end=Atten
 		and user_id=u.ID),'No Check Out') CheckOut,	
 			
+		case  when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=u.ID and com_id=@comid and attend_status=1 
+		and attend_date=case when LOWER(@dflag)='e' then Atten else @converteddate end)),convert(datetime,(Select attend_time from tbl_attendance where user_id=u.ID and com_id=@comid and attend_status=2 
+		and attend_date=case when LOWER(@dflag)='e' then Atten else @converteddate end))) <= (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Half Day'
+		when datediff(HOUR,convert(datetime,(Select attend_time from tbl_attendance where user_id=u.ID and com_id=@comid and attend_status=1 
+		and attend_date=case when LOWER(@dflag)='e' then Atten else @converteddate end)),convert(datetime,(Select attend_time from tbl_attendance where user_id=u.ID and com_id=@comid and attend_status=2 
+		and attend_date=case when LOWER(@dflag)='e' then Atten else @converteddate end))) > (Select hd_hour from tbl_shift where ID=u.shift_id) then 'Full Day'
+		else 'Absent'			
+		end DayType,
+
 		case (Select attend_remarks from tbl_attendance where com_id=@comid and attend_status=1 and case LOWER(@dflag) when 'e' then 
 		convert(nvarchar(50),attend_date) else atten_nep_date end=Atten 
 		and user_id=u.ID) 
@@ -65,9 +76,7 @@ Begin
 		t.verified_by VerifiedBy
 		from #workdate2 d
 		left join tbl_attendance t on case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date end=Atten
-		and com_id=@comid and status = 1 and
-		case when @departmentid=-1 then '1' else t.department_id end = case when @departmentid=-1 then '1' else @departmentid end
-		and case when @subdepartmentid=-1 then '1' else t.sub_department_id end =case when @subdepartmentid=-1 then '1' else @subdepartmentid end 
+		and com_id=@comid and status = 1 		 
 		left join tbl_user u on u.ID = d.ID 
 		left join tbl_leave l on l.user_id=u.ID and l.leave_from>=convert(datetime,case when LOWER(@dflag)='e' then Atten else @converteddate end)  
 		and l.leave_to<=convert(datetime,case when LOWER(@dflag)='e' then Atten else @converteddate end) and l.status=1 
@@ -184,9 +193,10 @@ Begin
 			Select 203 StatusCode, 'Staff does not exists' Message
 			return;
 		end
-		update tbl_attendance set attend_status=@attenstatus, branch_id=@branchid, fiscal_id=@fiscalid,updated_by=@staffid, 
-		attend_verified=case @attenstatus when 0 then 0 else attend_verified end
-		where com_id=@comid and user_id=@userid
+		update tbl_attendance set  branch_id=@branchid, fiscal_id=@fiscalid,updated_by=@staffid, verified_by=@staffid,
+		attend_verified= @attenstatus
+		where com_id=@comid and user_id=@userid and
+		case LOWER(@dflag) when 'e' then convert(nvarchar(50),attend_date) else atten_nep_date end = @attendate
 		Select 200 StatusCode, 'Success' Message
 		return;
 	End

@@ -1,6 +1,6 @@
 USE [ES25]
 GO
-/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 7/1/2022 2:46:52 PM ******/
+/****** Object:  StoredProcedure [dbo].[sp_userinfo]    Script Date: 7/5/2022 12:57:15 PM ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -188,19 +188,13 @@ Begin
 		'companyid does not exists' Message
 	return;
 	end
-	if not exists(select 'M' from tbl_user where user_name = @username)
+	if not exists(select 'M' from tbl_user where ID = @user_id)
 	Begin
 		select 202 StatusCode,
-		'username doesnot exists.' Message
+		'UserID doesnot exists.' Message
 	return;
 	End
 
-	if not exists(select 'M' from tbl_user where device_id = @device_id and user_name = @username)
-	Begin
-		select 204 StatusCode,
-		'Device not allowed' Message
-		return;
-	end
 
 	if exists (select 'm' from tbl_user where user_name = @username and working_status = 3)
 	begin
@@ -208,7 +202,7 @@ Begin
 		return;
 	end
 
-	if exists(select 'm' from tbl_user where user_name=@username and com_id=@com_id and device_id=@device_id)
+	if exists(select 'm' from tbl_user where ID=@user_id and com_id=@com_id and device_id=@device_id)
 	begin
 		select 
 		  u.ID as UID,
@@ -303,9 +297,9 @@ Begin
 		  left join tbl_designation as de on de.ID = u.design_id 
 		  left join tbl_sub_department as sd on sd.Id = u.sub_depart_id
 		  left join tbl_branch as b on b.Id = u.branch
-		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id
+		  left join tbl_fiscal_year as y on y.fiscal_id=u.fiscal_id and y.is_current=1
 		  left join tbl_grade as g on g.Id=u.grade_id
-		  where u.user_name=@username
+		  where u.ID=@user_id
 
 		return;
 	end

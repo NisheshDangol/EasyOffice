@@ -24,16 +24,21 @@ namespace Easy.Models.Models
         public string Fb { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
-        public string CurrentSystem { get; set; }
+        public string CurrentSoftware { get; set; }
+        public string CurrentAttend { get; set; }
+        public string CurrentSms { get; set; }
+        public string CurrentCloud { get; set; }
+        public int ClientType { get; set; }
         public string IFlag { get; set; }
         public int SourceID { get; set; }
-        public int ProductID { get; set; }
+        public string ProductID { get; set; }
         public int LeadStatus { get; set; }
         public int LAssignedTo { get; set; }
         public string EnquiryDate { get; set; }
         public string EnquiryTime { get; set; }
         public string LRemarks { get; set; }
         public int IsOurClient { get; set; }
+        public string QuotePrice { get; set; }
         public int FollowType { get; set; }
         public string FollowDate { get; set; }
         public string FollowTime { get; set; }
