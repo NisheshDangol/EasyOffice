@@ -1277,11 +1277,117 @@ namespace Easy.Services.Services
             parameters.Add("@dflag", req.DFlag);
             parameters.Add("@userid", req.UserID);
             parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@leaveid", req.LeaveID);
 
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
             {
                 res.LeaveReports = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<OrgTypeRes> OrgTypeAdmin(OrgType req)
+        {
+            OrgTypeRes res = new OrgTypeRes();
+            res.OrgTypeLst = null;
+            var sql = "sp_admin_organization_type";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@orgtypeid", req.OrgTypeID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.OrgTypeLst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<AdminLeadSourceRes> AdminLead(AdminLeadSource req)
+        {
+            var res = new AdminLeadSourceRes();
+            var sql = "sp_admin_lead";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@leadsrcid", req.LeadSrcID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.LeadSrcLst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<FollowTypeAdminRes> AdminFollowType(FollowTypeAdmin req)
+        {
+            var res = new FollowTypeAdminRes();
+            var sql = "sp_admin_followtype";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@flag", req.Flag);
+            parameters.Add("@status", req.Status);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@fiscalid", req.FiscalID);
+            parameters.Add("@name", req.Name);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@leadsrcid", req.LeadSrcID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.FlwTypeLst = data.ToList();
                 res.StatusCode = 200;
                 res.Message = "Success";
             }

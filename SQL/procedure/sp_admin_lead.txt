@@ -1,0 +1,97 @@
+alter proc sp_admin_lead(
+	@comid nvarchar(50) = null,
+	@staffid int = null,
+	@flag nvarchar(50) = null,
+	@name nvarchar(150) = null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@leadsrcid int = null,
+	@status int = null
+)
+AS
+BEGIN
+	If not (@flag='i' or @flag='u' or @flag='s' or @flag='uls')
+	Begin
+		Select 207 StatusCode, 'Flag does not exists' Message
+		return;
+	End	
+	if(@flag = 'i')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If exists (Select 'm' from tbl_lead_source where name=@name)
+		Begin
+			Select 203 StatusCode, 'Lead source already exists' Message
+			return;
+		End
+		Insert into tbl_lead_source(com_id,name,status,fiscal_id,branch_id,created_by,
+		updated_by,created_date,updated_date) values
+		(@comid,@name,1,@fiscalid,@branchid,@staffid,@staffid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='u')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_lead_source where ID=@leadsrcid)
+		Begin
+			Select 203 StatusCode, 'Lead source does not exists' Message
+			return;
+		End
+		If exists(Select 'm' from tbl_lead_source where ID<>@leadsrcid and name = @name)
+		Begin
+			Select 204 StatusCode, 'Lead source already exists' Message
+			return;
+		End
+		Update tbl_lead_source set updated_by=@staffid,name=@name,branch_id=@branchid,
+		fiscal_id=@fiscalid where com_id=@comid and ID=@leadsrcid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='s')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid) and @staffid<>-1
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Select distinct(ls.ID) LeadSrcID,ls.name Name,  
+		(Select count(distinct(org_id)) from tbl_leads where lead_source=ls.ID) NoOfOrg,
+		(Select count(ID) from tbl_leads where lead_source=ls.ID) NoOfLead
+		from tbl_lead_source ls
+		where ls.com_id=@comid and
+		case when @staffid=-1 then '1' else ls.created_by end = case when @staffid=-1 then '1' else @staffid end
+		and case when @status=-1 then '1' else ls.status end = case when @status=-1 then '1' else @status end
+
+	End
+
+
+	If(@flag='uls')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_lead_source where ID=@leadsrcid)
+		Begin
+			Select 203 StatusCode, 'Lead source does not exists' Message
+			return;
+		End
+		Update tbl_lead_source set status=@status,updated_by=@staffid,branch_id=@branchid
+		where ID=@leadsrcid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

@@ -36,5 +36,7 @@ namespace Easy.Services.Interface
         Task<Birthday> Birthday(BirthdayReq req);
         Task<AttenAdminRes> AttendanceAdmin(AttenAdminReq req);
         Task<LeaveReport> LeaveAdmin(LeaveReq req);
+        Task<FollowTypeAdminRes> AdminFollowType(FollowTypeAdmin req);
+        Task<AdminLeadSourceRes> AdminLead(AdminLeadSource req);
     }
 }

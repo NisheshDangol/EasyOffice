@@ -756,7 +756,7 @@ namespace Easy.Services.Services
         {
             UserActivity res = new UserActivity();
             res.UserAct = null;
-            var sql = @"select act_date AcDate,act_time AcTime,remarks Remarks from tbl_user_activity where user_id ='"+UserID+"' and com_id='"+ComID+"' and status = 1 and fiscal_id='"+FiscalID+"' and branch_id='"+BranchID+"' order by AcDate,AcTime desc";
+            var sql = @"select act_date AcDate,act_time AcTime,remarks Remarks from tbl_user_activity where user_id ='"+UserID+"' and com_id='"+ComID+"' and status = 1 and fiscal_id='"+FiscalID+"' and branch_id='"+BranchID+"' order by ID desc";
             
             var data = await DBHelper.RunQuery<dynamic>(sql);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
@@ -769,7 +769,7 @@ namespace Easy.Services.Services
             {
                 res.StatusCode = data.FirstOrDefault().StatusCode;
                 res.Message = data.FirstOrDefault().Message;
-                res.UserAct = data.ToList();
+                res.UserAct = null;
             }
             else
             {
@@ -777,6 +777,28 @@ namespace Easy.Services.Services
                 res.Message = "No Data";
                 res.UserAct = null;
             }
+            return res;
+        }
+
+
+        public async Task<Master> Dropdowns(string ComID, int BranchID, int DepartID, int SubDepartID)
+        {
+            var res = new Master();
+            var sql = "sp_masters";
+            var parameters = new DynamicParameters();
+            parameters.Add("@com_id", ComID);
+            parameters.Add("@departid", DepartID);
+            parameters.Add("@subdepartid", SubDepartID);
+            parameters.Add("@branchid", BranchID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            res.dropdowns = data.ToList();
+            
+
+            res.StatusCode = 200;
+            res.Message = "Success";
+
+
             return res;
         }
     }

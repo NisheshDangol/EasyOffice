@@ -264,5 +264,21 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
 
+        [HttpPost]
+        [Route("~/api/admin/lead-src")]
+        public async Task<IActionResult> AdminLeadSource(AdminLeadSource req)
+        {
+            var data = await _unitOfWork.PostServices.AdminLead(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/follow-type")]
+        public async Task<IActionResult> AdminFollow(FollowTypeAdmin req)
+        {
+            var data = await _unitOfWork.PostServices.AdminFollowType(req);
+            return Ok(data);
+        }
+
     }
 }

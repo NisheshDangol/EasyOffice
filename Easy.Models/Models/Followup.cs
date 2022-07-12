@@ -51,4 +51,23 @@ namespace Easy.Models.Models
     {
         public List<dynamic> FollowupType { get; set; }
     }
+
+
+    public class FollowTypeAdmin
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public string Flag { get; set; }
+        public string Name { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public int FollowTypeID { get; set; }
+        public int Status { get; set; }
+        public int LeadSrcID { get; set; }
+    }
+
+    public class FollowTypeAdminRes:CommonResponse
+    {
+        public List<dynamic> FlwTypeLst { get; set; }
+    }
 }

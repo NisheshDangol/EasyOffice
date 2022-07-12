@@ -60,5 +60,6 @@ namespace Easy.Models.Models
         public int BranchID { get; set; }
         public int StaffID { get; set; }
         public int FiscalID { get; set; }
+        public int LeaveID { get; set; }
     }
 }

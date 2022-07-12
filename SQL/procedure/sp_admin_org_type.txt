@@ -1,0 +1,92 @@
+USE [ES25]
+GO
+/****** Object:  StoredProcedure [dbo].[sp_admin_organization_type]    Script Date: 7/11/2022 12:37:08 PM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER proc [dbo].[sp_admin_organization_type](
+	@comid nvarchar(50)=null,
+	@staffid int = null,
+	@flag nvarchar(5) = null,
+	@name nvarchar(250) = null,
+	@branchid int =null,
+	@fiscalid int = null,
+	@orgtypeid int = null,
+	@status int = null
+)
+AS
+BEGIN
+	IF not (@flag='i' or @flag = 'u' or @flag='s' or @flag='us')
+	Begin
+		Select 207 StatusCode, 'Flag does not exists' Message
+		return;
+	End
+	If(@flag='i')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status = 1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Insert into tbl_organization_type (com_id,name,status,created_by,updated_by,added_date,updated_date,branch_id,fiscal_id)
+		values (@comid,@name,1,@staffid,@staffid,GETDATE(),getdate(),@branchid,@fiscalid)
+		Select 200  StatusCode, 'Success' Message
+		return;
+	End
+
+
+	IF(@flag='u')
+	Begin
+		If not exists(Select 'm' from tbl_organization_type where ID=@orgtypeid)
+		Begin
+			Select 203 StatusCode, 'Organization Type does not exists' Message
+			return;
+		ENd
+		IF exists(Select 'm' from tbl_organization_type where name=@name and ID<>@orgtypeid)
+		Begin
+			Select 204 StatusCode, 'Organization type already exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status = 1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Update tbl_organization_type set updated_by=@staffid,name=@name,branch_id=@branchid,
+		fiscal_id=@fiscalid where ID=@orgtypeid and com_id=@comid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+	
+
+
+	If(@flag='s')
+	Begin
+		Select ot.ID OrgTypeID, name Name, ot.branch_id BranchID, ot.status Status
+		from tbl_organization_type ot
+		left join tbl_organization o on o.org_type=ot.ID
+		where com_id =@comid and 
+		case when @staffid=-1 then '1' else ot.created_by end = case when @staffid=-1 then '1' else @staffid end
+		and ot.branch_id=@branchid and 
+		case when @status=-1 then '1' else ot.status end = case when @status=-1 then '1' else @status end
+	End	
+
+
+	IF(@flag = 'uls')
+	Begin
+		If not exists(Select 'm' from tbl_organization_type where ID=@orgtypeid)
+		Begin
+			Select 203 StatusCode, 'Organization Type does not exists' Message
+			return;
+		ENd
+		If not exists(Select 'm' from tbl_user where ID=@staffid and status = 1)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Update tbl_organization_type set status=1, updated_by=@staffid,branch_id=@branchid
+		where ID=@orgtypeid and com_id=@comid
+	
+	End
+END

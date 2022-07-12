@@ -1,0 +1,98 @@
+alter proc sp_admin_followtype(
+	@comid nvarchar(50)=null,
+	@staffid int = null,
+	@flag nvarchar(50) = null,
+	@name nvarchar(50) = null,
+	@branchid int = null,
+	@fiscalid int = null,
+	@followtypeid int = null,
+	@status int = null,
+	@leadsrcid int = null
+)AS
+BEGIN
+	If not (@flag='i' or @flag='u' or @flag='s' or @flag='uls')
+	Begin
+		Select 207 StatusCode, 'Flag does not exists' Message
+		return;
+	End
+	if(@flag = 'i')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If exists(Select 'm' from tbl_follow_type where name=@name)
+		Begin
+			Select 203 StatusCode, 'Follow type already exists' Message
+			return;
+		End
+		Insert into tbl_follow_type(com_id,name,status,fiscal_id,branch_id,created_by,updated_by,
+		created_date,updated_date) values
+		(@comid,@name,1,@fiscalid,@branchid,@staffid,@staffid,GETDATE(),GETDATE())
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+
+	If(@flag='u')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_follow_type where ID=@followtypeid)
+		Begin
+			Select 203 StatusCode, 'Follow type does not exists' Message
+			return;
+		End
+		If exists(Select 'm' from tbl_follow_type where ID<>@followtypeid and name =@name)
+		Begin
+			Select 204 StatusCode, 'Follow type already exists' Message
+			return;
+		End
+		Update tbl_follow_type set updated_by=@staffid,name=@name,branch_id=@branchid,
+		fiscal_id=@fiscalid where com_id=@comid and created_by=@staffid and ID=@followtypeid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+
+	If(@flag='s')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid) and @staffid<>-1
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		Select ft.ID FollowTypeID, ft.name Name, 
+		(Select count(distinct(contact_id)) from tbl_follow_up where follow_type=ft.ID and to_type=1 and com_id=@comid) NoOfOrg,
+		(Select count(distinct(contact_id)) from tbl_follow_up where follow_type=ft.ID and to_type=2 and com_id=@comid) NoOfPerson,
+		status Status
+		from tbl_follow_type ft
+		where com_id=@comid and 
+		case when @staffid=-1 then '1' else created_by end = case when @staffid=-1 then '1' else @staffid end
+		and branch_id=@branchid and fiscal_id=@fiscalid
+		return;
+	End
+
+
+	If(@flag='uls')
+	Begin
+		If not exists(Select 'm' from tbl_user where ID=@staffid)
+		Begin
+			Select 202 StatusCode, 'Staff does not exists' Message
+			return;
+		End
+		If not exists(Select 'm' from tbl_follow_type where ID=@followtypeid)
+		Begin
+			Select 203 StatusCode, 'Follow type does not exists' Message
+			return;
+		End
+		
+		Update tbl_follow_type set status=@status,updated_by=@staffid,branch_id=@branchid
+		where com_id=@comid and ID=@leadsrcid
+		Select 200 StatusCode, 'Success' Message
+		return;
+	End
+END

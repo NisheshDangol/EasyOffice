@@ -1,0 +1,32 @@
+USE [ES25]
+GO
+
+/****** Object:  Table [dbo].[tbl_feat_permission]    Script Date: 7/12/2022 11:46:41 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE TABLE [dbo].[tbl_feat_permission](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[com_id] [nvarchar](50) NULL,
+	[depart_id] [int] NULL,
+	[sub_depart] [int] NULL,
+	[designation_id] [int] NULL,
+	[user_id] [int] NULL,
+	[flag] [int] NULL,
+	[menu_id] [int] NULL,
+	[c_allow] [int] NULL,
+	[r_allow] [int] NULL,
+	[u_allow] [int] NULL,
+	[d_allow] [int] NULL,
+	[status] [int] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+

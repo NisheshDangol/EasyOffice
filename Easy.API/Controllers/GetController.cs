@@ -220,5 +220,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.UserActivity(UserID,ComID,FiscalID, BranchID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/master")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Dropdown(string ComID, int BranchID, int DepartID, int SubDepartID)
+        {
+            var data = await _unitOfWork.GetServices.Dropdowns(ComID, BranchID,DepartID,SubDepartID);
+            return Ok(data);
+        }
     }
 }

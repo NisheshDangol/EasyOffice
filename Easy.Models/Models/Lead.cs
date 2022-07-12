@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Easy.Connection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,5 +21,23 @@ namespace Easy.Models.Models
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
         public int LeadSource { get; set; }
+    }
+
+
+    public class AdminLeadSource
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public string Flag { get; set; }
+        public string Name { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public int LeadSrcID { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class AdminLeadSourceRes:CommonResponse
+    {
+        public List<dynamic> LeadSrcLst { get; set; }
     }
 }

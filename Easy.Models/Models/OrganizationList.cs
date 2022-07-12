@@ -22,7 +22,7 @@ namespace Easy.Models.Models
     //    public string FollowCount { get; set; }
     //    public string SupportCount { get; set; }
     //}
-    public class OrganizationDto:CommonResponse
+    public class OrganizationDto : CommonResponse
     {
         public List<dynamic> OrgList { get; set; }
     }
@@ -53,7 +53,7 @@ namespace Easy.Models.Models
     //    public string OrgTypeName { get; set;}
     //    public string OrgCount { get; set;}
     //}
-    public class OrganizationTypeDto:CommonResponse
+    public class OrganizationTypeDto : CommonResponse
     {
         public List<dynamic> OrganizationTypes { get; set; }
     }
@@ -67,19 +67,37 @@ namespace Easy.Models.Models
     //    public string FollowCount { get; set; }
     //    public string SupportCount { get; set; }
     //}
-    public class OrganizationProductDto:CommonResponse
+    public class OrganizationProductDto : CommonResponse
     {
         public List<dynamic> OrganizationProducts { get; set; }
     }
     public class OrganizationStaff
     {
-        public int StaffId { get; set;}
-        public string StaffName { get; set;}
-        public string DesignationName { get; set;}
+        public int StaffId { get; set; }
+        public string StaffName { get; set; }
+        public string DesignationName { get; set; }
     }
-    public class OrgnizationStaffDto:CommonResponse
+    public class OrgnizationStaffDto : CommonResponse
     {
         public List<OrganizationStaff> OrganizationStaffs { get; set; }
+    }
+
+
+    public class OrgType
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public string Flag { get; set; }
+        public string Name { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public int OrgTypeID { get; set; }
+        public int Status { get; set; }
+    }
+
+    public class OrgTypeRes : CommonResponse
+    {
+        public List<dynamic> OrgTypeLst { get; set; }
     }
 
 }
