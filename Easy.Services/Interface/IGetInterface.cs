@@ -32,5 +32,6 @@ namespace Easy.Services.Interface
         Task<FiscalYear> FiscalYear(string ComID, int BranchID);
         Task<UserActivity> UserActivity(int UserID, string ComID, int FiscalID, int BranchID);
         Task<Master> Dropdowns(string ComID, int BranchID, int DepartID, int SubDepartID);
+        Task<JobReturn> Job(string ComID, string Flag, int JobStatus, int JobID);
     }
 }

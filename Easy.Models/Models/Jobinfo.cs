@@ -7,17 +7,35 @@ using System.Threading.Tasks;
 
 namespace Easy.Models.Models
 {
-    //public class Jobinfo
-    //{
-    //    public string DesignationName { get; set; }
-    //    public string DepartmentName { get; set; }
-    //    public string SubDepartmentName { get; set; }
-    //    public string Grade { get; set; }
-    //    public string Manager { get; set; }
-    //    public string WorkingStatus { get; set; }
-    //    public string StartDate { get; set; }
-    //    public string EndDate { get; set; }
-    //}
+    public class JobReq
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public string Flag { get; set; }
+        public int JobID { get; set; }
+        public int DepartID { get; set; }
+        public int SubDepartID { get; set; }
+        public int DesignationID { get; set; }
+        public int ShiftID { get; set; }
+        public int ShiftTypeID { get; set; }
+        public int JobTypeID { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Responsibility { get; set; }
+        public string Education  { get; set; }
+        public int NoPos { get; set; }
+        public string Experience  { get; set; }
+        public int IsNeg  { get; set; }
+        public int IsPaid  { get; set; }
+        public string Salary { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string InterviewDate { get; set; }
+        public int JobStatus { get; set; }
+        public int BranchID { get; set; }
+        public int FiscalID { get; set; }
+        public string Banner { get; set; }
+    }
     public class JobReturn : CommonResponse
     {
         public List<dynamic> JobInfo { get; set; }
@@ -46,5 +64,20 @@ namespace Easy.Models.Models
         public int FiscalID { get; set; }
         public int Status { get; set; }
         public int JobID { get; set; }
+    }
+
+    public class JobApplication
+    {
+        public string ComID { get; set; }
+        public int StaffID { get; set; }
+        public string Flag { get; set; }
+        public int JobID { get; set; }
+        public int ApplicantID { get; set; }
+        public int JobStatus { get; set; }
+    }
+
+    public class JobApplicationRes : CommonResponse
+    {
+        public List<dynamic> JobApplicantlst { get; set; }
     }
 }

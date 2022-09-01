@@ -786,17 +786,72 @@ namespace Easy.Services.Services
             var res = new Master();
             var sql = "sp_masters";
             var parameters = new DynamicParameters();
-            parameters.Add("@com_id", ComID);
+            parameters.Add("@comid", ComID);
             parameters.Add("@departid", DepartID);
             parameters.Add("@subdepartid", SubDepartID);
             parameters.Add("@branchid", BranchID);
 
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-            res.dropdowns = data.ToList();
-            
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.StatusCode = 200;
+                res.Message = "Success";
+                res.dropdowns = data.ToList();
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+                res.dropdowns = null;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+                res.dropdowns = null;
+            }
 
-            res.StatusCode = 200;
-            res.Message = "Success";
+            return res;
+        }
+
+        public async Task<JobReturn> Job (string ComID, string Flag, int JobStatus, int JobID)
+        {
+            var res = new JobReturn();
+            try
+            {
+                var sql = "sp_job_information";
+                var parameters = new DynamicParameters();
+                parameters.Add("@comid", ComID);
+                parameters.Add("@flag", Flag);
+                parameters.Add("@jobstatus", JobStatus);
+                parameters.Add("@jobid", JobID);
+
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+                {
+                    res.StatusCode = 200;
+                    res.Message = "Success";
+                    res.JobInfo = data.ToList();
+                }
+                else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    res.StatusCode = data.FirstOrDefault().StatusCode;
+                    res.Message = data.FirstOrDefault().Message;
+                    res.JobInfo = null;
+                }
+                else
+                {
+                    res.StatusCode = 400;
+                    res.Message = "No Data";
+                    res.JobInfo = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                res.StatusCode = 400;
+                res.Message = ex.Message;
+            }
+            
 
 
             return res;

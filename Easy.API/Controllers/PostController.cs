@@ -280,5 +280,60 @@ namespace Easy.API.Controllers
             return Ok(data);
         }
 
+        [HttpPost]
+        [Route("~/api/admin/org-type")]
+        public async Task<IActionResult> AdminOrgType(OrgType req)
+        {
+            var data = await _unitOfWork.PostServices.OrgTypeAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/leads-report")]
+        public async Task<IActionResult> LeadReport(Leads req)
+        {
+            var data = await _unitOfWork.PostServices.LeadsReport(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/leads-summary")]
+        public async Task<IActionResult> LeadSummary(Leads req)
+        {
+            var data = await _unitOfWork.PostServices.LeadsSummary(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/leads-list")]
+        public async Task<IActionResult> LeadList(LeadList req)
+        {
+            var data = await _unitOfWork.PostServices.LeadList(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/job")]
+        public async Task<IActionResult> JobAdmin(JobReq req)
+        {
+            var data = await _unitOfWork.PostServices.JobAdmin(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/admin/job-applicant")]
+        public async Task<IActionResult> JobApplicant(JobApplication req)
+        {
+            var data = await _unitOfWork.PostServices.JobApplication(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/complain")]
+        public async Task<IActionResult> Complain(Complain req)
+        {
+            var data = await _unitOfWork.PostServices.Complain(req);
+            return Ok(data);
+        }
     }
 }

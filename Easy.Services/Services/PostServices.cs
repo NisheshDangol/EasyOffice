@@ -734,7 +734,7 @@ namespace Easy.Services.Services
             parameters.Add("@department", req.Department);
             parameters.Add("@subdepartment", req.SubDepartment);
             parameters.Add("@designation", req.Designation);
-            parameters.Add("@workingdays", req.WorkintDays);
+            parameters.Add("@workingdays", req.WorkingDays);
             parameters.Add("@ismanager", req.IsManager);
             parameters.Add("@fiscalid", req.FiscalID);
             parameters.Add("@branchid", req.BranchID);
@@ -1338,7 +1338,7 @@ namespace Easy.Services.Services
         public async Task<AdminLeadSourceRes> AdminLead(AdminLeadSource req)
         {
             var res = new AdminLeadSourceRes();
-            var sql = "sp_admin_lead";
+            var sql = "sp_admin_lead_source";
             var parameters = new DynamicParameters();
             parameters.Add("@comid", req.ComID);
             parameters.Add("@flag", req.Flag);
@@ -1383,6 +1383,7 @@ namespace Easy.Services.Services
             parameters.Add("@name", req.Name);
             parameters.Add("@staffid", req.StaffID);
             parameters.Add("@leadsrcid", req.LeadSrcID);
+            parameters.Add("@followtypeid", req.FollowTypeID);
 
             var data = await DBHelper.RunProc<dynamic>(sql, parameters);
             if (data.Count() != 0 && data.FirstOrDefault().Message == null)
@@ -1402,6 +1403,273 @@ namespace Easy.Services.Services
                 res.Message = "No Data";
             }
             return res;
+        }
+
+
+        public async Task<LeadRes> LeadsReport(Leads req)
+        {
+            LeadRes res = new LeadRes();
+            res.Leadlst = null;
+            var sql = "sp_admin_leads";
+            var parameters = new DynamicParameters();
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@productid", req.ProductID);
+            parameters.Add("@flag", "leadreport");
+            parameters.Add("@dflag", req.DFlag);
+            parameters.Add("@value", req.Value);
+            parameters.Add("@orgtype", req.OrgTypeID);
+            parameters.Add("@clienttype", req.ClientType);
+            parameters.Add("@leadstatus", req.LeadStatus);
+            parameters.Add("@branchid", req.BranchID);
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@iflag", req.Flag);
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.Leadlst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<LeadRes> LeadsSummary(Leads req)
+        {
+            LeadRes res = new LeadRes();
+            res.Leadlst = null;
+            var sql = "sp_admin_leads";
+            var parameters = new DynamicParameters();
+            parameters.Add("@comid", req.ComID);
+            parameters.Add("@staffid", req.StaffID);
+            parameters.Add("@flag", "leadsummary");
+            parameters.Add("@iflag", req.Flag);
+            parameters.Add("@dflag", req.DFlag);
+            parameters.Add("@value", req.Value);
+            parameters.Add("@branchid", req.BranchID);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.Leadlst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+
+        public async Task<LeadRes> LeadList(LeadList req)
+        {
+            LeadRes res = new LeadRes();
+            res.Leadlst = null;
+            var sql = "sp_leads";
+            var parameters = new DynamicParameters();
+            parameters.Add("@CompanyId", req.ComID);
+            parameters.Add("@userid", req.UserID);
+            parameters.Add("@flag", "leadlist");
+            parameters.Add("@AssignedTo", req.AssignedTo);
+            parameters.Add("@OrganizationId", req.OrgID);
+            parameters.Add("@isourclient", req.IsOurClient);
+            parameters.Add("@ProductId", req.ProductID);
+            parameters.Add("@LeadStatus", req.LeadStatus);
+            parameters.Add("@LeadSource", req.LeadSource);
+            parameters.Add("@fromdate", req.FromDate);
+            parameters.Add("@todate", req.ToDate);
+
+            var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+            if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+            {
+                res.Leadlst = data.ToList();
+                res.StatusCode = 200;
+                res.Message = "Success";
+            }
+            else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+            {
+                res.StatusCode = data.FirstOrDefault().StatusCode;
+                res.Message = data.FirstOrDefault().Message;
+            }
+            else
+            {
+                res.StatusCode = 400;
+                res.Message = "No Data";
+            }
+            return res;
+        }
+
+        public async Task<JobReturn> JobAdmin(JobReq req)
+        {
+            var res = new JobReturn();
+            try
+            {                
+                var sql = "sp_admin_jobinformation";
+                var parameters = new DynamicParameters();
+                parameters.Add("@CompanyId", req.ComID);
+                parameters.Add("@staffid", req.StaffID);
+                parameters.Add("@departid", req.DepartID);
+                parameters.Add("@subdepartid", req.SubDepartID);
+                parameters.Add("@designationid", req.DesignationID);
+                parameters.Add("@shiftid", req.ShiftID);
+                parameters.Add("@shifttypeid", req.ShiftTypeID);
+                parameters.Add("@jobtypeid", req.JobTypeID);
+                parameters.Add("@title", req.Title);
+                parameters.Add("@description", req.Description);
+                parameters.Add("@responsibility", req.Responsibility);
+                parameters.Add("@education", req.Education);
+                parameters.Add("@nopos", req.NoPos);
+                parameters.Add("@experience", req.Experience);
+                parameters.Add("@isneg", req.IsNeg);
+                parameters.Add("@ispaid", req.IsPaid);
+                parameters.Add("@salary", req.Salary);
+                parameters.Add("@startdate", req.StartDate);
+                parameters.Add("@enddate", req.EndDate);
+                parameters.Add("@jobstatus", req.JobStatus);
+                parameters.Add("@branchid", req.BranchID);
+                parameters.Add("@fiscalid", req.FiscalID);
+                parameters.Add("@interviewdate", req.InterviewDate);
+                parameters.Add("@jobid", req.JobID);
+                parameters.Add("@flag", req.Flag);
+                if (!string.IsNullOrEmpty(req.Banner))
+                {
+                    var img = Convert.FromBase64String(req.Banner);
+                    var imgname = DateTime.Now.Ticks;
+                    Image image = Image.FromStream(new MemoryStream(img));
+                    if (!Directory.Exists("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\"))
+                    {
+                        Directory.CreateDirectory("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\");
+                    }
+                    image.Save("E:\\easysoftware\\API\\gharelukam\\assets\\photo\\notification\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                    parameters.Add("@banner", imgname + ".jpg");
+                }
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+                {
+                    res.JobInfo = data.ToList();
+                    res.StatusCode = 200;
+                    res.Message = "Success";
+                }
+                else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    res.StatusCode = data.FirstOrDefault().StatusCode;
+                    res.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    res.StatusCode = 400;
+                    res.Message = "No Data";
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.StatusCode = 400;
+                res.Message = ex.Message;
+                return res;
+            }
+            
+        }
+
+        public async Task<JobApplicationRes> JobApplication(JobApplication req)
+        {
+            JobApplicationRes res = new JobApplicationRes();
+            try
+            {
+                res.JobApplicantlst = null;
+                var sql = "sp_admin_applicant";
+                var parameters = new DynamicParameters();
+                parameters.Add("@comid", req.ComID);
+                parameters.Add("@staffid", req.StaffID);
+                parameters.Add("@flag", req.Flag);
+                parameters.Add("@jobid", req.JobID);
+                parameters.Add("@jobstatus", req.JobStatus);
+                parameters.Add("@applicantid", req.ApplicantID);
+
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+                {
+                    res.JobApplicantlst = data.ToList();
+                    res.StatusCode = 200;
+                    res.Message = "Success";
+                }
+                else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    res.StatusCode = data.FirstOrDefault().StatusCode;
+                    res.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    res.StatusCode = 400;
+                    res.Message = "No Data";
+                }
+                return res;
+            }
+            catch(Exception ex)
+            {
+                res.StatusCode = 400;
+                res.Message = ex.Message;
+                return res;
+            }
+            
+        }
+
+        public async Task<CommonResponse> Complain(Complain req)
+        {
+            CommonResponse res = new CommonResponse();
+            try
+            {
+                var sql = "sp_complain";
+                var parameters = new DynamicParameters();
+                parameters.Add("@comid", req.ComID);
+                parameters.Add("@title", req.Title);
+                parameters.Add("@flag", req.Flag);
+                parameters.Add("@description", req.Description);
+                parameters.Add("@suggestion", req.Suggestion);
+
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+                {
+                    res.StatusCode = 200;
+                    res.Message = "Success";
+                }
+                else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    res.StatusCode = data.FirstOrDefault().StatusCode;
+                    res.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    res.StatusCode = 400;
+                    res.Message = "No Data";
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.StatusCode = 400;
+                res.Message = ex.Message;
+                return res;
+            }
+            
         }
     }
 }

@@ -38,5 +38,10 @@ namespace Easy.Services.Interface
         Task<LeaveReport> LeaveAdmin(LeaveReq req);
         Task<FollowTypeAdminRes> AdminFollowType(FollowTypeAdmin req);
         Task<AdminLeadSourceRes> AdminLead(AdminLeadSource req);
+        Task<LeadRes> LeadsReport(Leads req);
+        Task<LeadRes> LeadsSummary(Leads req);
+        Task<LeadRes> LeadList(LeadList req);
+        Task<JobReturn> JobAdmin(JobReq req);
+        Task<CommonResponse> Complain(Complain req);
     }
 }

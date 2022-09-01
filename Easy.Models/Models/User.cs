@@ -49,7 +49,7 @@ namespace Easy.Models.Models
         public int Department { get; set; }
         public int SubDepartment { get; set; }
         public int Designation { get; set; }
-        public int WorkintDays { get; set; }
+        public string WorkingDays { get; set; }
         public int IsManager { get; set; }
         public int FiscalID { get; set; }
         public int BranchID { get; set; }

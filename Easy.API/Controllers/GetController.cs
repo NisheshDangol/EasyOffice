@@ -229,5 +229,14 @@ namespace Easy.API.Controllers
             var data = await _unitOfWork.GetServices.Dropdowns(ComID, BranchID,DepartID,SubDepartID);
             return Ok(data);
         }
+
+        [HttpGet]
+        [Route("~/api/job")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Job(string ComID, string Flag, int JobStatus, int JobID)
+        {
+            var data = await _unitOfWork.GetServices.Job(ComID, Flag, JobStatus, JobID);
+            return Ok(data);
+        }
     }
 }
