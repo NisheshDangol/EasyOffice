@@ -249,7 +249,7 @@ namespace Easy.API.Controllers
         }
 
         [HttpPost]
-        [Route("~/api/admin/atten-summary")]
+        [Route("~/api/admin/oldatten-summary")]
         public async Task<IActionResult> AdminAttenSummary(AttenAdminReq req)
         {
             var data = await _unitOfWork.PostServices.AttendanceAdmin(req);
@@ -333,6 +333,14 @@ namespace Easy.API.Controllers
         public async Task<IActionResult> Complain(Complain req)
         {
             var data = await _unitOfWork.PostServices.Complain(req);
+            return Ok(data);
+        }
+
+        [HttpPost]
+        [Route("~/api/job-application")]
+        public async Task<IActionResult> JobApply(JobApplication req)
+        {
+            var data = await _unitOfWork.PostServices.ApplyJob(req);
             return Ok(data);
         }
     }

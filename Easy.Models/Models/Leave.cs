@@ -17,6 +17,8 @@ namespace Easy.Models.Models
         public string Cause { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+        public string FromNepDate { get; set; }
+        public string ToNepDate { get; set; }
         public int IsFieldWork { get; set; }
         public int LeaveAssignedTo { get; set; }
         public int Notify { get; set; }
@@ -61,5 +63,6 @@ namespace Easy.Models.Models
         public int StaffID { get; set; }
         public int FiscalID { get; set; }
         public int LeaveID { get; set; }
+        public bool SendEmail { get; set; }
     }
 }

@@ -17,5 +17,7 @@ namespace Easy.Services
         PostServices PostServices { get; }  
         SendNotificationService SendNotificationServices { get; }
         BlogService blogservice { get; }
+        AttendanceService attendanceService { get; }
+        AssetService assetService { get; }
     }
 }

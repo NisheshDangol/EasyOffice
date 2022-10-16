@@ -177,7 +177,7 @@ namespace Easy.API.Controllers
         }
 
         [HttpGet]
-        [Route("~/api/attendance-report")]
+        [Route("~/api/oldattendance-report")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> AttendanceReport(string ComID, int UserID, string Flag, string Value, string From, string To, string DFlag)
         {
@@ -186,7 +186,7 @@ namespace Easy.API.Controllers
         }
 
         [HttpGet]
-        [Route("~/api/atten-summary")]
+        [Route("~/api/old-atten-summary")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<IActionResult> AttendanceSummary(string ComID, int UserID, string Flag,string Values, string DFlag)
         {
@@ -236,6 +236,49 @@ namespace Easy.API.Controllers
         public async Task<IActionResult> Job(string ComID, string Flag, int JobStatus, int JobID)
         {
             var data = await _unitOfWork.GetServices.Job(ComID, Flag, JobStatus, JobID);
+            return Ok(data);
+        }
+
+        [HttpGet]
+        [Route("~/api/date-converter")]
+        public async Task<IActionResult> DateConvert(string Date, string Flag)
+        {
+            string data = "";
+            if (Flag.ToUpper() == "E")
+            {
+                string month = "";
+                string day = "";
+                var attendate = NepaliDateConverter.DateConverter.ConvertToNepali(DateTime.Parse(Date).Year, DateTime.Parse(Date).Month, DateTime.Parse(Date).Day);
+                if (attendate.Month < 10)
+                {
+                    month = "0" + attendate.Month;
+                }
+                else month = "" + attendate.Month;
+                if (attendate.Day < 10)
+                {
+                    day = "0" + attendate.Day;
+                }
+                else day = "" + attendate.Day;
+                data = attendate.Year + "/" + month + "/" + day;
+            }
+            if (Flag.ToUpper() == "N")
+            {
+                string month = Date.Substring(0, 3);
+                string day = "";
+
+                var attendate = NepaliDateConverter.DateConverter.ConvertToEnglish(Int32.Parse( Date.Substring(0,4)), Int32.Parse(Date.Substring(5,2)), Int32.Parse(Date.Substring(8,2)));
+                if (attendate.Month < 10)
+                {
+                    month = "0" + attendate.Month;
+                }
+                else month = "" + attendate.Month;
+                if (attendate.Day < 10)
+                {
+                    day = "0" + attendate.Day;
+                }
+                else day = "" + attendate.Day;
+                data = attendate.Year + "-" + month + "-" + day;
+            }
             return Ok(data);
         }
     }

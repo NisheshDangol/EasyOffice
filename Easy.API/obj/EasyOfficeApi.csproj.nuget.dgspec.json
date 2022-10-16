@@ -259,7 +259,7 @@
           "dependencies": {
             "CorePush": {
               "target": "Package",
-              "version": "[3.0.10, )"
+              "version": "[3.1.1, )"
             },
             "FirebaseAdmin": {
               "target": "Package",
@@ -267,7 +267,7 @@
             },
             "MailKit": {
               "target": "Package",
-              "version": "[3.2.0, )"
+              "version": "[3.4.1, )"
             },
             "Microsoft.Extensions.Configuration.Abstractions": {
               "target": "Package",
@@ -277,9 +277,13 @@
               "target": "Package",
               "version": "[6.16.0, )"
             },
+            "Microsoft.SqlServer.SqlManagementObjects": {
+              "target": "Package",
+              "version": "[161.47027.0, )"
+            },
             "MimeKit": {
               "target": "Package",
-              "version": "[3.2.0, )"
+              "version": "[3.4.1, )"
             },
             "Nancy": {
               "target": "Package",

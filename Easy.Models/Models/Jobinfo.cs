@@ -74,7 +74,14 @@ namespace Easy.Models.Models
         public int JobID { get; set; }
         public int ApplicantID { get; set; }
         public int JobStatus { get; set; }
+        public string FullName { get; set; }
+        public string Contact { get; set; }
+        public string Email { get; set; }
+        public string CV { get; set; }
+        public string CVType { get; set; }
+        public string Via { get; set; }
     }
+
 
     public class JobApplicationRes : CommonResponse
     {

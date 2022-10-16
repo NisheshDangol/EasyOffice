@@ -19,12 +19,14 @@ namespace Easy.Services
         private readonly ITokenInterface _tokenInterface;
         private readonly FcmNotificationSetting _fcmNotificationSetting;
         private readonly SmtpSettings _settings;
+        private readonly IConfiguration _config;
 
-        public UnitOfWork(ITokenInterface tokenInterface, IOptions<FcmNotificationSetting> settings, IOptions<SmtpSettings> setting)
+        public UnitOfWork(ITokenInterface tokenInterface, IOptions<FcmNotificationSetting> settings, IOptions<SmtpSettings> setting, IConfiguration config)
         {
             _tokenInterface = tokenInterface;
             _fcmNotificationSetting = settings.Value;
             _settings = setting.Value;
+            _config = config;
         }
         public LoginService service => new LoginService(_tokenInterface);
 
@@ -39,5 +41,9 @@ namespace Easy.Services
         public SendNotificationService SendNotificationServices => new SendNotificationService(_fcmNotificationSetting);
 
         public BlogService blogservice => new BlogService();
+
+        public AttendanceService attendanceService => new AttendanceService();
+
+        public AssetService assetService => new AssetService(_config);
     }
 }

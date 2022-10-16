@@ -87,4 +87,18 @@ namespace Easy.Models.Models
     {
         public List<dynamic> AttenRes { get; set; }
     }
+
+    public class UpdateUserInfo
+    {
+        
+        public int EnrollmentNumber { get; set; }
+        public string Name { get; set; }
+        
+    }
+
+    public class DeviceUserInfo
+    {
+        public string ComID { get; set; }
+        public List<UpdateUserInfo> deviceinfo { get; set; }
+    }
 }

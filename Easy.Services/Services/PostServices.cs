@@ -339,6 +339,8 @@ namespace Easy.Services.Services
             parameters.Add("@Cause", leave.Cause);
             parameters.Add("@FromDate", leave.FromDate);
             parameters.Add("@ToDate", leave.ToDate);
+            parameters.Add("@fromnepdate", leave.FromNepDate);
+            parameters.Add("@tonepdate", leave.ToNepDate);
             parameters.Add("@IsFieldWork", leave.IsFieldWork);
             parameters.Add("@LeaveAssignedTo", leave.LeaveAssignedTo);
             parameters.Add("@FiscalID", leave.FiscalID);
@@ -1225,7 +1227,8 @@ namespace Easy.Services.Services
         {
             AttenAdminRes res = new AttenAdminRes();
             res.AttenRes = null;
-            var sql = "sp_admin_attendance";
+            //var sql = "sp_admin_attendance";
+            var sql = "sp_admin_attendanceReport";
             var parameters = new DynamicParameters();
             parameters.Add("@comid", req.ComID);
             parameters.Add("@flag", req.Flag);
@@ -1295,6 +1298,35 @@ namespace Easy.Services.Services
             {
                 res.StatusCode = 400;
                 res.Message = "No Data";
+            }
+            if (data.Count()!=0 && data.FirstOrDefault().Message == "Success" && req.SendEmail==true)
+            {
+                var message = new MimeMessage();
+                message.From.Add(new MailboxAddress ("NisheshDangol",_settings.SenderEmail));
+                message.To.Add(new MailboxAddress ("NisheshDangol", data.FirstOrDefault().Email));
+                message.Subject = "LEAVE";
+                message.Body = new TextPart("plain")
+                {
+                    Text = data.FirstOrDefault().LeaveStatus,
+                };
+                var client = new SmtpClient();
+
+                try
+                {
+                    client.Connect("smtp.gmail.com", 465, false);
+                    client.Authenticate(new NetworkCredential(_settings.SenderEmail, _settings.Password));
+                    client.Send(message);
+                    client.Disconnect(true);
+                }
+                catch (Exception ex)
+                {
+                    res.StatusCode = 500;
+                    res.Message = ex.Message;
+                }
+                finally
+                {
+                    client.Dispose();
+                }
             }
             return res;
         }
@@ -1670,6 +1702,52 @@ namespace Easy.Services.Services
                 return res;
             }
             
+        }
+
+
+        public async Task<JobApplicationRes> ApplyJob(JobApplication req)
+        {
+            JobApplicationRes res = new JobApplicationRes();
+            try
+            {
+                res.JobApplicantlst = null;
+                var sql = "sp_job_information";
+                var parameters = new DynamicParameters();
+                parameters.Add("@comid", req.ComID);
+                parameters.Add("@fullname", req.FullName);
+                parameters.Add("@flag", req.Flag);
+                parameters.Add("@jobid", req.JobID);
+                parameters.Add("@contact", req.Contact);
+                parameters.Add("@email", req.Email);
+                parameters.Add("@cv", req.CV);
+                parameters.Add("@cvtype", req.CVType);
+                parameters.Add("@via", req.Via);
+
+                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                if (data.Count() != 0 && data.FirstOrDefault().Message == null)
+                {
+                    res.JobApplicantlst = data.ToList();
+                    res.StatusCode = 200;
+                    res.Message = "Success";
+                }
+                else if (data.Count() == 1 && data.FirstOrDefault().Message != null)
+                {
+                    res.StatusCode = data.FirstOrDefault().StatusCode;
+                    res.Message = data.FirstOrDefault().Message;
+                }
+                else
+                {
+                    res.StatusCode = 400;
+                    res.Message = "No Data";
+                }
+                return res;
+            }
+            catch (Exception ex)
+            {
+                res.StatusCode = 400;
+                res.Message = ex.Message;
+                return res;
+            }
         }
     }
 }
