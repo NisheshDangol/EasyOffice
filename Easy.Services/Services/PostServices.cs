@@ -208,30 +208,42 @@ namespace Easy.Services.Services
         public async Task<CommonResponse> CreateFollowUp(Followup followup)
         {
             var common = new CommonResponse();
-            common.StatusCode = 400;
-            if (string.IsNullOrEmpty(followup.ComID)) common.Message = "Input Companyid";
-            else
+            try
             {
-                string sql = "sp_followup";
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", followup.ComID);
-                parameters.Add("@createdby", followup.UserID);
-                parameters.Add("@organizationid", followup.ContactID);
-                parameters.Add("@totype", followup.ToType);
-                parameters.Add("@productid", followup.ProductID);
-                parameters.Add("@followdate", followup.FollowDate);
-                parameters.Add("@followtime", followup.FollowTime);
-                parameters.Add("@assignedto", followup.StaffID);
-                parameters.Add("@remarks", followup.Remarks);
-                parameters.Add("@followstatus", followup.FollowStatus);
-                parameters.Add("@followtype", followup.FollowType);
-                parameters.Add("@branchid", followup.BranchID);
-                parameters.Add("@fiscal_id", followup.FiscalID);
-                parameters.Add("@flag", "createfollow");
-                var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
+                common.StatusCode = 400;
+                if (string.IsNullOrEmpty(followup.ComID)) common.Message = "Input Companyid";
+                else
+                {
+                    string sql = "sp_follow_up";
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@comid", followup.ComID);
+                    parameters.Add("@userid", followup.UserID);
+                    parameters.Add("@referid", followup.ReferID);
+                    parameters.Add("@clientid", followup.ClientID);
+                    parameters.Add("@productid", followup.ProductID);
+                    parameters.Add("@campaignid", followup.CampaignID);
+                    parameters.Add("@followtype", followup.FollowType);
+                    parameters.Add("@followfor", followup.FollowFor);
+                    parameters.Add("@followdate", followup.FollowDate);
+                    parameters.Add("@followtime", followup.FollowTime);
+                    parameters.Add("@assignedto", followup.AssignedTo);
+                    parameters.Add("@remarks", followup.Remarks);
+                    parameters.Add("@followstatus", followup.FollowStatus);
+                    parameters.Add("@newextra", followup.NewExtra);
+                    parameters.Add("@extra", XMLConverter.GetXMLFromObject(followup.Extra));
+                    parameters.Add("@branchid", followup.BranchID);
+                    parameters.Add("@fiscalid", followup.FiscalID);
+                    parameters.Add("@flag", "createfollow");
+                    var data = await DBHelper.RunProc<CommonResponse>(sql, parameters);
 
-                common.StatusCode = data.FirstOrDefault().StatusCode;
-                common.Message = data.FirstOrDefault().Message;
+                    common.StatusCode = data.FirstOrDefault().StatusCode;
+                    common.Message = data.FirstOrDefault().Message;
+                }
+            }
+            catch (Exception ex)
+            {
+                common.StatusCode = 500;
+                common.Message = ex.Message;
             }
 
             return common;

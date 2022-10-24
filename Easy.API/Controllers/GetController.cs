@@ -51,12 +51,33 @@ namespace Easy.API.Controllers
         [HttpGet]
         [Route("~/api/follow-list")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        public async Task<IActionResult> Followuplist(string ComID, int UserID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType)
+        public async Task<IActionResult> Followuplist(string ComID, int UserID, int AssignedTo, string FromDate, string ToDate, int ProductID, int FollowTypeID, int FollowStatus, int ClientID)
         {
-            var data= await _unitOfWork.GetServices.followuplist(ComID, UserID,IsOurClient,FromDate,ToDate,OrgType,FollowType,FollowStatus,ToType);
+            var data= await _unitOfWork.GetServices.followuplist(ComID, UserID, AssignedTo, FromDate,ToDate, ProductID, FollowTypeID, FollowStatus, ClientID);
             return Ok(data);
 
         }
+
+        [HttpGet]
+        [Route("~/api/re-follow-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> Refollowup(string ComID, int UserID, int AssignedTo, int FollowID)
+        {
+            var data = await _unitOfWork.GetServices.Refollowup(ComID, UserID, AssignedTo, FollowID);
+            return Ok(data);
+
+        }
+
+        [HttpGet]
+        [Route("~/api/client-list")]
+        //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public async Task<IActionResult> ClientList(string ComID, int UserID, int AssignedTo)
+        {
+            var data = await _unitOfWork.GetServices.ClientList(ComID, UserID, AssignedTo);
+            return Ok(data);
+
+        }
+
         [HttpGet]
         [Route("~/api/org-type")]
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]

@@ -30,13 +30,9 @@ namespace Easy.Services.Services
         {
             AssetRes res = new AssetRes();
             try
-            {
-                //var param = req.Specification;
-                //string jsonstring = JsonConvert.SerializeObject(req);
-                string xmlnode = XMLConverter.GetXMLFromObject(req.Specification);
+            {                
                 string sql = "sp_admin_asset";
                 var parameters = new DynamicParameters();
-                //parameters.Add("@flag", "createattendance");
                 parameters.Add("@comid", req.ComID);
                 parameters.Add("@staffid", req.StaffID);
                 parameters.Add("@vendorid", req.VendorID);
@@ -48,26 +44,34 @@ namespace Easy.Services.Services
                     var img = Convert.FromBase64String(req.Image);
                     var imgname = DateTime.Now.Ticks;
                     Image image = Image.FromStream(new MemoryStream(img));
-                    if (!Directory.Exists(_config["AssetsPath:domain"] + "assetimg"))
+                    if (!Directory.Exists(_config["AssetsPath:path"] + "assetimg"))
                     {
-                        Directory.CreateDirectory(_config["AssetsPath:domain"] + "assetimg");
+                        Directory.CreateDirectory(_config["AssetsPath:path"] + "assetimg");
                     }
-                    image.Save(_config["AssetsPath:domain"] + "assetimg\\" + imgname + ".jpg", ImageFormat.Jpeg);
+                    image.Save(_config["AssetsPath:path"] + "assetimg\\" + imgname + ".jpg", ImageFormat.Jpeg);
                     parameters.Add("@image", imgname + ".jpg");
                 }
                 parameters.Add("@expirydate", req.ExpiryDate);
                 parameters.Add("@noofitem", req.NoOfItem);
                 parameters.Add("@quality", req.Quality);
-                parameters.Add("@type", req.BuyInf.Type);
-                parameters.Add("@date", req.BuyInf.Date);
-                parameters.Add("@perprice", req.BuyInf.PerPrice);
+                if (req.BuyInf is not null)
+                {
+                    parameters.Add("@type", req.BuyInf.Type);
+                    parameters.Add("@date", req.BuyInf.Date);
+                    parameters.Add("@perprice", req.BuyInf.PerPrice);
+                }
+                
                 parameters.Add("@branchid", req.BranchID);
                 parameters.Add("@fiscalid", req.FiscalID);
                 parameters.Add("@assetid", req.AssetID);
                 parameters.Add("@status", req.Status);
                 parameters.Add("@isexpired", req.IsExpired);
-                parameters.Add("@specification", xmlnode);
-                parameters.Add("@imgurl", _config["AssetsPath:path"]);
+                if (req.Specification is not null)
+                {
+                    string xmlnode = XMLConverter.GetXMLFromObject(req.Specification);
+                    parameters.Add("@specification", xmlnode);
+                }
+                parameters.Add("@imgurl", _config["AssetsPath:domain"]);
                 parameters.Add("@flag", req.Flag);
 
                 var data = await DBHelper.RunProc<dynamic>(sql, parameters);

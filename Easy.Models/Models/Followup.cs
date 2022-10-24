@@ -11,17 +11,35 @@ namespace Easy.Models.Models
     {
         public string ComID { get; set; }
         public int UserID { get; set; }
-        public int ContactID { get; set; }
-        public int ToType { get; set; }
+        public int ReferID { get; set; }
+        public string ClientID { get; set; }
+        public int CampaignID { get; set; }
         public int ProductID { get; set; }
+        public int FollowType { get; set; }
+        public string FollowFor { get; set; }
         public string FollowDate { get; set; }
         public string FollowTime { get; set; }
-        public int StaffID { get; set; }
+        public int AssignedTo { get; set; }
         public string Remarks { get; set; }
         public int FollowStatus { get; set; }
-        public int FollowType { get; set; }
+        public string NewExtra { get; set; }
+        public Extraa Extra { get; set; }
         public int BranchID { get; set; }
         public int FiscalID { get; set; }
+        public string ContactPerson { get; set; }
+        public string Contact { get; set; }
+    }
+
+    public class Extraa
+    {
+        public int ProductID { get; set; }
+        public int FollowType { get; set; }
+        public string FollowFor { get; set; }
+        public string FollowDate { get; set; }
+        public string FollowTime { get; set; }
+        public string ContactPerson { get; set; }
+        public string Contact { get; set; }
+        public int AssignedTo { get; set; }
     }
     //public class FollowupList
     //{

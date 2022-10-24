@@ -94,45 +94,143 @@ namespace Easy.Services.Services
             return contlist;
         }
 
-        public async Task<FollowupListDto> followuplist(string ComID, int EmpID, int IsOurClient, string FromDate, string ToDate,int OrgType,int FollowType,int FollowStatus,int ToType)
+        public async Task<FollowupListDto> followuplist(string ComID, int UserID, int AssignedTo, string FromDate, string ToDate,int ProductID,int FollowTypeID,int FollowStatus, int ClientID)
         {
             var followuplist = new FollowupListDto();
             followuplist.StatusCode = 400;
             followuplist.FollowupLists = null;
-
-            if (string.IsNullOrEmpty(ComID)) followuplist.Message = "Input CompanyId";
-
-            else
+            try
             {
-                string sql = "sp_followup";
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", ComID);
-                parameters.Add("@createdby", EmpID);
-                parameters.Add("@isourclient", IsOurClient);
-                parameters.Add("@fromDate", FromDate);
-                parameters.Add("@toDate", ToDate);
-                parameters.Add("@followstatus", FollowStatus);
-                parameters.Add("@followtype", FollowType);
-                parameters.Add("@OrgType", OrgType);
-                parameters.Add("@totype", ToType);
-                parameters.Add("@flag", "followList");
-                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-                if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
-                {
-                    followuplist.StatusCode = 200;
-                    followuplist.FollowupLists = data.ToList();
-                    followuplist.Message = "success";
-                }
-                else if(data.Count() == 1 && data.FirstOrDefault().StatusCode != null)
-                {
-                    followuplist.Message = data.FirstOrDefault().Message;
-                    followuplist.StatusCode = data.FirstOrDefault().StatusCode;
-                    followuplist.FollowupLists = null;
-                }
+
+                if (string.IsNullOrEmpty(ComID)) followuplist.Message = "Input CompanyId";
+
                 else
                 {
-                    followuplist.Message = "no data";
+                    string sql = "sp_follow_up";
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@comid", ComID);
+                    parameters.Add("@userid", UserID);
+                    parameters.Add("@assignedto", AssignedTo);
+                    parameters.Add("@fromdate", FromDate);
+                    parameters.Add("@todate", ToDate);
+                    parameters.Add("@followstatus", FollowStatus);
+                    parameters.Add("@followtype", FollowTypeID);
+                    parameters.Add("@productid", ProductID);
+                    parameters.Add("@clientid", ClientID);
+                    parameters.Add("@flag", "followuplist");
+                    var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                    if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
+                    {
+                        followuplist.StatusCode = 200;
+                        followuplist.FollowupLists = data.ToList();
+                        followuplist.Message = "success";
+                    }
+                    else if (data.Count() == 1 && data.FirstOrDefault().StatusCode != null)
+                    {
+                        followuplist.Message = data.FirstOrDefault().Message;
+                        followuplist.StatusCode = data.FirstOrDefault().StatusCode;
+                        followuplist.FollowupLists = null;
+                    }
+                    else
+                    {
+                        followuplist.Message = "no data";
+                    }
                 }
+            }catch(Exception ex)
+            {
+                followuplist.Message = ex.Message;
+                followuplist.StatusCode = 500;
+            }
+            return followuplist;
+        }
+
+        public async Task<FollowupListDto> Refollowup(string ComID, int UserID, int AssignedTo, int FollowID)
+        {
+            var followuplist = new FollowupListDto();
+            followuplist.StatusCode = 400;
+            followuplist.FollowupLists = null;
+            try
+            {
+
+                if (string.IsNullOrEmpty(ComID)) followuplist.Message = "Input CompanyId";
+
+                else
+                {
+                    string sql = "sp_follow_up";
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@comid", ComID);
+                    parameters.Add("@userid", UserID);
+                    parameters.Add("@assignedto", AssignedTo);
+                    parameters.Add("@followid", FollowID);
+                    parameters.Add("@flag", "refollowuplist");
+                    var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                    if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
+                    {
+                        followuplist.StatusCode = 200;
+                        followuplist.FollowupLists = data.ToList();
+                        followuplist.Message = "success";
+                    }
+                    else if (data.Count() == 1 && data.FirstOrDefault().StatusCode != null)
+                    {
+                        followuplist.Message = data.FirstOrDefault().Message;
+                        followuplist.StatusCode = data.FirstOrDefault().StatusCode;
+                        followuplist.FollowupLists = null;
+                    }
+                    else
+                    {
+                        followuplist.Message = "no data";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                followuplist.Message = ex.Message;
+                followuplist.StatusCode = 500;
+            }
+            return followuplist;
+        }
+
+        public async Task<FollowupListDto> ClientList(string ComID, int UserID, int AssignedTo)
+        {
+            var followuplist = new FollowupListDto();
+            followuplist.StatusCode = 400;
+            followuplist.FollowupLists = null;
+            try
+            {
+
+                if (string.IsNullOrEmpty(ComID)) followuplist.Message = "Input CompanyId";
+
+                else
+                {
+                    string sql = "sp_follow_up";
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@comid", ComID);
+                    parameters.Add("@userid", UserID);
+                    parameters.Add("@assignedto", AssignedTo);
+                    parameters.Add("@flag", "clientlist");
+                    var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                    if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
+                    {
+                        followuplist.StatusCode = 200;
+                        followuplist.FollowupLists = data.ToList();
+                        followuplist.Message = "success";
+                    }
+                    else if (data.Count() == 1 && data.FirstOrDefault().StatusCode != null)
+                    {
+                        followuplist.Message = data.FirstOrDefault().Message;
+                        followuplist.StatusCode = data.FirstOrDefault().StatusCode;
+                        followuplist.FollowupLists = null;
+                    }
+                    else
+                    {
+                        followuplist.Message = "no data";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                followuplist.Message = ex.Message;
+                followuplist.StatusCode = 500;
             }
             return followuplist;
         }
@@ -142,29 +240,37 @@ namespace Easy.Services.Services
             var followtype = new FollowUpTypeDto();
             followtype.StatusCode = 400;
             followtype.FollowupType = null;
-
-            if (string.IsNullOrEmpty(CompanyId)) followtype.Message = "Input CompanyId";
-            else if (BranchId == 0) followtype.Message = "Input BranchId";
-            else
+            try
             {
-                string sql = "sp_followup";
-                DynamicParameters parameters = new DynamicParameters();
-                parameters.Add("@companyid", CompanyId);
-                parameters.Add("@branchid", BranchId);
-                parameters.Add("@flag", "followtype");
-                var data = await DBHelper.RunProc<dynamic>(sql, parameters);
-                if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
-                {
-                    followtype.Message = "Success";
-                    followtype.StatusCode = 200;
-                    followtype.FollowupType = data.ToList();
-                }
+
+                if (string.IsNullOrEmpty(CompanyId)) followtype.Message = "Input CompanyId";
+                else if (BranchId == 0) followtype.Message = "Input BranchId";
                 else
                 {
-                    followtype.Message = "No Data Found.";
-                    followtype.StatusCode = 400;
-                    followtype.FollowupType = null;
+                    string sql = "sp_follow_up";
+                    DynamicParameters parameters = new DynamicParameters();
+                    parameters.Add("@comid", CompanyId);
+                    parameters.Add("@branchid", BranchId);
+                    parameters.Add("@flag", "followuptype");
+                    var data = await DBHelper.RunProc<dynamic>(sql, parameters);
+                    if (data.Count() != 0 && data.FirstOrDefault().StatusCode == null)
+                    {
+                        followtype.Message = "Success";
+                        followtype.StatusCode = 200;
+                        followtype.FollowupType = data.ToList();
+                    }
+                    else
+                    {
+                        followtype.Message = "No Data Found.";
+                        followtype.StatusCode = 400;
+                        followtype.FollowupType = null;
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                followtype.Message = ex.Message;
+                followtype.StatusCode = 400;
             }
             return followtype;
         }

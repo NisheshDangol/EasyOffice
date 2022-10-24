@@ -17,7 +17,7 @@ namespace Easy.Services.Interface
         Task<LeadSourceDto> leadSource(string CompanyId,int BranchId);
         Task<FollowUpTypeDto> FollowupType(string CompanyId,int BranchId);
         Task<OrgnizationStaffDto> orgstaff(string CompanyId,string BranchId,int DepartmentId,int SubDepartmentId);
-        Task<FollowupListDto> followuplist (string ComID, int EmpID, int IsOurClient, string FromDate, string ToDate, int OrgType, int FollowType, int FollowStatus, int ToType);
+        Task<FollowupListDto> followuplist(string ComID, int UserID, int AssignedTo, string FromDate, string ToDate, int ProductID, int FollowTypeID, int FollowStatus, int ClientID);
         Task<ContactInfoList> ContactInfo (string CompanyId, int EmployeeId, int ContactID);
         Task<ContactListDto> ContactList (string CompanyId, int EmployeeId);
         Task<NotificationListDto> NotificationList (string CompanyId, int EmployeeId);
@@ -33,5 +33,6 @@ namespace Easy.Services.Interface
         Task<UserActivity> UserActivity(int UserID, string ComID, int FiscalID, int BranchID);
         Task<Master> Dropdowns(string ComID, int BranchID, int DepartID, int SubDepartID);
         Task<JobReturn> Job(string ComID, string Flag, int JobStatus, int JobID);
+        Task<FollowupListDto> Refollowup(string ComID, int UserID, int AssignedTo, int FollowID);
     }
 }
